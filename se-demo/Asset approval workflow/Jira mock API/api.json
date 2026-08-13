@@ -1,0 +1,112 @@
+{
+  "get": {
+    "summary": "Fetch a mock Jira issue, or search the approval project",
+    "parameters": [
+      { "name": "resource", "in": "query", "required": false, "schema": { "type": "string", "enum": ["issue", "search"] } },
+      { "name": "key", "in": "query", "required": false, "schema": { "type": "string" }, "description": "Issue key, e.g. AIGOV-4. Required unless resource=search." },
+      { "name": "status", "in": "query", "required": false, "schema": { "type": "string", "enum": ["Open", "In Review", "Allow", "Deny"] } }
+    ],
+    "responses": {
+      "200": {
+        "description": "A single Jira-shaped issue, or a search result",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "total": { "type": "integer" },
+                "issues": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "key": { "type": "string" },
+                      "self": { "type": "string" },
+                      "fields": {
+                        "type": "object",
+                        "properties": {
+                          "summary": { "type": "string" },
+                          "description": { "type": "string" },
+                          "reporter": { "type": "object", "properties": { "emailAddress": { "type": "string" } } },
+                          "status": { "type": "object", "properties": { "name": { "type": "string", "enum": ["Open", "In Review", "Allow", "Deny"] } } },
+                          "created": { "type": "string" },
+                          "updated": { "type": "string" },
+                          "customfield_asset_id": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": { "description": "Issue does not exist" }
+    }
+  },
+  "post": {
+    "summary": "Create an approval issue, or transition one",
+    "parameters": [
+      { "name": "resource", "in": "query", "required": false, "schema": { "type": "string", "enum": ["issue", "transitions"] } },
+      { "name": "key", "in": "query", "required": false, "schema": { "type": "string" }, "description": "Required when resource=transitions." }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "oneOf": [
+              {
+                "type": "object",
+                "title": "Create issue",
+                "required": ["fields"],
+                "properties": {
+                  "fields": {
+                    "type": "object",
+                    "required": ["summary", "customfield_asset_id"],
+                    "properties": {
+                      "summary": { "type": "string" },
+                      "description": { "type": "string" },
+                      "customfield_asset_id": { "type": "string" },
+                      "reporter": { "type": "object", "properties": { "emailAddress": { "type": "string" } } }
+                    }
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "title": "Transition issue",
+                "required": ["transition"],
+                "properties": {
+                  "transition": {
+                    "type": "object",
+                    "properties": { "to": { "type": "string", "enum": ["Open", "In Review", "Allow", "Deny"] } }
+                  },
+                  "author": { "type": "string" }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": { "description": "Issue created" },
+      "200": {
+        "description": "Transition applied",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": { "key": { "type": "string" }, "status": { "type": "string" } }
+            }
+          }
+        }
+      },
+      "400": { "description": "Invalid payload or transition" },
+      "404": { "description": "Issue does not exist" }
+    }
+  }
+}

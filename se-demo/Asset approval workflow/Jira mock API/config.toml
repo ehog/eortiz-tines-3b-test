@@ -1,0 +1,6 @@
+color = "sky"
+output = true
+route = "/jira/api"
+route_type = "api"
+title = "Jira mock API"
+links = ["Jira webhook"]

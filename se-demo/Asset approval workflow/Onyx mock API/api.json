@@ -1,0 +1,107 @@
+{
+  "get": {
+    "summary": "List discovered AI assets, or fetch one by id",
+    "parameters": [
+      { "name": "id", "in": "query", "required": false, "schema": { "type": "string" }, "description": "Asset id, e.g. AST-1003. When present a single asset is returned." },
+      { "name": "status", "in": "query", "required": false, "schema": { "type": "string", "enum": ["blocked", "pending_review", "allowed", "denied"] } }
+    ],
+    "responses": {
+      "200": {
+        "description": "Asset list, or a single asset when id is given",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "total": { "type": "integer" },
+                "assets": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "name": { "type": "string" },
+                      "category": { "type": "string", "enum": ["genai_app", "browser_extension", "mcp_server", "ai_agent", "model", "ai_saas"] },
+                      "vendor": { "type": "string" },
+                      "risk_score": { "type": "integer" },
+                      "discovered_by": { "type": "string", "enum": ["browser_agent", "network", "saas_scan"] },
+                      "first_seen_user": { "type": "string" },
+                      "status": { "type": "string", "enum": ["blocked", "pending_review", "allowed", "denied"] },
+                      "issue_key": { "type": ["string", "null"] },
+                      "justification": { "type": ["string", "null"] },
+                      "approver": { "type": ["string", "null"] },
+                      "created_at": { "type": "string" },
+                      "updated_at": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": { "description": "Asset not found" }
+    }
+  },
+  "post": {
+    "summary": "Register a newly discovered asset (always created blocked) or update one when id is set",
+    "parameters": [
+      { "name": "id", "in": "query", "required": false, "schema": { "type": "string" }, "description": "When set, behaves as PATCH on that asset." }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "category": { "type": "string", "enum": ["genai_app", "browser_extension", "mcp_server", "ai_agent", "model", "ai_saas"] },
+              "vendor": { "type": "string" },
+              "risk_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+              "discovered_by": { "type": "string", "enum": ["browser_agent", "network", "saas_scan"] },
+              "first_seen_user": { "type": "string" },
+              "status": { "type": "string", "enum": ["blocked", "pending_review", "allowed", "denied"], "description": "Update only. Ignored on create — new assets are always blocked." },
+              "justification": { "type": "string" },
+              "approver": { "type": "string" },
+              "issue_key": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": { "description": "Asset created with status blocked" },
+      "200": { "description": "Asset updated" },
+      "400": { "description": "Invalid payload" },
+      "404": { "description": "Asset not found" }
+    }
+  },
+  "patch": {
+    "summary": "Update an asset's governance status",
+    "parameters": [
+      { "name": "id", "in": "query", "required": true, "schema": { "type": "string" } }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "status": { "type": "string", "enum": ["blocked", "pending_review", "allowed", "denied"] },
+              "justification": { "type": "string" },
+              "approver": { "type": "string" },
+              "issue_key": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Updated asset" },
+      "400": { "description": "Invalid status" },
+      "404": { "description": "Asset not found" }
+    }
+  }
+}

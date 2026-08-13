@@ -1,0 +1,6 @@
+color = "purple"
+route = "/onyx/asset-created"
+route_auth = "external_id:prSB9TB0Dw5OTFtJDgR8H"
+route_type = "webhook"
+title = "Onyx asset discovered webhook"
+links = ["Notify blocked user"]

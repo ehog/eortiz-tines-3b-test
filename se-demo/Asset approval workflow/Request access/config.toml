@@ -1,0 +1,5 @@
+color = "teal"
+output = true
+route = "/request-access"
+route_type = "api"
+title = "Request asset access"
