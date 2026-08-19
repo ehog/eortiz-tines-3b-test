@@ -1,0 +1,5 @@
+color = "teal"
+output = true
+route = "/ally-demo-tracker-state"
+route_type = "api"
+title = "Ally demo tracker state"
