@@ -1,0 +1,6 @@
+color = "pink"
+route = "/ai-governance"
+route_type = "webpage"
+title = "AI Governance Control Tower"
+output = true
+timeout = 60
