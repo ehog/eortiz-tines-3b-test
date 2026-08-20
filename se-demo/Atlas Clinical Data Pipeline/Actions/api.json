@@ -1,0 +1,84 @@
+{
+  "post": {
+    "summary": "Record an operator decision: a PHI quarantine outcome or an AI-proposed remediation approval",
+    "description": "The acting operator is taken from the platform-injected x-3b-authenticated-email header, never from the body.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": ["type", "id", "decision"],
+                "properties": {
+                  "type": { "type": "string", "const": "quarantine" },
+                  "id": { "type": "integer", "description": "Quarantine finding id." },
+                  "decision": {
+                    "type": "string",
+                    "enum": ["approve", "dismiss"],
+                    "description": "approve releases and publishes the record; dismiss keeps it withheld."
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": ["type", "runId"],
+                "properties": {
+                  "type": { "type": "string", "const": "remediation" },
+                  "runId": { "type": "string", "description": "Run whose AI triage note carries the proposed fix." }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Decision recorded",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": { "type": "boolean" },
+                "id": { "type": "integer" },
+                "status": { "type": "string", "enum": ["released", "dismissed"] },
+                "decidedBy": { "type": "string" },
+                "decidedAt": { "type": "string", "format": "date-time" },
+                "applied": {
+                  "type": "object",
+                  "properties": {
+                    "source": { "type": "string" },
+                    "fromField": { "type": "string" },
+                    "toField": { "type": "string" }
+                  }
+                },
+                "approvedBy": { "type": "string" },
+                "approvedAt": { "type": "string", "format": "date-time" },
+                "effect": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Malformed request or no approvable remediation on that run",
+        "content": {
+          "application/json": {
+            "schema": { "type": "object", "properties": { "error": { "type": "string" } } }
+          }
+        }
+      },
+      "404": {
+        "description": "Quarantine finding not found",
+        "content": {
+          "application/json": {
+            "schema": { "type": "object", "properties": { "error": { "type": "string" } } }
+          }
+        }
+      }
+    }
+  }
+}

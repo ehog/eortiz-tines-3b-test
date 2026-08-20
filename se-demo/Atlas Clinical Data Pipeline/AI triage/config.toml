@@ -1,0 +1,4 @@
+color = "orange"
+links = ["Alert"]
+connectors = [{ name = "anthropic-se-demos-please-only-use-this-one", type = "anthropic" }]
+timeout = 90
