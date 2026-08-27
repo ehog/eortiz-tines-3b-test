@@ -163,7 +163,7 @@ export default function App() {
           <div>
             <h1 className="text-base font-semibold text-slate-50">Morning SOC digest &amp; after-hours escalation gate</h1>
             <p className="text-[11px] text-slate-500">
-              {etClock(now)} · Sentinel, Defender, ServiceNow, Proofpoint and Zscaler are mocked · Slack, Gmail and Claude are live
+              {etClock(now)} · alerts simulated from Sentinel, Defender, ServiceNow, Proofpoint and Zscaler · Slack, Gmail and Claude are live
             </p>
           </div>
 

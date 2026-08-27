@@ -25,7 +25,7 @@ export function Assets({
     <div className="grid gap-4 lg:grid-cols-3">
       <Card
         className="lg:col-span-2"
-        title="Critical assets (mock ServiceNow CMDB)"
+        title="Critical assets (simulated from ServiceNow CMDB)"
         subtitle="The gate looks the alert host up here; tier and business impact feed the score immediately"
       >
         {state.assets.length === 0 ? (
