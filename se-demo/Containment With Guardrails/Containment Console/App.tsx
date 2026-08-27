@@ -4,6 +4,7 @@ import {
   fetchRun,
   fetchRuns,
   generateAlertId,
+  PRESETS,
   resetDemo,
   resumeRun,
   startRun,
@@ -22,6 +23,7 @@ import {
   StageTimeline,
   StateCards,
 } from "./components";
+import { TourOverlay, type TourContext } from "./tour";
 
 const REPLAY_SPEEDS = [
   { id: "1x", label: "1x", factor: 1 },
@@ -46,6 +48,8 @@ export default function App() {
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState("4x");
   const replayedRun = useRef<string | null>(null);
+  const [tourOpen, setTourOpen] = useState(false);
+  const tourRunId = useRef<string | null>(null);
 
   const run = detail?.run ?? null;
   const attempts = detail?.attempts ?? [];
@@ -126,20 +130,23 @@ export default function App() {
   const effectiveClock = isRunning ? Number.POSITIVE_INFINITY : clock;
   const views = useMemo(() => buildStageViews(stages, attempts, effectiveClock), [stages, attempts, effectiveClock]);
 
-  const onLaunch = async () => {
+  const onLaunch = async (chaosOverride?: ChaosConfig) => {
+    const chaosForRun = chaosOverride ?? chaos;
     setBusy("launch");
     setError(null);
     setNotice(null);
     try {
-      const result = await startRun({ alertId, endpoint, userEmail, severity, chaos });
+      const result = await startRun({ alertId, endpoint, userEmail, severity, chaos: chaosForRun });
       setSelectedRunId(result.runId);
       setDetail(null);
       setClock(Number.POSITIVE_INFINITY);
       replayedRun.current = null;
+      tourRunId.current = result.runId;
       setNotice(`Run ${result.runId} started.`);
       await load(result.runId);
     } catch (launchError) {
       setError((launchError as Error).message);
+      throw launchError;
     } finally {
       setBusy(null);
     }
@@ -158,6 +165,7 @@ export default function App() {
       await load(run.runId);
     } catch (resumeError) {
       setError((resumeError as Error).message);
+      throw resumeError;
     } finally {
       setBusy(null);
     }
@@ -183,11 +191,38 @@ export default function App() {
   const resumeInfo = detail?.resume ?? null;
   const canResume = Boolean(run && run.status !== "contained" && run.status !== "running" && resumeInfo?.resumeFrom);
 
+  // The tour reads live values through a ref so its polling sees fresh state, not the state at mount.
+  const liveState = useRef({ runId: null as string | null, status: null as string | null, busy: null as string | null, canResume: false });
+  liveState.current = { runId: run?.runId ?? null, status: run?.status ?? null, busy, canResume };
+
+  const tourContext: TourContext = {
+    runWithPreset: async (presetId) => {
+      const preset = PRESETS.find((entry) => entry.id === presetId);
+      if (!preset) throw new Error(`Unknown preset ${presetId}`);
+      const nextChaos = preset.chaos();
+      setChaos(nextChaos);
+      tourRunId.current = null;
+      setAlertId(generateAlertId());
+      await onLaunch(nextChaos);
+    },
+    resumeWithChaosOff: async () => {
+      tourRunId.current = liveState.current.runId;
+      await onResume(true);
+    },
+    runFinished: () => {
+      const state = liveState.current;
+      if (state.busy !== null) return false;
+      if (!tourRunId.current || state.runId !== tourRunId.current) return false;
+      return state.status !== null && state.status !== "running";
+    },
+    canResume: () => liveState.current.canResume,
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <title>Containment console</title>
       <header className="border-b border-slate-800 bg-slate-900/60">
-        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-3 px-6 py-4">
+        <div data-tour="header" className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-3 px-6 py-4">
           <div>
             <h1 className="text-lg font-semibold tracking-tight">Containment with guardrails</h1>
             <p className="text-xs text-slate-400">
@@ -198,6 +233,13 @@ export default function App() {
           <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={() => setTourOpen(true)}
+              className="rounded-md border border-sky-500/50 bg-sky-500/10 px-3 py-1.5 text-xs font-semibold text-sky-200 transition hover:border-sky-400"
+            >
+              Guided tour
+            </button>
+            <button
+              type="button"
               onClick={() => void load(selectedRunId)}
               className="rounded-md border border-slate-700 px-3 py-1.5 text-xs text-slate-300 transition hover:border-slate-500"
             >
@@ -205,6 +247,7 @@ export default function App() {
             </button>
             <button
               type="button"
+              data-tour="reset"
               onClick={onReset}
               disabled={busy !== null}
               className="rounded-md border border-rose-500/40 bg-rose-500/10 px-3 py-1.5 text-xs text-rose-200 transition hover:border-rose-400 disabled:opacity-40"
@@ -217,7 +260,7 @@ export default function App() {
 
       <main className="mx-auto grid max-w-[1600px] gap-5 px-6 py-6 xl:grid-cols-[360px_1fr]">
         <section className="space-y-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+          <div data-tour="launch" className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
             <h2 className="text-sm font-semibold text-slate-200">Launch containment</h2>
             <div className="mt-3 space-y-3">
               <label className="block">
@@ -268,7 +311,7 @@ export default function App() {
               </label>
               <button
                 type="button"
-                onClick={onLaunch}
+                onClick={() => void onLaunch().catch(() => undefined)}
                 disabled={busy !== null}
                 className="w-full rounded-md bg-sky-500 px-3 py-2 text-sm font-semibold text-slate-950 transition hover:bg-sky-400 disabled:opacity-40"
               >
@@ -309,7 +352,7 @@ export default function App() {
             </div>
           ) : (
             <>
-              <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+              <div data-tour="replay" className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
@@ -390,7 +433,7 @@ export default function App() {
               <StateCards run={run} views={views} />
 
               {canResume ? (
-                <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/5 p-4">
+                <div data-tour="resume" className="rounded-xl border border-emerald-500/40 bg-emerald-500/5 p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <h2 className="text-sm font-semibold text-emerald-200">Resume from the failed step</h2>
@@ -402,7 +445,7 @@ export default function App() {
                     <div className="flex flex-wrap gap-2">
                       <button
                         type="button"
-                        onClick={() => void onResume(true)}
+                        onClick={() => void onResume(true).catch(() => undefined)}
                         disabled={busy !== null}
                         className="rounded-md bg-emerald-500 px-3 py-2 text-xs font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:opacity-40"
                       >
@@ -410,7 +453,7 @@ export default function App() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => void onResume(false)}
+                        onClick={() => void onResume(false).catch(() => undefined)}
                         disabled={busy !== null}
                         className="rounded-md border border-emerald-500/50 px-3 py-2 text-xs font-semibold text-emerald-200 transition hover:border-emerald-400 disabled:opacity-40"
                       >
@@ -436,6 +479,7 @@ export default function App() {
           )}
         </section>
       </main>
+      {tourOpen ? <TourOverlay ctx={tourContext} onClose={() => setTourOpen(false)} /> : null}
     </div>
   );
 }

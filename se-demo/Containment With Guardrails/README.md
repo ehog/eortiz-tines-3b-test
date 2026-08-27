@@ -11,6 +11,8 @@ Everything is driven from an interactive console; the four "external" services a
 4. [Notify Analyst](<./Notify Analyst/README.md>) posts to Slack when a run ends anything other than `contained`, with what succeeded, what failed, the current system state and a resume link.
 5. The console polls [Runs API](<./Runs API/README.md>) and then replays the recorded attempt timeline; [Retry Run](<./Retry Run/README.md>) resumes a failed run and [Demo Reset](<./Demo Reset/README.md>) clears state between demos.
 
+For a presented walkthrough, **Guided tour** in the console header runs a scripted spotlight overlay: an agenda, two short setup stops, then three proof peaks — transient recovery, the guardrail refusing partial containment, and an idempotent resume — closing on the log and audit trail. The peaks launch the real runs themselves; nothing about the tour is simulated. Script and overlay live in [tour.tsx](<./Containment Console/tour.tsx>).
+
 #### Resilience rules
 
 | Stage | Timeout | Retries | Side effect |
