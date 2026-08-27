@@ -42,7 +42,7 @@ export default function Launcher() {
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-400">
           Fire a Sentinel or Defender incident at the intake webhook, watch five enrichment sources run in parallel, and
           land on an analyst canvas with an AI disposition, a merged timeline, Proofpoint captures and a gated isolate
-          action. Every integration except Claude is mocked.
+          action. Every integration except Claude is simulated from its real vendor API.
         </p>
         <div className="mt-5 flex items-center gap-3">
           <Button onClick={tour.start} dataTour="tour-start">

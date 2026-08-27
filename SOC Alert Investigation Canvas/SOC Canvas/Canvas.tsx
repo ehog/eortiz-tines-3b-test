@@ -323,7 +323,7 @@ export default function Canvas() {
                   }
                   hint={
                     record?.status === "ok"
-                      ? `${record.recordCount ?? 0} records · ${record.durationMs ?? 0}ms${record.mocked ? " · mock" : ""}`
+                      ? `${record.recordCount ?? 0} records · ${record.durationMs ?? 0}ms${record.mocked ? ` · simulated from ${SOURCE_LABELS[source]}` : ""}`
                       : "pending"
                   }
                 >

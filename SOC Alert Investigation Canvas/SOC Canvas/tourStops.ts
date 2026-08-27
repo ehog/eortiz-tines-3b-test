@@ -147,7 +147,7 @@ export const STOPS: TourStop[] = [
     title: "Five tools at once, cited evidence, a gated hand on the switch",
     body: "That is what the analyst got. Here is what produced it: one 3B workflow — HTTP routes for intake and every fetch this page makes, five enrichers running in parallel, a merge step gated on shared volume state, a Claude agent, a ticket sync, and this React app served from the same workflow. Ordinary TypeScript, built in chat, with pinned tests on the intake, entity, barrier and approval logic.",
     whichMeans:
-      "Every integration except Claude is mocked and one flag from live, so the shape of the automation is already right — going live is a credential, not a rebuild. Yours starts from the same conversation.",
+      "Every integration except Claude is simulated from its real vendor API — Defender, Sentinel, Zscaler, Proofpoint TAP, threat intel and ServiceNow — and one flag from live, so the shape of the automation is already right; going live is a credential, not a rebuild. Yours starts from the same conversation.",
     nextLabel: "Finish",
   },
 ];

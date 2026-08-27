@@ -243,7 +243,7 @@ function buildStages(data: Investigation | null): {
       label: SOURCE_LABELS[source],
       source,
       detail: done
-        ? `${record?.recordCount ?? 0} records · ${record?.eventCount ?? 0} timeline events · ${record?.durationMs ?? 0}ms${record?.mocked ? " · mock" : ""}`
+        ? `${record?.recordCount ?? 0} records · ${record?.eventCount ?? 0} timeline events · ${record?.durationMs ?? 0}ms${record?.mocked ? ` · simulated from ${SOURCE_LABELS[source]}` : ""}`
         : data?.status.entities
           ? "querying…"
           : undefined,
