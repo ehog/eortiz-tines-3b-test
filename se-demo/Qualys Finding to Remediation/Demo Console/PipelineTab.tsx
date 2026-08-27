@@ -167,7 +167,7 @@ export default function PipelineTab({ shell }: { shell: Shell }) {
 
   return (
     <div className="space-y-4">
-      <Card
+      <Card anchorId="pipeline-run"
         title="Run the pipeline"
         subtitle="Full run forces a pull so every open detection flows through, even if nothing changed in Qualys."
         actions={
@@ -259,7 +259,7 @@ export default function PipelineTab({ shell }: { shell: Shell }) {
         )}
       </Card>
 
-      <Card
+      <Card anchorId="pipeline-webhook"
         title="Simulate a Qualys webhook push"
         subtitle="Posts a pushed detection to the workflow's webhook route, which feeds the same normalization step as the scheduled pull."
       >
@@ -286,7 +286,7 @@ export default function PipelineTab({ shell }: { shell: Shell }) {
         </p>
       </Card>
 
-      <Card title="Recent stage runs" subtitle="Newest first, across every run of this branch.">
+      <Card anchorId="pipeline-history" title="Recent stage runs" subtitle="Newest first, across every run of this branch.">
         {!state || state.history.length === 0 ? (
           <Empty>No stage runs recorded yet.</Empty>
         ) : (
@@ -310,7 +310,7 @@ export default function PipelineTab({ shell }: { shell: Shell }) {
         )}
       </Card>
 
-      <Card title="Stage detail" subtitle="Every stage the console tracks, including the scheduled ones.">
+      <Card anchorId="pipeline-stages" title="Stage detail" subtitle="Every stage the console tracks, including the scheduled ones.">
         <Table head={["Stage", "Status", "Run", "Trigger", "Finished", "Summary", ""]}>
           {stages.map((s: StageStatus) => (
             <tr key={s.stage} className="border-b border-[var(--divider)] hover:bg-[var(--table-hover-bg)]">

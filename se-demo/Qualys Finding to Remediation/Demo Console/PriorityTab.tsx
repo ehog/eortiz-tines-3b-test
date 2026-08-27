@@ -57,7 +57,7 @@ export default function PriorityTab({ shell }: { shell: Shell }) {
 
   return (
     <div className="space-y-4">
-      <Card
+      <Card anchorId="priority-weights"
         title="Scoring weights"
         subtitle={`Each factor contributes a share of the weighted total, which is normalised to a 0-100 score. Current total weight ${total}.`}
         actions={
@@ -123,7 +123,7 @@ export default function PriorityTab({ shell }: { shell: Shell }) {
         )}
       </Card>
 
-      <Card
+      <Card anchorId="priority-table"
         title="Scored findings"
         subtitle={
           preview?.source_stage
@@ -193,7 +193,7 @@ export default function PriorityTab({ shell }: { shell: Shell }) {
         )}
       </Card>
 
-      <Card title="Bands and SLA policy" subtitle="Where each score lands and how long the team gets.">
+      <Card anchorId="priority-bands" title="Bands and SLA policy" subtitle="Where each score lands and how long the team gets.">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {(() => {
             const bands = state?.bands ?? { critical: 80, high: 60, medium: 40 };

@@ -74,7 +74,7 @@ export default function FindingsTab({ shell }: { shell: Shell }) {
 
   return (
     <div className="space-y-4">
-      <Card
+      <Card anchorId="findings-inject"
         title="Inject a Qualys detection"
         subtitle="Each preset clones a canonical finding as a fresh Active detection, so the next pipeline run picks it up."
         actions={
@@ -99,9 +99,9 @@ export default function FindingsTab({ shell }: { shell: Shell }) {
         </div>
       </Card>
 
-      <Card
+      <Card anchorId="findings-table"
         title={`Qualys detections${detections ? ` (${detections.length})` : ""}`}
-        subtitle="Served by the mock Qualys VMDR route. Edit severity, KEV or exposure and re-run the pipeline to watch the risk score move."
+        subtitle="Simulated from Qualys VMDR. Edit severity, KEV or exposure and re-run the pipeline to watch the risk score move."
       >
         {!detections ? (
           <Empty>Loading detections…</Empty>

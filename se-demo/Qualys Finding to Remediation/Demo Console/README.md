@@ -26,8 +26,22 @@ branch that base path includes the branch prefix.
   per-band breakdowns, the overdue list, and the raw Markdown the scheduled step emits.
 
 The header always shows whether this is the draft or the live version and where the demo clock is
-sitting, with **Seed history** (backfill three weeks of changes) and **Reset demo** (reseed findings,
-clear changes, reset the clock and weights).
+sitting, with **Guided tour** (see below), **Seed history** (backfill three weeks of changes) and
+**Reset demo** (reseed findings, clear changes, reset the clock and weights).
+
+**Guided tour** — **Guided tour** in the header starts a presenter-facing walkthrough that builds the
+Demo2Win narrative: the before picture, the three peaks (one end-to-end run, the AI remediation package,
+follow-up that keeps working after the ticket is filed), and a close on why the workflow holds up in
+production. Each step navigates to its tab, highlights its target with a ring, and shows a callout
+placed beside the target — the app is never dimmed and stays fully clickable, so the presenter can drive
+it by hand mid-step. Every callout carries a collapsible "Why this matters" line, and action steps carry
+a **do it for me** button that runs the real API call (inject a finding, run the pipeline, generate a
+package, fast-forward and chase, seed history). Keyboard: → or Enter advances, ← goes back, Esc exits.
+
+The narrative lives in [tour-script.ts](tour-script.ts) — edit the copy or reorder steps there. The
+overlay engine, including the placement solver that keeps the callout off the highlighted element, is
+[TourOverlay.tsx](TourOverlay.tsx). Targets are marked by the `anchorId` prop on `Card`, which renders a
+`data-tour` attribute; a step whose anchor is missing falls back to a centered callout with no ring.
 
 **Running the pipeline from the browser** — the run routes are invoked directly by the browser using
 your session, rather than server-to-server, so no internal credential is needed. The pipeline itself is
