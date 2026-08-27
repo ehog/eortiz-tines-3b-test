@@ -112,6 +112,7 @@ export default function Canvas() {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <div className="space-y-6">
           <Card
+            dataTour="disposition"
             className={`bg-gradient-to-br p-5 ring-1 ${
               disposition ? disposition.classes : "from-slate-800/40 to-slate-900 ring-slate-700"
             }`}
@@ -168,7 +169,7 @@ export default function Canvas() {
           </Card>
 
           {data.summary && data.summary.evidence.length > 0 ? (
-            <Card>
+            <Card dataTour="evidence">
               <SectionTitle hint="click a claim to highlight its timeline events">Evidence</SectionTitle>
               <ul className="divide-y divide-slate-800/70">
                 {data.summary.evidence.map((item, index) => {
@@ -177,6 +178,7 @@ export default function Canvas() {
                     <li key={`${item.claim}-${index}`}>
                       <button
                         type="button"
+                        data-tour={index === 0 ? "evidence-claim" : undefined}
                         onClick={() => setHighlighted(active ? [] : item.eventIds)}
                         className={`flex w-full items-start gap-3 px-4 py-3 text-left transition hover:bg-slate-800/40 ${
                           active ? "bg-teal-500/10" : ""
@@ -275,7 +277,7 @@ export default function Canvas() {
             </ol>
           </Card>
 
-          <Card>
+          <Card dataTour="captures">
             <SectionTitle hint={`${data.screenshots.length} captures`}>Proofpoint message captures</SectionTitle>
             {data.screenshots.length === 0 ? (
               <p className="px-4 py-6 text-sm text-slate-500">No captures collected for this investigation.</p>
@@ -306,7 +308,7 @@ export default function Canvas() {
             )}
           </Card>
 
-          <Card>
+          <Card dataTour="collected">
             <SectionTitle hint="raw per-tool responses">Collected data</SectionTitle>
             {SOURCE_KEYS.map((source) => {
               const record = data.sources[source];
@@ -392,7 +394,7 @@ export default function Canvas() {
             </div>
           </Card>
 
-          <Card>
+          <Card dataTour="actions">
             <SectionTitle hint={`${data.actions.length} recorded`}>Action history</SectionTitle>
             {data.actions.length === 0 ? (
               <p className="px-4 py-4 text-sm text-slate-500">No response actions taken.</p>
@@ -436,7 +438,7 @@ function IsolatePanel({ data, onDone }: { data: Investigation; onDone: () => voi
   const device = data.isolate.device;
 
   return (
-    <Card className="border-rose-900/60">
+    <Card className="border-rose-900/60" dataTour="containment">
       <SectionTitle hint="requires explicit approval">Containment</SectionTitle>
       <div className="space-y-3 px-4 py-4">
         {!device ? (
@@ -450,7 +452,7 @@ function IsolatePanel({ data, onDone }: { data: Investigation; onDone: () => voi
               until you approve.
             </p>
             {stage === "idle" ? (
-              <Button variant="danger" onClick={() => setStage("confirm")}>
+              <Button variant="danger" onClick={() => setStage("confirm")} dataTour="isolate-open">
                 Isolate endpoint
               </Button>
             ) : null}
@@ -469,6 +471,7 @@ function IsolatePanel({ data, onDone }: { data: Investigation; onDone: () => voi
                 <div className="flex gap-2">
                   <Button
                     variant="danger"
+                    dataTour="isolate-confirm"
                     onClick={async () => {
                       setStage("working");
                       setProblem(null);

@@ -6,6 +6,8 @@ Every integration except Claude is **mocked**. Each mocked step keeps the real r
 
 Open the workflow's root route — [SOC Canvas](<./SOC Canvas/README.md>) at `/`. Pick one of three scenarios (Defender-shaped endpoint malware, Sentinel-shaped phishing to suspicious sign-in, Sentinel-shaped proxy exfiltration), or paste your own payload, then watch the live run and land on the analyst canvas.
 
+Or click **Start guided tour** and let the app drive: nine narrated stops that fire the Defender scenario, follow the real run, walk the canvas and execute the gated isolate, each pairing the SOC moment with the 3B capability behind it.
+
 #### Flow
 
 ```
@@ -69,6 +71,7 @@ Nothing containment-related happens automatically. [Isolate endpoint](<./Isolate
 #### Common changes
 
 - Add a scenario: [SOC Canvas/scenarios.ts](<./SOC Canvas/scenarios.ts>).
+- Change the guided-tour narrative: [SOC Canvas/tourStops.ts](<./SOC Canvas/tourStops.ts>).
 - Change what a tool returns: that step's `mock.ts`.
 - Go live for a tool: `USE_MOCK = false` in its `client.ts`, then attach the connector to that step.
 - Change the disposition prompt or model: [Summarize/script.ts](./Summarize/script.ts).

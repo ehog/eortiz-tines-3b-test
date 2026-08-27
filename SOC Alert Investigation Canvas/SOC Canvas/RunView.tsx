@@ -12,10 +12,12 @@ import {
   type SourceKey,
 } from "./api";
 import { Button, Card, Chip, SectionTitle, SOURCE_STYLES, Spinner } from "./ui";
+import { useTour } from "./Tour";
 
 export default function RunView() {
   const { id = "" } = useParams();
   const navigate = useNavigate();
+  const tour = useTour();
   const [data, setData] = useState<Investigation | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busySource, setBusySource] = useState<string | null>(null);
@@ -47,11 +49,12 @@ export default function RunView() {
   }, [id]);
 
   useEffect(() => {
-    if (!data?.status.summary || !autoAdvance || advanced.current) return;
+    // While the tour is running it decides when to move on, so the auto-open would fight it.
+    if (!data?.status.summary || !autoAdvance || advanced.current || tour.active) return;
     advanced.current = true;
     const timer = setTimeout(() => navigate(`/investigation/${id}`), 1200);
     return () => clearTimeout(timer);
-  }, [data?.status.summary, autoAdvance, id, navigate]);
+  }, [data?.status.summary, autoAdvance, tour.active, id, navigate]);
 
   const stages = buildStages(data);
   const pending = SOURCE_KEYS.filter((source) => !data?.status.sources[source]);
@@ -94,7 +97,7 @@ export default function RunView() {
         <SectionTitle hint={data?.status.complete ? "run complete" : "polling every 1.5s"}>Pipeline</SectionTitle>
         <div className="divide-y divide-slate-800/70">
           {stages.map((stage) => (
-            <div key={stage.key} className="flex items-center gap-3 px-4 py-3">
+            <div key={stage.key} data-tour={`stage-${stage.key}`} className="flex items-center gap-3 px-4 py-3">
               <StatusDot state={stage.state} />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-slate-200">{stage.label}</p>
@@ -145,7 +148,10 @@ export default function RunView() {
           ))}
         </div>
         {pending.length > 0 && data?.status.entities ? (
-          <div className="flex items-center justify-between gap-3 border-t border-slate-800 px-4 py-3">
+          <div
+            data-tour="force-timeline"
+            className="flex items-center justify-between gap-3 border-t border-slate-800 px-4 py-3"
+          >
             <span className="text-xs text-slate-500">
               The timeline waits for all five sources. If one stays stuck you can build it from what has landed.
             </span>
