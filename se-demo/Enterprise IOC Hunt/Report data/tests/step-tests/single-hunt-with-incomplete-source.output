@@ -1,0 +1,6 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 290
+Cache-Control: no-store
+
+{"hunts":[{"huntId":"hunt_20e8de326a19","reason":"Fixture hunt","demoMode":"error","createdAt":"2026-01-01T00:00:00Z","status":"found","indicatorCount":1,"matchedCount":1,"totalEvents":1,"sourceRowsExpected":4,"sourceRowsDone":4,"hitRows":1,"errorRows":1,"serviceNowNumber":"INC00123456"}]}

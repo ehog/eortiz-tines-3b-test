@@ -1,0 +1,12 @@
+__3B_STEP_TEST_SQLITE_DUMP__
+CREATE TABLE hunts (id TEXT PRIMARY KEY, reason TEXT NOT NULL, demo_mode TEXT NOT NULL, created_at TEXT NOT NULL, status TEXT NOT NULL, approval_token TEXT NOT NULL, combined_at TEXT, report_json TEXT, sn_number TEXT, sn_sys_id TEXT, sn_created_at TEXT, findings_path TEXT);
+CREATE TABLE indicators (hunt_id TEXT NOT NULL, value TEXT NOT NULL, type TEXT NOT NULL, position INTEGER NOT NULL, PRIMARY KEY (hunt_id, value));
+CREATE TABLE source_results (hunt_id TEXT NOT NULL, source TEXT NOT NULL, indicator TEXT NOT NULL, status TEXT NOT NULL, error_reason TEXT, findings_json TEXT, first_seen TEXT, last_seen TEXT, frequency INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL, PRIMARY KEY (hunt_id, source, indicator));
+CREATE TABLE block_requests (hunt_id TEXT PRIMARY KEY, requested_at TEXT NOT NULL, slack_channel TEXT, slack_message TEXT, slack_ts TEXT, slack_error TEXT, targets_json TEXT, decision TEXT, decided_at TEXT, approver TEXT, executed_at TEXT, results_json TEXT);
+INSERT INTO hunts (id, reason, demo_mode, created_at, status, approval_token) VALUES ('hunt_20e8de326a19', 'Fixture hunt', 'error', '2026-01-01T00:00:00Z', 'searching', 'tok_fixture');
+INSERT INTO indicators (hunt_id, value, type, position) VALUES ('hunt_20e8de326a19', 'secure-invoice-portal.com', 'domain', 0);
+INSERT INTO source_results (hunt_id, source, indicator, status, error_reason, findings_json, first_seen, last_seen, frequency, created_at) VALUES
+('hunt_20e8de326a19','defender','secure-invoice-portal.com','no_match',NULL,NULL,NULL,NULL,0,'2026-01-01T00:00:00Z'),
+('hunt_20e8de326a19','sentinel','secure-invoice-portal.com','error','Log Analytics query timed out after 180s (workspace ingestion backlog)',NULL,NULL,NULL,0,'2026-01-01T00:00:00Z'),
+('hunt_20e8de326a19','proofpoint','secure-invoice-portal.com','hit',NULL,'{"cluster":"corp_hosted","messages":[{"messageId":"<m2@mx>","guid":"pp_2","sender":"billing@secure-invoice-portal.com","senderIp":"91.203.145.16","recipients":["ap-team@corp.example.com"],"subject":"Wire instructions update","messageTime":"2025-12-26T00:00:00Z","verdict":"delivered","clicked":true,"threatType":"url","matchedOn":"secure-invoice-portal.com","quarantineFolder":null}],"users":[{"upn":"ap-team@corp.example.com","vap":false,"clicksLast30d":2}],"blocked":0,"delivered":1,"quarantined":0,"clicksPermitted":1}','2025-12-26T00:00:00Z','2025-12-26T00:00:00Z',1,'2026-01-01T00:00:00Z'),
+('hunt_20e8de326a19','zscaler','secure-invoice-portal.com','no_match',NULL,NULL,NULL,NULL,0,'2026-01-01T00:00:00Z');

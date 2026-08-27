@@ -1,0 +1,3 @@
+color = "orange"
+timeout = 60
+links = ["Create ServiceNow record", "Request block approval"]
