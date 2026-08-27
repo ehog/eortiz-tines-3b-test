@@ -1,0 +1,7 @@
+The web app used to drive the demo.
+
+- **Trigger:** `/soc-console`, space auth, `route_type = "webpage"`, pinned on the Links page.
+- Renders immediately and polls [Console API](<../Console API/README.md>) every three seconds, so decisions, pages and digests appear as they happen. All writes go through that API; alert injection posts to [Test Alert Intake](<../Test Alert Intake/README.md>) and digest runs to [Run Digest Now](<../Run Digest Now/README.md>).
+- Tabs: **Live ops** (counters, event timeline, recent decisions, open pages), **Alert injector** (scenario packs and a custom alert builder with live results), **Gate config** (threshold and suppress-floor sliders, factor weights, coverage window, factor score tables, delivery targets, and a replay button that re-scores the newest alert), **Decision audit** (filterable, expandable score breakdowns and raw alert JSON), **On-call pages** (mock PagerDuty inbox with acknowledge/resolve and the Slack result), **Critical assets** (mock CMDB editor), **Morning digest** (deferred queue, run-now, and the exact email HTML, plain-text and Slack forms that were sent).
+- The header shows the current ET time, whether the gate is armed, and a demo clock override that forces after-hours or business hours; "Reset demo" reseeds a fresh overnight backlog.
+- Files: [App.tsx](./App.tsx) shell and actions, [api.ts](./api.ts) client and ET time helpers, [ui.tsx](./ui.tsx) primitives, one component per tab.

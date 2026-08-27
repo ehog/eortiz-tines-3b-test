@@ -1,0 +1,4 @@
+color = "green"
+connectors = [{ name = "gmail-eortiz-tines-io", type = "gmail" }]
+timeout = 60
+retry_seconds = [5, 20]
