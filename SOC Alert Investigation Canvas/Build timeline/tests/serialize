@@ -1,0 +1,15 @@
+#!/bin/sh
+# Timeline files record when they were built, so volume comparisons mask that value.
+set -e
+volume="$1"
+if [ -d "$volume" ]; then
+  root="$volume"
+else
+  root="/storage/$volume"
+fi
+[ -d "$root" ] || exit 0
+cd "$root"
+find . -type f | LC_ALL=C sort | while read -r file; do
+  printf '== %s\n' "$file"
+  sed -e 's/"builtAt": "[^"]*"/"builtAt": "<masked>"/' "$file"
+done

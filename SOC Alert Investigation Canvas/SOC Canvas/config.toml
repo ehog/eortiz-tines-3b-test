@@ -1,0 +1,8 @@
+color = "pink"
+output = true
+route = "/"
+route_auth = "space"
+route_type = "webpage"
+title = "SOC Alert Investigation Canvas"
+pinned = true
+timeout = 30

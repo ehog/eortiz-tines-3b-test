@@ -1,0 +1,5 @@
+color = "sky"
+output = true
+route = "/api/screenshot"
+route_auth = "space"
+timeout = 30
