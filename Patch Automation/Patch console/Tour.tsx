@@ -134,41 +134,70 @@ export default function Tour({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose, next, back]);
 
+  const viewportW = typeof window === "undefined" ? 1200 : window.innerWidth;
   const viewportH = typeof window === "undefined" ? 800 : window.innerHeight;
-  const below = rect ? rect.top + rect.height + PAD + 24 : 0;
-  const placeBelow = rect ? below + 260 < viewportH || rect.top < 260 : false;
+  const CARD_W = Math.min(416, viewportW - 32);
+  const CARD_H = 320;
+  const GAP = PAD + 12;
 
-  const cardStyle: React.CSSProperties = rect
-    ? placeBelow
-      ? { top: rect.top + rect.height + PAD + 12, left: Math.max(16, Math.min(rect.left, window.innerWidth - 448)) }
-      : {
-          bottom: viewportH - rect.top + PAD + 12,
-          left: Math.max(16, Math.min(rect.left, window.innerWidth - 448)),
-        }
-    : { top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
+  const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(v, max));
+
+  let cardStyle: React.CSSProperties;
+  if (!rect) {
+    cardStyle = {
+      top: clamp(viewportH / 2 - CARD_H / 2, 16, viewportH - CARD_H - 16),
+      left: clamp(viewportW / 2 - CARD_W / 2, 16, viewportW - CARD_W - 16),
+    };
+  } else {
+    const spaceRight = viewportW - (rect.left + rect.width) - GAP;
+    const spaceLeft = rect.left - GAP;
+    const spaceBelow = viewportH - (rect.top + rect.height) - GAP;
+    const spaceAbove = rect.top - GAP;
+
+    if (spaceRight >= CARD_W + 16) {
+      cardStyle = {
+        left: rect.left + rect.width + GAP,
+        top: clamp(rect.top, 16, Math.max(16, viewportH - CARD_H - 16)),
+      };
+    } else if (spaceLeft >= CARD_W + 16) {
+      cardStyle = {
+        left: rect.left - GAP - CARD_W,
+        top: clamp(rect.top, 16, Math.max(16, viewportH - CARD_H - 16)),
+      };
+    } else if (spaceBelow >= spaceAbove) {
+      cardStyle = {
+        top: rect.top + rect.height + GAP,
+        left: clamp(rect.left, 16, Math.max(16, viewportW - CARD_W - 16)),
+      };
+    } else {
+      cardStyle = {
+        bottom: viewportH - rect.top + GAP,
+        left: clamp(rect.left, 16, Math.max(16, viewportW - CARD_W - 16)),
+      };
+    }
+  }
 
   return (
-    <div className="fixed inset-0 z-40" role="dialog" aria-modal="true" aria-label="Guided tour">
+    <div
+      className="pointer-events-none fixed inset-0 z-40"
+      role="dialog"
+      aria-label="Guided tour"
+    >
       {rect ? (
-        <>
-          <div className="absolute inset-0 bg-slate-950/75 transition-opacity" onClick={onClose} />
-          <div
-            className="pointer-events-none absolute rounded-xl ring-2 ring-sky-400/80 transition-all duration-300"
-            style={{
-              top: rect.top - PAD,
-              left: rect.left - PAD,
-              width: rect.width + PAD * 2,
-              height: rect.height + PAD * 2,
-              boxShadow: "0 0 0 9999px rgba(2, 6, 23, 0.75)",
-            }}
-          />
-        </>
-      ) : (
-        <div className="absolute inset-0 bg-slate-950/85" onClick={onClose} />
-      )}
+        <div
+          className="pointer-events-none absolute rounded-xl ring-2 ring-sky-400 transition-all duration-300"
+          style={{
+            top: rect.top - PAD,
+            left: rect.left - PAD,
+            width: rect.width + PAD * 2,
+            height: rect.height + PAD * 2,
+            boxShadow: "0 0 0 4px rgba(56, 189, 248, 0.18), 0 0 32px 6px rgba(56, 189, 248, 0.28)",
+          }}
+        />
+      ) : null}
 
       <div
-        className="absolute w-[26rem] max-w-[calc(100vw-2rem)] rounded-2xl border border-slate-700 bg-slate-900 p-5 shadow-2xl transition-all duration-300"
+        className="pointer-events-auto absolute w-[26rem] max-w-[calc(100vw-2rem)] rounded-2xl border border-sky-800/70 bg-slate-900 p-5 shadow-2xl ring-1 ring-slate-950/60 transition-all duration-300"
         style={cardStyle}
       >
         <div className="flex items-center justify-between">
