@@ -1,0 +1,2 @@
+color = "sky"
+connectors = [{ name = "automox", type = "automox" }]

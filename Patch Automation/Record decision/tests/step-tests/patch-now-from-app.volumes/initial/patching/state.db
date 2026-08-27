@@ -1,0 +1,33 @@
+__3B_STEP_TEST_SQLITE_DUMP__
+CREATE TABLE findings (
+  id TEXT PRIMARY KEY,
+  device_id TEXT NOT NULL,
+  device_name TEXT NOT NULL,
+  package_id TEXT NOT NULL,
+  package_name TEXT NOT NULL,
+  severity TEXT NOT NULL,
+  first_seen TEXT NOT NULL,
+  last_seen TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'open'
+);
+CREATE TABLE decisions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  finding_id TEXT NOT NULL,
+  device_id TEXT NOT NULL,
+  device_name TEXT NOT NULL,
+  package_id TEXT NOT NULL,
+  package_name TEXT NOT NULL,
+  severity TEXT NOT NULL,
+  decision TEXT NOT NULL,
+  decided_by TEXT NOT NULL,
+  decided_at TEXT NOT NULL,
+  source TEXT NOT NULL
+);
+CREATE INDEX decisions_decided_at ON decisions (decided_at);
+CREATE TABLE runs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ran_at TEXT NOT NULL,
+  devices INTEGER NOT NULL,
+  matches INTEGER NOT NULL
+);
+INSERT INTO findings VALUES ('101|1','101','web-01','1','wget','critical','2026-01-05T09:00:00.000Z','2026-01-07T09:00:00.000Z','open');
