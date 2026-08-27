@@ -314,7 +314,7 @@ export const LAUNCHER_TOUR: TourStop[] = [
     anchor: "demo-modes",
     headline: "This is a real branching workflow, not a scripted click-through.",
     body:
-      "These modes change what the tools return: everything hits, everything is clean, or one tool fails outright. I'm selecting force-hits so we get a full report — but the clean and error paths are live, and you can run them yourself in a moment.",
+      "These modes change what the simulated sources return: everything hits, everything is clean, or one tool fails outright. I'm selecting force-hits so we get a full report — but the clean and error paths are live, and you can run them yourself in a moment.",
     soWhat:
       "You are about to see the same code handle the good day and the bad day. That is the difference between a demo and a system.",
     onEnter: (a) => a.setForceHits?.(),
@@ -338,11 +338,11 @@ export const LAUNCHER_TOUR: TourStop[] = [
       "State that survives restarts is table stakes for security work — and here it costs you zero infrastructure.",
   },
   {
-    id: "mock-to-real",
-    anchor: "mock-banner",
-    headline: "The integrations are mocked. Making them real touches one step.",
+    id: "simulated-to-live",
+    anchor: "source-banner",
+    headline: "Results here are simulated from Defender, Sentinel, Proofpoint and Zscaler. Going live touches one step.",
     body:
-      "Search Defender is a step that returns generated data today. To go live you attach the Defender connector to that step and swap its generator for the real API call. The report, the ServiceNow record and the approval logic never change — and no key, token or secret ever appears in the code.",
+      "Search Defender simulates Defender's response shape today. To point it at the real thing you attach the Defender connector to that step and swap the simulated response for the API call. The report, the ServiceNow record and the approval logic never change — and no key, token or secret ever appears in the code.",
     soWhat:
       "You can prove the process works with your own stakeholders before anyone files a request for production API credentials.",
   },

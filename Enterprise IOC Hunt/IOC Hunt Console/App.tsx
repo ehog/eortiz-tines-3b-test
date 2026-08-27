@@ -90,8 +90,8 @@ function Shell({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
           <div className="ml-auto flex items-center gap-3 text-xs text-slate-400">
-            <span data-tour="mock-banner" className="hidden sm:inline">
-              Mocked integrations — demo environment
+            <span data-tour="source-banner" className="hidden sm:inline">
+              Simulated from Defender · Sentinel · Proofpoint · Zscaler
             </span>
             <button
               onClick={reset}
