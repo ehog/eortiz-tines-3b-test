@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Cache-Control: no-store
+Content-Length: 203
+
+{"status":"patching","decision":"YES","device_id":"101","device_name":"web-01","package_id":"1","package_name":"wget","severity":"critical","decided_by":"unknown","decided_at":"2026-08-27T00:19:15.727Z"}
+{"decision":"YES","device_id":"101","device_name":"web-01","package_id":"1","package_name":"wget","severity":"critical","decided_by":"unknown","decided_at":"2026-08-27T00:19:15.727Z"}

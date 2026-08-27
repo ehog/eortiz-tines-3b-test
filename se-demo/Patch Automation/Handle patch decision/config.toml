@@ -1,0 +1,7 @@
+color = "teal"
+output = true
+route = "/patch-decision"
+route_auth = "sso"
+route_type = "webpage"
+title = "Patch decision callback"
+links = ["Install patch", "Postpone and create case"]

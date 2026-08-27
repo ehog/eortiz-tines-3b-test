@@ -1,0 +1,88 @@
+{
+  "get": {
+    "summary": "Read patching state",
+    "description": "Current vulnerable-package findings, recent decisions, and rollup metrics for the patch console.",
+    "responses": {
+      "200": {
+        "description": "Patching state",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["generated_at", "totals", "findings", "decisions"],
+              "properties": {
+                "generated_at": { "type": "string", "format": "date-time" },
+                "last_run": {
+                  "type": ["object", "null"],
+                  "properties": {
+                    "ran_at": { "type": "string", "format": "date-time" },
+                    "devices": { "type": "integer" },
+                    "matches": { "type": "integer" }
+                  }
+                },
+                "totals": {
+                  "type": "object",
+                  "properties": {
+                    "findings": { "type": "integer" },
+                    "devices": { "type": "integer" },
+                    "patched": { "type": "integer" },
+                    "postponed": { "type": "integer" }
+                  }
+                },
+                "by_severity": { "type": "object", "additionalProperties": { "type": "integer" } },
+                "by_status": { "type": "object", "additionalProperties": { "type": "integer" } },
+                "by_day": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "day": { "type": "string" },
+                      "patched": { "type": "integer" },
+                      "postponed": { "type": "integer" }
+                    }
+                  }
+                },
+                "findings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string" },
+                      "device_id": { "type": "string" },
+                      "device_name": { "type": "string" },
+                      "package_id": { "type": "string" },
+                      "package_name": { "type": "string" },
+                      "severity": { "type": "string" },
+                      "first_seen": { "type": "string", "format": "date-time" },
+                      "last_seen": { "type": "string", "format": "date-time" },
+                      "status": { "type": "string", "enum": ["open", "patching", "postponed"] }
+                    }
+                  }
+                },
+                "decisions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "integer" },
+                      "finding_id": { "type": "string" },
+                      "device_id": { "type": "string" },
+                      "device_name": { "type": "string" },
+                      "package_id": { "type": "string" },
+                      "package_name": { "type": "string" },
+                      "severity": { "type": "string" },
+                      "decision": { "type": "string", "enum": ["YES", "NO"] },
+                      "decided_by": { "type": "string" },
+                      "decided_at": { "type": "string", "format": "date-time" },
+                      "source": { "type": "string", "enum": ["slack", "app"] }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

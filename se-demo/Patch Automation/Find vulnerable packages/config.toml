@@ -1,0 +1,4 @@
+color = "sky"
+cron = "0 13 * * 1-5"
+links = ["Notify IT admin team"]
+connectors = [{ name = "automox", type = "automox" }]

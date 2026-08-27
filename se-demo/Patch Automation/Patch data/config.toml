@@ -1,0 +1,7 @@
+color = "purple"
+output = true
+route = "/api/patching"
+route_auth = "space"
+route_type = "api"
+title = "Patch console data"
+timeout = 30
