@@ -37,7 +37,7 @@ export default function ReportTab({ shell }: { shell: Shell }) {
 
   if (!report) {
     return (
-      <Card
+      <Card anchorId="report-header"
         title="Remediation progress report"
         actions={
           <Button variant="primary" busy={shell.busy === "Regenerate report"} onClick={regenerate}>
@@ -59,7 +59,7 @@ export default function ReportTab({ shell }: { shell: Shell }) {
 
   return (
     <div className="space-y-4">
-      <Card
+      <Card anchorId="report-header"
         title="Remediation progress report"
         subtitle={`Rolling ${m.window_days}-day window, ${shortDate(m.window_start)} to ${shortDate(
           m.window_end,
@@ -101,7 +101,7 @@ export default function ReportTab({ shell }: { shell: Shell }) {
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card title="Opened vs closed by day" subtitle="Last 14 days of change activity.">
+        <Card anchorId="report-chart" title="Opened vs closed by day" subtitle="Last 14 days of change activity.">
           <div className="flex h-48 items-end gap-1.5">
             {m.trend.map((day) => (
               <div key={day.date} className="flex h-full flex-1 flex-col justify-end" title={`${day.date}: ${day.opened} opened, ${day.closed} closed`}>
@@ -199,7 +199,7 @@ export default function ReportTab({ shell }: { shell: Shell }) {
         </Card>
       </div>
 
-      <Card title="Overdue changes" subtitle="Every open change past its SLA date, worst first.">
+      <Card anchorId="report-overdue" title="Overdue changes" subtitle="Every open change past its SLA date, worst first.">
         {m.overdue_changes.length === 0 ? (
           <Empty>Nothing overdue. Fast-forward the demo clock on the Tickets tab to breach SLAs.</Empty>
         ) : (
@@ -221,7 +221,7 @@ export default function ReportTab({ shell }: { shell: Shell }) {
         )}
       </Card>
 
-      <Card title="Report source" subtitle="The Markdown the scheduled report step emits on stdout.">
+      <Card anchorId="report-source" title="Report source" subtitle="The Markdown the scheduled report step emits on stdout.">
         <Disclosure label="Show Markdown">
           <pre className="scroll-thin max-h-[520px] overflow-auto rounded-md border border-[var(--border)] bg-[#f6f2ee] p-3 text-[11.5px] leading-relaxed whitespace-pre-wrap">
             {report.markdown}

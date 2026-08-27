@@ -6,15 +6,18 @@ export function Card({
   actions,
   children,
   className = "",
+  anchorId,
 }: {
   title?: ReactNode;
   subtitle?: ReactNode;
   actions?: ReactNode;
   children: ReactNode;
   className?: string;
+  anchorId?: string;
 }) {
   return (
     <section
+      data-tour={anchorId}
       className={`rounded-[10px] border border-[var(--border)] bg-[var(--card-bg)] ${className}`}
     >
       {(title || actions) && (

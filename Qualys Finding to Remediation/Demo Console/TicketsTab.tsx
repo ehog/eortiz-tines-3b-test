@@ -87,7 +87,7 @@ export default function TicketsTab({ shell }: { shell: Shell }) {
         />
       </div>
 
-      <Card
+      <Card anchorId="tickets-controls"
         title="Demo controls"
         subtitle="Fast-forward the clock to breach SLAs, then chase the overdue changes."
       >
@@ -156,7 +156,7 @@ export default function TicketsTab({ shell }: { shell: Shell }) {
         </Empty>
       ) : (
         teams.map(([team, list]) => (
-          <Card
+          <Card anchorId="tickets-table"
             key={team}
             title={team}
             subtitle={`${list.length} change${list.length === 1 ? "" : "s"} · ${list.filter((t) => t.overdue).length} overdue · ${list[0]!.assignment_group}`}

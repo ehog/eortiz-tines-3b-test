@@ -36,7 +36,7 @@ export default function RemediationTab({ shell }: { shell: Shell }) {
 
   return (
     <div className="space-y-4">
-      <Card
+      <Card anchorId="remediation-packages"
         title="AI remediation packages"
         subtitle={
           runId

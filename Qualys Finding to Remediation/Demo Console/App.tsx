@@ -8,6 +8,7 @@ import PriorityTab from "./PriorityTab";
 import RemediationTab from "./RemediationTab";
 import TicketsTab from "./TicketsTab";
 import ReportTab from "./ReportTab";
+import TourOverlay from "./TourOverlay";
 
 const TABS = [
   { path: "findings", label: "Findings" },
@@ -43,6 +44,7 @@ function Console() {
   const [toast, setToast] = useState<{ message: string; tone: "info" | "error" } | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [tourOpen, setTourOpen] = useState(false);
 
   const notify = useCallback<Notify>((message, tone = "info") => {
     setToast({ message, tone });
@@ -108,7 +110,7 @@ function Console() {
           <div>
             <h1 className="text-[18px] leading-tight font-bold">Qualys Finding to Remediation</h1>
             <p className="text-[12px] text-[var(--text-secondary)]">
-              Demo console — mocked Qualys and ServiceNow, live AI remediation
+              Demo console — simulated from Qualys and ServiceNow, live AI remediation
             </p>
           </div>
 
@@ -124,6 +126,14 @@ function Console() {
                   : shortTime(state.as_of)
                 : "…"}
             </Badge>
+            <Button
+              onClick={() => setTourOpen(true)}
+              variant={tourOpen ? "secondary" : "primary"}
+              disabled={tourOpen}
+              title="Walk through the demo narrative"
+            >
+              Guided tour
+            </Button>
             <Button onClick={seedHistory} busy={busy === "Seed history"} variant="secondary">
               Seed history
             </Button>
@@ -170,6 +180,7 @@ function Console() {
         </Routes>
       </main>
 
+      {tourOpen && <TourOverlay shell={shell} onExit={() => setTourOpen(false)} />}
       {toast && <Toast message={toast.message} tone={toast.tone} onDismiss={() => setToast(null)} />}
     </div>
   );
