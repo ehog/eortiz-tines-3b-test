@@ -1,0 +1,58 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@source "./*.tsx";
+
+:root {
+  --page-bg: #fcf9f5;
+  --card-bg: rgba(248, 244, 240, 0.82);
+  --card-solid: #f8f4f0;
+  --border: #ede9e3;
+  --divider: #ede9e3;
+  --text-primary: #362a51;
+  --text-secondary: rgba(54, 42, 81, 0.55);
+  --text-muted: rgba(54, 42, 81, 0.35);
+  --table-header-bg: #f8f4f0;
+  --table-hover-bg: #f3efea;
+  --input-bg: #f6f2ee;
+  --accent: #8d75e6;
+  --accent-hover: #7f69ce;
+  --accent-deep: #4d3e78;
+  --accent-soft: #eadff8;
+  --teal: #04b9ad;
+  --green: #25a871;
+  --orange: #f47e3f;
+  --pink: #e269a4;
+  --blue: #4e8fd0;
+  --red: #e14f4c;
+  --yellow: #e49307;
+}
+
+html {
+  background: var(--page-bg);
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: "Roobert", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+code,
+pre {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.scroll-thin::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: rgba(54, 42, 81, 0.18);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}

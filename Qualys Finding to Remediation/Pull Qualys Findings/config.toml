@@ -1,0 +1,5 @@
+color = "sky"
+route = "/qualys-remediation/run/pull"
+cron = "*/15 * * * *"
+timeout = 60
+links = ["Normalize And Group"]

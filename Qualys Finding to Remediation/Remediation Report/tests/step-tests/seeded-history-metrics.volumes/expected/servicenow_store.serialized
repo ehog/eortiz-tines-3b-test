@@ -1,0 +1,11 @@
+tickets
+CHG0031000 | Platform Engineering | Customer Portal | CAB-Platform-Engineering | P2 | high 70 | closed | opened 2026-07-20T09:00:00.000Z | due 2026-07-27T09:00:00.000Z | closed 2026-07-25T09:00:00.000Z | esc 0 | findings ["HIST-00-1"]
+CHG0031001 | Platform Engineering | Customer Portal | CAB-Platform-Engineering | P1 | critical 92 | closed | opened 2026-08-15T09:00:00.000Z | due 2026-08-18T09:00:00.000Z | closed 2026-08-17T09:00:00.000Z | esc 0 | findings ["FIX-1-1","FIX-1-2"]
+CHG0031002 | Commerce Engineering | Order Service | CAB-Commerce-Engineering | P2 | high 71 | closed | opened 2026-08-14T09:00:00.000Z | due 2026-08-21T09:00:00.000Z | closed 2026-08-19T09:00:00.000Z | esc 0 | findings ["FIX-2-1"]
+CHG0031003 | Payments Engineering | Payments Web | CAB-Payments-Engineering | P2 | high 78 | closed | opened 2026-08-10T09:00:00.000Z | due 2026-08-17T09:00:00.000Z | closed 2026-08-19T09:00:00.000Z | esc 1 | findings ["FIX-3-1"]
+CHG0031004 | Data Platform | Core Database Platform | CAB-Data-Platform | P1 | critical 95 | implement | opened 2026-08-12T09:00:00.000Z | due 2026-08-15T09:00:00.000Z | closed - | esc 1 | findings ["FIX-4-1","FIX-4-2","FIX-4-3"]
+CHG0031005 | IT Endpoint Services | Corporate Endpoints | CAB-IT-Endpoint | P4 | low 22 | new | opened 2026-08-18T09:00:00.000Z | due 2026-11-16T09:00:00.000Z | closed - | esc 0 | findings ["FIX-5-1"]
+work_notes
+CHG0031004 | 2026-08-15T09:00:00.000Z | vuln-automation | Escalation: change is past its SLA date and still open.
+meta
+last_number=31005
