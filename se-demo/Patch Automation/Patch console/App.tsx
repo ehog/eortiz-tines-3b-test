@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Tour from "./Tour";
 
 const BASE = (window as unknown as { __ROUTE_PATH__?: string }).__ROUTE_PATH__ ?? "";
 const ROOT = BASE.replace(/\/console$/, "");
@@ -111,6 +112,8 @@ export default function App() {
   const [pending, setPending] = useState<Record<string, "YES" | "NO">>({});
   const [confirm, setConfirm] = useState<{ finding: Finding; decision: "YES" | "NO" } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [tour, setTour] = useState(false);
+  const [tourReturnTab, setTourReturnTab] = useState<"findings" | "history">("findings");
 
   const load = useCallback(async () => {
     try {
@@ -227,7 +230,7 @@ export default function App() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex rounded-lg border border-slate-800 bg-slate-900 p-0.5">
+            <div data-tour="view-switcher" className="flex rounded-lg border border-slate-800 bg-slate-900 p-0.5">
               {(["findings", "history"] as const).map((t) => (
                 <button
                   key={t}
@@ -248,6 +251,16 @@ export default function App() {
             >
               Refresh
             </button>
+            <button
+              type="button"
+              onClick={() => {
+                setTourReturnTab(tab);
+                setTour(true);
+              }}
+              className="rounded-lg border border-sky-800 bg-sky-950/60 px-3 py-1.5 text-sm font-medium text-sky-200 transition hover:border-sky-600 hover:text-sky-100"
+            >
+              Tour
+            </button>
           </div>
         </div>
       </header>
@@ -259,7 +272,7 @@ export default function App() {
           </div>
         ) : null}
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div data-tour="metrics" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Metric
             label="Open findings"
             value={state?.by_status.open ?? 0}
@@ -272,7 +285,7 @@ export default function App() {
 
         {tab === "findings" ? (
           <section className="mt-6">
-            <div className="mb-4 flex flex-wrap items-center gap-2">
+            <div data-tour="filters" className="mb-4 flex flex-wrap items-center gap-2">
               <input
                 type="search"
                 value={query}
@@ -317,8 +330,12 @@ export default function App() {
               </p>
             ) : (
               <div className="space-y-6">
-                {grouped.map(([severity, items]) => (
-                  <div key={severity} className="overflow-hidden rounded-xl border border-slate-800">
+                {grouped.map(([severity, items], groupIndex) => (
+                  <div
+                    key={severity}
+                    data-tour={groupIndex === 0 ? "findings-table" : undefined}
+                    className="overflow-hidden rounded-xl border border-slate-800"
+                  >
                     <div className="flex items-center gap-2 border-b border-slate-800 bg-slate-900/70 px-4 py-2.5">
                       <Badge text={severity} className={severityClasses(severity)} />
                       <span className="text-sm text-slate-400 tabular-nums">{items.length}</span>
@@ -334,7 +351,7 @@ export default function App() {
                         </tr>
                       </thead>
                       <tbody>
-                        {items.map((f) => {
+                        {items.map((f, rowIndex) => {
                           const busy = pending[f.id];
                           return (
                             <tr key={f.id} className="border-b border-slate-800/60 last:border-0 hover:bg-slate-900/40">
@@ -345,7 +362,11 @@ export default function App() {
                               </td>
                               <td className="px-4 py-2.5 text-slate-500">{timeAgo(f.last_seen)}</td>
                               <td className="px-4 py-2.5">
-                                <div className="flex justify-end gap-2">
+                                <div
+                                  data-tour={groupIndex === 0 && rowIndex === 0 ? "row-actions" : undefined}
+                                  className="flex justify-end gap-2"
+                                >
+
                                   <button
                                     type="button"
                                     disabled={Boolean(busy)}
@@ -403,7 +424,7 @@ export default function App() {
               )}
             </div>
 
-            <div className="space-y-6">
+            <div data-tour="history-charts" className="space-y-6">
               <div className="rounded-xl border border-slate-800 p-4">
                 <h2 className="text-sm font-medium text-slate-300">Findings by severity</h2>
                 <ul className="mt-3 space-y-2">
@@ -518,6 +539,16 @@ export default function App() {
             </div>
           </div>
         </div>
+      ) : null}
+
+      {tour ? (
+        <Tour
+          setTab={setTab}
+          onClose={() => {
+            setTour(false);
+            setTab(tourReturnTab);
+          }}
+        />
       ) : null}
 
       {toast ? (
