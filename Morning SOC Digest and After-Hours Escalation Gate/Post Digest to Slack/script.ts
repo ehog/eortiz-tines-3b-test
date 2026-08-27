@@ -16,22 +16,53 @@ if (!raw.trim()) {
 const digest = JSON.parse(raw) as DigestPayload;
 const channel = digest.delivery.slackChannel;
 
-// Slack section blocks cap at 3000 characters, so the digest is chunked on blank lines.
+// Slack section blocks cap at 3000 characters, so the digest is chunked on blank lines,
+// then on single newlines, then hard-sliced so no chunk can exceed the limit.
+const LIMIT = 2800;
+
+function splitPiece(piece: string, separator: string): string[] {
+  if (piece.length <= LIMIT) return [piece];
+  const parts = piece.split(separator);
+  if (parts.length > 1) {
+    const out: string[] = [];
+    let buf = "";
+    for (const part of parts) {
+      const candidate = buf ? `${buf}${separator}${part}` : part;
+      if (candidate.length > LIMIT && buf) {
+        out.push(buf);
+        buf = part;
+      } else {
+        buf = candidate;
+      }
+    }
+    if (buf) out.push(buf);
+    return out.flatMap((p) => splitPiece(p, separator === "\n" ? " " : "\n"));
+  }
+  const hard: string[] = [];
+  for (let i = 0; i < piece.length; i += LIMIT) hard.push(piece.slice(i, i + LIMIT));
+  return hard;
+}
+
 const chunks: string[] = [];
 let current = "";
 for (const paragraph of digest.slackText.split("\n\n")) {
-  if ((current + paragraph).length > 2800) {
-    if (current) chunks.push(current.trimEnd());
-    current = `${paragraph}\n\n`;
-  } else {
-    current += `${paragraph}\n\n`;
+  for (const piece of splitPiece(paragraph, "\n")) {
+    if (current && (current.length + piece.length + 2) > LIMIT) {
+      chunks.push(current.trimEnd());
+      current = "";
+    }
+    current += `${piece}\n\n`;
   }
 }
 if (current.trim()) chunks.push(current.trimEnd());
 
+// Slack rejects a message with more than 50 blocks; header and context take two.
+const MAX_SECTIONS = 48;
+const sections = chunks.filter((c) => c.trim() !== "").slice(0, MAX_SECTIONS);
+
 const blocks = [
   { type: "header", text: { type: "plain_text", text: truncate(digest.subject, 150) } },
-  ...chunks.map((text) => ({ type: "section", text: { type: "mrkdwn", text } })),
+  ...sections.map((text) => ({ type: "section", text: { type: "mrkdwn", text } })),
   {
     type: "context",
     elements: [
