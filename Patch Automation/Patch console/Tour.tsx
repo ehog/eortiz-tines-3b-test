@@ -21,7 +21,7 @@ export const TOUR_STEPS: TourStep[] = [
     tab: "findings",
     title: "Start with the whole picture",
     body: "Open findings and affected devices, then everything already decided — patched and postponed. One line, current as of the last scan.",
-    soWhat: "A single 3B step pulls the org's package catalog, every device's installed packages, and correlates them. That reconciliation used to be a spreadsheet exercise; now it runs every weekday morning on a cron.",
+    soWhat: "A single 3B step pulls the org's package catalog, every device's installed packages, and correlates them — here, simulated from Automox. That reconciliation used to be a spreadsheet exercise; now it runs every weekday morning on a cron.",
   },
   {
     target: "filters",
