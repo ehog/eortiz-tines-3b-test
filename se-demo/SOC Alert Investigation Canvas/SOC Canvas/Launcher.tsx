@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchRecent, formatTime, launchIncident, type RecentInvestigation } from "./api";
 import { SCENARIOS, type Scenario } from "./scenarios";
+import { useTour } from "./Tour";
 import { Button, Card, Chip, DISPOSITION_STYLES, SectionTitle, SEVERITY_STYLES, Spinner, Json } from "./ui";
 
 export default function Launcher() {
   const navigate = useNavigate();
+  const tour = useTour();
   const [recent, setRecent] = useState<RecentInvestigation[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +44,14 @@ export default function Launcher() {
           land on an analyst canvas with an AI disposition, a merged timeline, Proofpoint captures and a gated isolate
           action. Every integration except Claude is mocked.
         </p>
+        <div className="mt-5 flex items-center gap-3">
+          <Button onClick={tour.start} dataTour="tour-start">
+            ▸ Start guided tour
+          </Button>
+          <span className="text-xs text-slate-500">
+            Nine stops, end to end — it fires the Defender scenario, follows the run and walks the canvas.
+          </span>
+        </div>
       </header>
 
       {error ? (
@@ -178,7 +188,7 @@ function ScenarioCard({
   onLaunch: () => void;
 }) {
   return (
-    <Card className="flex flex-col p-5">
+    <Card className="flex flex-col p-5" dataTour={`scenario-${scenario.key}`}>
       <p className="font-mono text-[10px] tracking-wider text-slate-500 uppercase">{scenario.shape}</p>
       <h2 className="mt-2 text-lg font-semibold text-slate-100">{scenario.name}</h2>
       <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">{scenario.blurb}</p>
@@ -190,10 +200,10 @@ function ScenarioCard({
         ))}
       </div>
       <div className="mt-5 flex items-center gap-2">
-        <Button onClick={onLaunch} disabled={disabled}>
+        <Button onClick={onLaunch} disabled={disabled} dataTour={`launch-${scenario.key}`}>
           {busy ? "Launching…" : "Launch investigation"}
         </Button>
-        <Button variant="ghost" onClick={onToggleRaw}>
+        <Button variant="ghost" onClick={onToggleRaw} dataTour={`raw-${scenario.key}`}>
           {rawOpen ? "Hide payload" : "View raw payload"}
         </Button>
       </div>

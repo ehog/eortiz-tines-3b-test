@@ -35,9 +35,20 @@ export function Chip({ children, className = "" }: { children: ReactNode; classN
   );
 }
 
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function Card({
+  children,
+  className = "",
+  dataTour,
+}: {
+  children: ReactNode;
+  className?: string;
+  dataTour?: string;
+}) {
   return (
-    <div className={`rounded-xl border border-slate-800 bg-slate-900/60 shadow-lg shadow-black/20 ${className}`}>
+    <div
+      data-tour={dataTour}
+      className={`rounded-xl border border-slate-800 bg-slate-900/60 shadow-lg shadow-black/20 ${className}`}
+    >
       {children}
     </div>
   );
@@ -104,12 +115,14 @@ export function Button({
   variant = "primary",
   disabled = false,
   className = "",
+  dataTour,
 }: {
   children: ReactNode;
   onClick?: () => void;
   variant?: "primary" | "ghost" | "danger";
   disabled?: boolean;
   className?: string;
+  dataTour?: string;
 }) {
   const styles = {
     primary: "bg-teal-500 text-slate-950 hover:bg-teal-400",
@@ -119,6 +132,7 @@ export function Button({
   return (
     <button
       type="button"
+      data-tour={dataTour}
       onClick={onClick}
       disabled={disabled}
       className={`rounded-lg px-3 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${styles} ${className}`}
