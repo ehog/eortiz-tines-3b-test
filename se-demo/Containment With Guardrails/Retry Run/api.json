@@ -1,0 +1,43 @@
+{
+  "post": {
+    "summary": "Resume a failed containment run",
+    "description": "Resumes a run at its first incomplete stage. Completed stages are skipped, so side effects are never repeated.",
+    "operationId": "resumeContainmentRun",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["runId"],
+            "properties": {
+              "runId": { "type": "string" },
+              "clearChaos": { "type": "boolean", "description": "Disable all forced failures for the resumed run." },
+              "chaos": { "type": "object", "description": "Replacement chaos settings for the resumed run." }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "202": {
+        "description": "Resume accepted",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "runId": { "type": "string" },
+                "resumeFrom": { "type": "string" },
+                "skipping": { "type": "array", "items": { "type": "string" } },
+                "resumeCount": { "type": "integer" }
+              }
+            }
+          }
+        }
+      },
+      "404": { "description": "Unknown run" },
+      "409": { "description": "Nothing to resume" }
+    }
+  }
+}

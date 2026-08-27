@@ -1,0 +1,8 @@
+color = "orange"
+output = true
+route = "/api/runs/retry"
+route_type = "api"
+route_auth = "space"
+title = "Resume containment run"
+timeout = 30
+links = ["Containment Orchestrator"]

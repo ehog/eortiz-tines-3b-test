@@ -1,0 +1,6 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json; charset=utf-8
+Content-Length: 253
+Cache-Control: no-store
+
+{"error":"invalid_request","details":["alertId must be 3-64 characters of letters, digits, dot, dash or underscore","endpoint must be a hostname of 2-128 characters","userEmail must be an email address","severity must be low, medium, high or critical"]}
