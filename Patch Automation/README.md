@@ -16,7 +16,7 @@ Find software packages with known CVEs across Automox-managed devices, alert the
 
 A space-private web app over the same data, for reviewing and acting on findings outside Slack.
 
-- **[Patch console](<./Patch console/README.md>)** — `GET /console`. React app with a **Findings** view (severity groups, search, status and severity filters, per-row Patch now / Postpone behind a confirmation dialog) and a **History** view (decision timeline, findings by severity, patched vs postponed per day).
+- **[Patch console](<./Patch console/README.md>)** — `GET /console`. React app with a **Findings** view (severity groups, search, status and severity filters, per-row Patch now / Postpone behind a confirmation dialog) and a **History** view (decision timeline, findings by severity, patched vs postponed per day). A header **Tour** button runs an 8-stop guided demo overlay narrating the use case and the value of building it in 3B.
 - **[Patch data](<./Patch data/README.md>)** — `GET /api/patching`. Read-only JSON: findings, recent decisions, rollups, last scan.
 - **[Record decision](<./Record decision/README.md>)** — `POST /api/decide`. Records a console decision, then links to *Install patch* and *Postpone and create case* just like the Slack route.
 
