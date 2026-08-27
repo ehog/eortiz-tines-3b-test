@@ -1,0 +1,3 @@
+color = "teal"
+timeout = 60
+links = ["Write Digest"]

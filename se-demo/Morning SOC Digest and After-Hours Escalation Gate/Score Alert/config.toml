@@ -1,0 +1,3 @@
+color = "red"
+timeout = 60
+links = ["Page On-Call"]

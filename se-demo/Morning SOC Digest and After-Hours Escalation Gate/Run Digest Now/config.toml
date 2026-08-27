@@ -1,0 +1,5 @@
+color = "teal"
+route = "/api/run-digest"
+route_auth = "space"
+timeout = 30
+links = ["Collect Overnight Activity"]

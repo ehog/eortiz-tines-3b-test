@@ -1,0 +1,82 @@
+__3B_STEP_TEST_SQLITE_DUMP__
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE config (id INTEGER PRIMARY KEY CHECK (id = 1), json TEXT NOT NULL);
+CREATE TABLE demo_clock (id INTEGER PRIMARY KEY CHECK (id = 1), mode TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE critical_assets (hostname TEXT PRIMARY KEY, tier TEXT NOT NULL, owner TEXT NOT NULL, business_service TEXT NOT NULL, business_impact TEXT NOT NULL, notes TEXT NOT NULL DEFAULT '');
+CREATE TABLE alerts (
+  id TEXT PRIMARY KEY,
+  source TEXT NOT NULL,
+  received_at TEXT NOT NULL,
+  title TEXT NOT NULL,
+  severity TEXT NOT NULL,
+  confidence TEXT NOT NULL,
+  user_name TEXT,
+  host TEXT,
+  indicator TEXT,
+  json TEXT NOT NULL
+);
+CREATE TABLE gate_decisions (
+  alert_id TEXT PRIMARY KEY,
+  decided_at TEXT NOT NULL,
+  decision TEXT NOT NULL,
+  score REAL NOT NULL,
+  threshold REAL NOT NULL,
+  after_hours INTEGER NOT NULL,
+  clock_mode TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  breakdown TEXT NOT NULL,
+  replayed INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE deferred_queue (
+  alert_id TEXT PRIMARY KEY,
+  queued_at TEXT NOT NULL,
+  score REAL NOT NULL,
+  reason TEXT NOT NULL,
+  digested_at TEXT
+);
+CREATE TABLE paged_events (
+  id TEXT PRIMARY KEY,
+  alert_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  status TEXT NOT NULL,
+  on_call TEXT NOT NULL,
+  score REAL NOT NULL,
+  payload TEXT NOT NULL,
+  slack_channel TEXT,
+  slack_ts TEXT,
+  slack_error TEXT,
+  acked_at TEXT,
+  resolved_at TEXT
+);
+CREATE TABLE digests (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at TEXT NOT NULL,
+  status TEXT NOT NULL,
+  window_start TEXT,
+  window_end TEXT,
+  item_count INTEGER NOT NULL DEFAULT 0,
+  markdown TEXT NOT NULL DEFAULT '',
+  html TEXT NOT NULL DEFAULT '',
+  slack_text TEXT NOT NULL DEFAULT '',
+  json TEXT NOT NULL DEFAULT '{}',
+  email_status TEXT,
+  slack_status TEXT
+);
+CREATE TABLE timeline (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  at TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  message TEXT NOT NULL,
+  meta TEXT NOT NULL DEFAULT '{}'
+);
+INSERT INTO config VALUES(1,'{"pageThreshold":65,"suppressBelowScore":30,"weights":{"severity":0.4,"confidence":0.2,"assetCriticality":0.25,"businessImpact":0.15},"afterHours":{"startHour":19,"endHour":7,"weekendsAlwaysAfterHours":true},"severityScores":{"critical":100,"high":80,"medium":50,"low":25,"info":10},"confidenceScores":{"confirmed":100,"high":85,"medium":60,"low":30},"businessImpactScores":{"revenue_impacting":100,"customer_data":85,"internal_only":45,"none":15},"assetTierScores":{"tier0":100,"tier1":80,"tier2":55,"tier3":30,"unknown":40},"delivery":{"slackChannel":"C0A8P2B0Y04","emailTo":"eortiz@tines.io","onCallName":"Tier 2 On-Call","onCallEmail":"eortiz@tines.io","onCallPhone":"+1-602-555-0142"},"digest":{"lookbackHours":14,"model":"claude-sonnet-4-6"}}');
+INSERT INTO demo_clock VALUES(1,'after_hours','2026-01-15T04:00:00.000Z');
+INSERT INTO critical_assets VALUES('build-agent-11','tier2','Developer Experience','CI/CD','internal_only','Shared build agent');
+INSERT INTO critical_assets VALUES('pay-db-01','tier0','Payments Platform','Card authorization','revenue_impacting','PCI zone, primary auth database');
+INSERT INTO alerts VALUES('defender-test-page','defender','2026-01-15T04:30:00.000Z','Ransomware pre-encryption behaviour detected','critical','confirmed','svc_backup','pay-db-01','vssadmin.exe delete shadows','{"id":"defender-test-page","source":"defender","receivedAt":"2026-01-15T04:30:00.000Z","title":"Ransomware pre-encryption behaviour detected","severity":"critical","confidence":"confirmed","user":"svc_backup","host":"pay-db-01","indicator":"vssadmin.exe delete shadows","businessImpact":"revenue_impacting","tags":["ransomware"]}');
+INSERT INTO gate_decisions VALUES('defender-test-page','2026-01-15T04:30:00.000Z','page',100.0,65.0,1,'after_hours','Paged on-call: score 100 ≥ threshold 65; demo clock forced to after-hours. Top drivers: severity critical (100×0.40=40), asset criticality tier0 · pay-db-01 (100×0.25=25).','{"factors":[{"key":"severity","label":"Severity","value":"critical","raw":100,"weight":0.4,"weighted":40},{"key":"confidence","label":"Detection confidence","value":"confirmed","raw":100,"weight":0.2,"weighted":20},{"key":"assetCriticality","label":"Asset criticality","value":"tier0 · pay-db-01","raw":100,"weight":0.25,"weighted":25},{"key":"businessImpact","label":"Business impact","value":"revenue impacting","raw":100,"weight":0.15,"weighted":15}],"score":100,"asset":{"hostname":"pay-db-01","tier":"tier0","owner":"Payments Platform","businessService":"Card authorization","businessImpact":"revenue_impacting","notes":"PCI zone, primary auth database"}}',0);
+INSERT INTO timeline VALUES(1,'2026-01-15T04:30:00.000Z','decision:page','defender · Ransomware pre-encryption behaviour detected','{"alertId":"defender-test-page","score":100,"threshold":65,"decision":"page","replayed":false}');
+DELETE FROM sqlite_sequence;
+INSERT INTO sqlite_sequence VALUES('timeline',1);
+COMMIT;

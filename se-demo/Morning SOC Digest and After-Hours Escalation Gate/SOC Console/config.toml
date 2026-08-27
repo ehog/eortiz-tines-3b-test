@@ -1,0 +1,8 @@
+color = "purple"
+output = true
+route = "/soc-console"
+route_auth = "space"
+route_type = "webpage"
+title = "SOC demo console"
+pinned = true
+timeout = 60

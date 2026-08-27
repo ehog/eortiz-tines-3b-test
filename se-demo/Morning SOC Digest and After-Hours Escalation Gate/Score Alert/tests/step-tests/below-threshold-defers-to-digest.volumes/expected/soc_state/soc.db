@@ -1,0 +1,83 @@
+__3B_STEP_TEST_SQLITE_DUMP__
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE config (id INTEGER PRIMARY KEY CHECK (id = 1), json TEXT NOT NULL);
+CREATE TABLE demo_clock (id INTEGER PRIMARY KEY CHECK (id = 1), mode TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE critical_assets (hostname TEXT PRIMARY KEY, tier TEXT NOT NULL, owner TEXT NOT NULL, business_service TEXT NOT NULL, business_impact TEXT NOT NULL, notes TEXT NOT NULL DEFAULT '');
+CREATE TABLE alerts (
+  id TEXT PRIMARY KEY,
+  source TEXT NOT NULL,
+  received_at TEXT NOT NULL,
+  title TEXT NOT NULL,
+  severity TEXT NOT NULL,
+  confidence TEXT NOT NULL,
+  user_name TEXT,
+  host TEXT,
+  indicator TEXT,
+  json TEXT NOT NULL
+);
+CREATE TABLE gate_decisions (
+  alert_id TEXT PRIMARY KEY,
+  decided_at TEXT NOT NULL,
+  decision TEXT NOT NULL,
+  score REAL NOT NULL,
+  threshold REAL NOT NULL,
+  after_hours INTEGER NOT NULL,
+  clock_mode TEXT NOT NULL,
+  reason TEXT NOT NULL,
+  breakdown TEXT NOT NULL,
+  replayed INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE deferred_queue (
+  alert_id TEXT PRIMARY KEY,
+  queued_at TEXT NOT NULL,
+  score REAL NOT NULL,
+  reason TEXT NOT NULL,
+  digested_at TEXT
+);
+CREATE TABLE paged_events (
+  id TEXT PRIMARY KEY,
+  alert_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  status TEXT NOT NULL,
+  on_call TEXT NOT NULL,
+  score REAL NOT NULL,
+  payload TEXT NOT NULL,
+  slack_channel TEXT,
+  slack_ts TEXT,
+  slack_error TEXT,
+  acked_at TEXT,
+  resolved_at TEXT
+);
+CREATE TABLE digests (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at TEXT NOT NULL,
+  status TEXT NOT NULL,
+  window_start TEXT,
+  window_end TEXT,
+  item_count INTEGER NOT NULL DEFAULT 0,
+  markdown TEXT NOT NULL DEFAULT '',
+  html TEXT NOT NULL DEFAULT '',
+  slack_text TEXT NOT NULL DEFAULT '',
+  json TEXT NOT NULL DEFAULT '{}',
+  email_status TEXT,
+  slack_status TEXT
+);
+CREATE TABLE timeline (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  at TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  message TEXT NOT NULL,
+  meta TEXT NOT NULL DEFAULT '{}'
+);
+INSERT INTO config VALUES(1,'{"pageThreshold":65,"suppressBelowScore":30,"weights":{"severity":0.4,"confidence":0.2,"assetCriticality":0.25,"businessImpact":0.15},"afterHours":{"startHour":19,"endHour":7,"weekendsAlwaysAfterHours":true},"severityScores":{"critical":100,"high":80,"medium":50,"low":25,"info":10},"confidenceScores":{"confirmed":100,"high":85,"medium":60,"low":30},"businessImpactScores":{"revenue_impacting":100,"customer_data":85,"internal_only":45,"none":15},"assetTierScores":{"tier0":100,"tier1":80,"tier2":55,"tier3":30,"unknown":40},"delivery":{"slackChannel":"C0A8P2B0Y04","emailTo":"eortiz@tines.io","onCallName":"Tier 2 On-Call","onCallEmail":"eortiz@tines.io","onCallPhone":"+1-602-555-0142"},"digest":{"lookbackHours":14,"model":"claude-sonnet-4-6"}}');
+INSERT INTO demo_clock VALUES(1,'after_hours','2026-01-15T04:00:00.000Z');
+INSERT INTO critical_assets VALUES('build-agent-11','tier2','Developer Experience','CI/CD','internal_only','Shared build agent');
+INSERT INTO critical_assets VALUES('pay-db-01','tier0','Payments Platform','Card authorization','revenue_impacting','PCI zone, primary auth database');
+INSERT INTO alerts VALUES('sentinel-test-defer','sentinel','2026-01-15T04:35:00.000Z','Multiple failed MFA challenges followed by success','medium','medium','tom.becker','build-agent-11','198.51.100.77','{"id":"sentinel-test-defer","source":"sentinel","receivedAt":"2026-01-15T04:35:00.000Z","title":"Multiple failed MFA challenges followed by success","severity":"medium","confidence":"medium","user":"tom.becker","host":"build-agent-11","indicator":"198.51.100.77","businessImpact":"internal_only","tags":["mfa-fatigue"]}');
+INSERT INTO gate_decisions VALUES('sentinel-test-defer','2026-01-15T04:35:00.000Z','deferred',52.60000000000000142,65.0,1,'after_hours','Deferred to the morning digest: score 52.6 < threshold 65 but ≥ suppress floor 30; demo clock forced to after-hours.','{"factors":[{"key":"severity","label":"Severity","value":"medium","raw":50,"weight":0.4,"weighted":20},{"key":"confidence","label":"Detection confidence","value":"medium","raw":60,"weight":0.2,"weighted":12},{"key":"assetCriticality","label":"Asset criticality","value":"tier2 · build-agent-11","raw":55,"weight":0.25,"weighted":13.8},{"key":"businessImpact","label":"Business impact","value":"internal only","raw":45,"weight":0.15,"weighted":6.8}],"score":52.6,"asset":{"hostname":"build-agent-11","tier":"tier2","owner":"Developer Experience","businessService":"CI/CD","businessImpact":"internal_only","notes":"Shared build agent"}}',0);
+INSERT INTO deferred_queue VALUES('sentinel-test-defer','2026-01-15T04:35:00.000Z',52.60000000000000142,'Deferred to the morning digest: score 52.6 < threshold 65 but ≥ suppress floor 30; demo clock forced to after-hours.',NULL);
+INSERT INTO timeline VALUES(1,'2026-01-15T04:35:00.000Z','decision:deferred','sentinel · Multiple failed MFA challenges followed by success','{"alertId":"sentinel-test-defer","score":52.6,"threshold":65,"decision":"deferred","replayed":false}');
+DELETE FROM sqlite_sequence;
+INSERT INTO sqlite_sequence VALUES('timeline',1);
+COMMIT;

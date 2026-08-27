@@ -1,0 +1,109 @@
+{
+  "get": {
+    "summary": "Read the full SOC console state",
+    "description": "Returns gate configuration, demo clock mode, mock CMDB assets, scenario catalogue, counters, decision audit, page inbox, deferred queue, recent digests and the event timeline in one payload for polling.",
+    "responses": {
+      "200": {
+        "description": "Console state",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "config": { "type": "object", "description": "Editable gate configuration." },
+                "defaults": { "type": "object", "description": "Shipped default configuration." },
+                "clockMode": { "type": "string", "enum": ["real", "after_hours", "business_hours"] },
+                "assets": { "type": "array", "items": { "type": "object" } },
+                "scenarios": { "type": "array", "items": { "type": "object" } },
+                "counters": { "type": "object" },
+                "decisions": { "type": "array", "items": { "type": "object" } },
+                "pages": { "type": "array", "items": { "type": "object" } },
+                "deferredQueue": { "type": "array", "items": { "type": "object" } },
+                "digests": { "type": "array", "items": { "type": "object" } },
+                "timeline": { "type": "array", "items": { "type": "object" } },
+                "routes": { "type": "object" }
+              },
+              "required": ["config", "clockMode", "assets", "counters", "decisions", "pages", "deferredQueue", "digests", "timeline", "routes"]
+            }
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "summary": "Apply a console control action",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "save_config",
+                  "set_clock",
+                  "upsert_asset",
+                  "delete_asset",
+                  "ack_page",
+                  "resolve_page",
+                  "clear_pages",
+                  "replay_last",
+                  "reset_demo"
+                ]
+              },
+              "config": { "type": "object", "description": "Full gate configuration for save_config." },
+              "mode": { "type": "string", "enum": ["real", "after_hours", "business_hours"], "description": "Clock mode for set_clock." },
+              "asset": {
+                "type": "object",
+                "description": "Mock CMDB row for upsert_asset.",
+                "properties": {
+                  "hostname": { "type": "string" },
+                  "tier": { "type": "string", "enum": ["tier0", "tier1", "tier2", "tier3"] },
+                  "owner": { "type": "string" },
+                  "businessService": { "type": "string" },
+                  "businessImpact": { "type": "string", "enum": ["revenue_impacting", "customer_data", "internal_only", "none"] },
+                  "notes": { "type": "string" }
+                },
+                "required": ["hostname"]
+              },
+              "hostname": { "type": "string", "description": "Hostname for delete_asset." },
+              "id": { "type": "string", "description": "Page id for ack_page and resolve_page." },
+              "alertId": { "type": "string", "description": "Optional alert id for replay_last; defaults to the newest alert." },
+              "preloadBacklog": { "type": "boolean", "description": "For reset_demo: seed an overnight backlog (default true)." }
+            },
+            "required": ["action"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Action applied; the refreshed console state is included.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": { "type": "boolean" },
+                "message": { "type": "string" },
+                "replay": { "type": "object" },
+                "state": { "type": "object" }
+              },
+              "required": ["ok", "state"]
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Unknown or invalid action",
+        "content": { "application/json": { "schema": { "type": "object", "properties": { "error": { "type": "string" } } } } }
+      },
+      "405": {
+        "description": "Unsupported HTTP method",
+        "content": { "application/json": { "schema": { "type": "object", "properties": { "error": { "type": "string" } } } } }
+      }
+    }
+  }
+}

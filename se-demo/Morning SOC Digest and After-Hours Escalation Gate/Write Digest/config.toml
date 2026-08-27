@@ -1,0 +1,4 @@
+color = "green"
+links = ["Email Digest", "Post Digest to Slack"]
+connectors = [{ name = "anthropic-se-demos-please-only-use-this-one", type = "anthropic" }]
+timeout = 300

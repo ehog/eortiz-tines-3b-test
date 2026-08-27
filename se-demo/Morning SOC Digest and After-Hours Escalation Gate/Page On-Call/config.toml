@@ -1,0 +1,3 @@
+color = "red"
+connectors = [{ name = "slack-for-ses", type = "slack" }]
+timeout = 60

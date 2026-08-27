@@ -1,0 +1,8 @@
+__3B_STEP_TEST_SQLITE_DUMP__
+CREATE TABLE config (id INTEGER PRIMARY KEY CHECK (id = 1), json TEXT NOT NULL);
+INSERT INTO config VALUES (1, '{"pageThreshold":65,"suppressBelowScore":30,"weights":{"severity":0.4,"confidence":0.2,"assetCriticality":0.25,"businessImpact":0.15},"afterHours":{"startHour":19,"endHour":7,"weekendsAlwaysAfterHours":true},"severityScores":{"critical":100,"high":80,"medium":50,"low":25,"info":10},"confidenceScores":{"confirmed":100,"high":85,"medium":60,"low":30},"businessImpactScores":{"revenue_impacting":100,"customer_data":85,"internal_only":45,"none":15},"assetTierScores":{"tier0":100,"tier1":80,"tier2":55,"tier3":30,"unknown":40},"delivery":{"slackChannel":"C0A8P2B0Y04","emailTo":"eortiz@tines.io","onCallName":"Tier 2 On-Call","onCallEmail":"eortiz@tines.io","onCallPhone":"+1-602-555-0142"},"digest":{"lookbackHours":14,"model":"claude-sonnet-4-6"}}');
+CREATE TABLE demo_clock (id INTEGER PRIMARY KEY CHECK (id = 1), mode TEXT NOT NULL, updated_at TEXT NOT NULL);
+INSERT INTO demo_clock VALUES (1, 'after_hours', '2026-01-15T04:00:00.000Z');
+CREATE TABLE critical_assets (hostname TEXT PRIMARY KEY, tier TEXT NOT NULL, owner TEXT NOT NULL, business_service TEXT NOT NULL, business_impact TEXT NOT NULL, notes TEXT NOT NULL DEFAULT '');
+INSERT INTO critical_assets VALUES ('pay-db-01','tier0','Payments Platform','Card authorization','revenue_impacting','PCI zone, primary auth database');
+INSERT INTO critical_assets VALUES ('build-agent-11','tier2','Developer Experience','CI/CD','internal_only','Shared build agent');

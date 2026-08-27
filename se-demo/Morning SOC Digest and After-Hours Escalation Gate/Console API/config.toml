@@ -1,0 +1,8 @@
+color = "purple"
+output = true
+route = "/api/console"
+route_auth = "space"
+route_type = "api"
+title = "SOC console state and controls"
+connectors = [{ name = "slack-for-ses", type = "slack" }]
+timeout = 60
