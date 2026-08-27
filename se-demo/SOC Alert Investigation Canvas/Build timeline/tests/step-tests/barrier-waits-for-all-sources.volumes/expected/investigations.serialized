@@ -1,0 +1,15 @@
+== ./inv-test-000002/incident.json
+{
+  "investigationId": "inv-test-000002",
+  "source": "sentinel",
+  "vendorId": "5182",
+  "correlationId": "SENTINEL-5182",
+  "title": "Impossible travel sign-in following credential phishing",
+  "description": "Fixture incident with no enrichment collected yet.",
+  "severity": "high",
+  "status": "New",
+  "alertTime": "2026-02-09T10:15:00.000Z",
+  "receivedAt": "2026-02-10T09:05:30.000Z",
+  "vendorEntities": [],
+  "raw": {}
+}

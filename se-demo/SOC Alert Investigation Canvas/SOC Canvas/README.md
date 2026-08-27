@@ -1,0 +1,7 @@
+The analyst-facing app, served at `/` (space auth) and the thing you drive during a demo. One React step, three views via `BrowserRouter` with the branch-aware basename; it renders immediately and fetches everything from the route steps.
+
+- **Launcher** `/` — three prebuilt scenarios with entity previews and a raw-payload toggle, an advanced panel for a pasted Sentinel or Defender payload, and the recent-investigation table. Launching generates the investigation id client-side, posts the payload to `/incident?id=...`, and navigates to the live run.
+- **Live run** `/run/:id` — polls `/api/investigation` every 1.5s, animates intake → entities → five parallel enrichers → timeline → summary → ServiceNow with record counts and latency, streams the structured event log, offers per-source **retry**, **re-run** for the summary and ticket, and **Build timeline anyway** when a source is stuck. Auto-opens the canvas when the disposition lands.
+- **Canvas** `/investigation/:id` — disposition banner with confidence and the AI summary, evidence claims that highlight their timeline events, the merged timeline with source and entity filters, the Proofpoint gallery with a keyboard-navigable lightbox, collapsible raw per-tool JSON, ServiceNow status, action history, and the **Isolate endpoint** control behind a two-click confirm that posts the approval token.
+
+Scenario payloads live in [scenarios.ts](./scenarios.ts); shared fetchers and types in [api.ts](./api.ts); presentation primitives in [ui.tsx](./ui.tsx).

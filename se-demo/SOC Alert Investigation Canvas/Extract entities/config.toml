@@ -1,0 +1,3 @@
+color = "purple"
+timeout = 30
+links = ["Enrich Defender", "Enrich Sentinel", "Enrich Zscaler", "Enrich Proofpoint", "Enrich Threat intel"]

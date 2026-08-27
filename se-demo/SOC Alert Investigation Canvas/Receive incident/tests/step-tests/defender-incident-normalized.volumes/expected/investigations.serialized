@@ -1,0 +1,89 @@
+== ./inv-test-000001/incident.json
+{
+  "investigationId": "inv-test-000001",
+  "source": "defender",
+  "vendorId": "48211",
+  "correlationId": "MDE-48211",
+  "title": "Multi-stage incident involving Execution & Command and control on one endpoint",
+  "description": "A PowerShell process launched with an encoded command shortly after a file was downloaded and executed.",
+  "severity": "high",
+  "status": "active",
+  "alertTime": "2026-02-10T09:18:00.000Z",
+  "receivedAt": "<masked>",
+  "vendorEntities": [
+    {
+      "@odata.type": "#microsoft.graph.security.deviceEvidence",
+      "deviceDnsName": "wks-fin-0412.contoso.com",
+      "ipInterfaces": [
+        "10.14.22.87"
+      ],
+      "loggedOnUsers": [
+        {
+          "accountName": "a.mercer",
+          "domainName": "contoso.com"
+        }
+      ]
+    },
+    {
+      "@odata.type": "#microsoft.graph.security.fileEvidence",
+      "fileDetails": {
+        "fileName": "invoice_update.exe",
+        "sha256": "9f2c3e6a4bd8177f4b2c0aa5d7311e8ce2a4f6b9c0d1e2f3a4b5c6d7e8f90112"
+      }
+    },
+    {
+      "@odata.type": "#microsoft.graph.security.ipEvidence",
+      "ipAddress": "203.0.113.47"
+    },
+    {
+      "@odata.type": "#microsoft.graph.security.urlEvidence",
+      "url": "https://cdn-update-delivery.net/secure/download/invoice_update.exe"
+    }
+  ],
+  "raw": {
+    "incidentId": 48211,
+    "displayName": "Multi-stage incident involving Execution & Command and control on one endpoint",
+    "severity": "high",
+    "status": "active",
+    "createdDateTime": "2026-02-10T09:20:00Z",
+    "alerts": [
+      {
+        "id": "da637-1a2b3c",
+        "title": "Suspicious PowerShell command line",
+        "description": "A PowerShell process launched with an encoded command shortly after a file was downloaded and executed.",
+        "severity": "high",
+        "firstActivityDateTime": "2026-02-10T09:18:00Z",
+        "evidence": [
+          {
+            "@odata.type": "#microsoft.graph.security.deviceEvidence",
+            "deviceDnsName": "wks-fin-0412.contoso.com",
+            "ipInterfaces": [
+              "10.14.22.87"
+            ],
+            "loggedOnUsers": [
+              {
+                "accountName": "a.mercer",
+                "domainName": "contoso.com"
+              }
+            ]
+          },
+          {
+            "@odata.type": "#microsoft.graph.security.fileEvidence",
+            "fileDetails": {
+              "fileName": "invoice_update.exe",
+              "sha256": "9f2c3e6a4bd8177f4b2c0aa5d7311e8ce2a4f6b9c0d1e2f3a4b5c6d7e8f90112"
+            }
+          },
+          {
+            "@odata.type": "#microsoft.graph.security.ipEvidence",
+            "ipAddress": "203.0.113.47"
+          },
+          {
+            "@odata.type": "#microsoft.graph.security.urlEvidence",
+            "url": "https://cdn-update-delivery.net/secure/download/invoice_update.exe"
+          }
+        ]
+      }
+    ]
+  }
+}

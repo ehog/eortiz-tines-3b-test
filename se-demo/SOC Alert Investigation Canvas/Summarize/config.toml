@@ -1,0 +1,7 @@
+color = "orange"
+route = "/api/summarize"
+route_auth = "space"
+links = ["ServiceNow sync"]
+connectors = [{ name = "anthropic-se-demos-please-only-use-this-one", type = "anthropic" }]
+timeout = 180
+retry_seconds = [3, 10, 30]

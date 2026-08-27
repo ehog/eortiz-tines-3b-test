@@ -1,0 +1,5 @@
+color = "sky"
+route = "/api/timeline"
+route_auth = "space"
+timeout = 60
+links = ["Summarize"]

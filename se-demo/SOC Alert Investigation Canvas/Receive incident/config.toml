@@ -1,0 +1,8 @@
+color = "purple"
+output = true
+route = "/incident"
+route_auth = "space"
+route_type = "webhook"
+title = "Incident intake (Sentinel / Defender)"
+timeout = 30
+links = ["Extract entities"]

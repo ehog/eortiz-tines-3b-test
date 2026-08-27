@@ -1,0 +1,5 @@
+color = "green"
+route = "/api/servicenow"
+route_auth = "space"
+timeout = 60
+retry_seconds = [2, 5, 15]
