@@ -195,19 +195,46 @@ function measure(selector: string | undefined): Rect | null {
 
 const CARD_WIDTH = 420;
 const GAP = 16;
+const HALO = 8;
 
-function cardPosition(rect: Rect | null): { top: number; left: number } {
+/** Places the card in the largest free band around the target so the target stays visible. */
+function cardPosition(rect: Rect | null, cardH: number): { top: number; left: number } {
   const viewportH = window.innerHeight;
   const viewportW = window.innerWidth;
-  const estimatedH = 360;
-  if (!rect) {
-    return { top: Math.max(GAP, (viewportH - estimatedH) / 2), left: Math.max(GAP, (viewportW - CARD_WIDTH) / 2) };
+  const clampTop = (value: number) => Math.min(Math.max(GAP, value), Math.max(GAP, viewportH - cardH - GAP));
+  const clampLeft = (value: number) => Math.min(Math.max(GAP, value), Math.max(GAP, viewportW - CARD_WIDTH - GAP));
+
+  if (!rect) return { top: clampTop((viewportH - cardH) / 2), left: clampLeft((viewportW - CARD_WIDTH) / 2) };
+
+  const box = {
+    top: rect.top - HALO,
+    left: rect.left - HALO,
+    right: rect.left + rect.width + HALO,
+    bottom: rect.top + rect.height + HALO,
+  };
+  const space = {
+    right: viewportW - box.right - GAP * 2,
+    left: box.left - GAP * 2,
+    below: viewportH - box.bottom - GAP * 2,
+    above: box.top - GAP * 2,
+  };
+
+  if (space.right >= CARD_WIDTH) {
+    return { top: clampTop(rect.top + rect.height / 2 - cardH / 2), left: clampLeft(box.right + GAP) };
   }
-  const below = rect.top + rect.height + GAP;
-  const above = rect.top - GAP - estimatedH;
-  const top = below + estimatedH < viewportH ? below : above > GAP ? above : Math.max(GAP, viewportH - estimatedH - GAP);
-  const left = Math.min(Math.max(GAP, rect.left), viewportW - CARD_WIDTH - GAP);
-  return { top, left };
+  if (space.left >= CARD_WIDTH) {
+    return { top: clampTop(rect.top + rect.height / 2 - cardH / 2), left: clampLeft(box.left - GAP - CARD_WIDTH) };
+  }
+  if (space.below >= cardH) {
+    return { top: clampTop(box.bottom + GAP), left: clampLeft(rect.left) };
+  }
+  if (space.above >= cardH) {
+    return { top: clampTop(box.top - GAP - cardH), left: clampLeft(rect.left) };
+  }
+  // Nothing fits cleanly: sit in the widest side band, hugging the viewport edge.
+  return space.right >= space.left
+    ? { top: clampTop(GAP), left: Math.max(GAP, viewportW - CARD_WIDTH - GAP) }
+    : { top: clampTop(GAP), left: GAP };
 }
 
 export function TourOverlay({ ctx, onClose }: { ctx: TourContext; onClose: () => void }) {
@@ -217,6 +244,7 @@ export function TourOverlay({ ctx, onClose }: { ctx: TourContext; onClose: () =>
   const [waiting, setWaiting] = useState(false);
   const [done, setDone] = useState<Record<string, boolean>>({});
   const [actionError, setActionError] = useState<string | null>(null);
+  const [cardH, setCardH] = useState(360);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const ctxRef = useRef(ctx);
@@ -268,6 +296,15 @@ export function TourOverlay({ ctx, onClose }: { ctx: TourContext; onClose: () =>
   useEffect(() => {
     cardRef.current?.focus();
   }, [step.id]);
+
+  useLayoutEffect(() => {
+    const node = cardRef.current;
+    if (!node) return;
+    const observer = new ResizeObserver(() => setCardH(node.offsetHeight));
+    observer.observe(node);
+    setCardH(node.offsetHeight);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -322,43 +359,26 @@ export function TourOverlay({ ctx, onClose }: { ctx: TourContext; onClose: () =>
     }
   };
 
-  const position = cardPosition(rect);
+  const position = cardPosition(rect, cardH);
   const peaks = visible.filter((entry) => entry.chapter === "peak");
   const peakIndex = step.chapter === "peak" ? peaks.findIndex((entry) => entry.id === step.id) : -1;
   const busy = pending || waiting;
 
   return (
-    <div className="fixed inset-0 z-50">
-      <div className="pointer-events-none absolute inset-0">
-        {rect ? (
-          <>
-            <div className="absolute inset-x-0 top-0 bg-slate-950/80" style={{ height: Math.max(0, rect.top - 8) }} />
-            <div className="absolute inset-x-0 bg-slate-950/80" style={{ top: rect.top + rect.height + 8, bottom: 0 }} />
-            <div
-              className="absolute bg-slate-950/80"
-              style={{ top: Math.max(0, rect.top - 8), height: rect.height + 16, left: 0, width: Math.max(0, rect.left - 8) }}
-            />
-            <div
-              className="absolute bg-slate-950/80"
-              style={{ top: Math.max(0, rect.top - 8), height: rect.height + 16, left: rect.left + rect.width + 8, right: 0 }}
-            />
-            <div
-              className="absolute rounded-xl ring-2 ring-sky-400/80 transition-all duration-200"
-              style={{ top: rect.top - 8, left: rect.left - 8, width: rect.width + 16, height: rect.height + 16 }}
-            />
-          </>
-        ) : (
-          <div className="absolute inset-0 bg-slate-950/85" />
-        )}
-      </div>
+    <div className="pointer-events-none fixed inset-0 z-50">
+      {rect ? (
+        <div
+          className="absolute rounded-xl ring-2 ring-sky-400 shadow-[0_0_0_4px_rgba(56,189,248,0.18),0_0_28px_6px_rgba(56,189,248,0.28)] transition-all duration-200"
+          style={{ top: rect.top - HALO, left: rect.left - HALO, width: rect.width + HALO * 2, height: rect.height + HALO * 2 }}
+        />
+      ) : null}
 
       <div
         ref={cardRef}
         role="dialog"
-        aria-modal="true"
         aria-labelledby="tour-heading"
         tabIndex={-1}
-        className="absolute w-[420px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-sky-500/40 bg-slate-900 shadow-2xl shadow-sky-950/60 outline-none"
+        className="pointer-events-auto absolute w-[420px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-sky-500/40 bg-slate-900 shadow-2xl shadow-sky-950/60 outline-none"
         style={{ top: position.top, left: position.left }}
       >
         <div className="flex items-center justify-between border-b border-slate-800 px-4 py-2.5">
@@ -390,7 +410,7 @@ export function TourOverlay({ ctx, onClose }: { ctx: TourContext; onClose: () =>
           ))}
         </div>
 
-        <div className="max-h-[60vh] overflow-auto px-4 py-3">
+        <div className="max-h-[52vh] overflow-auto px-4 py-3">
           <h2 id="tour-heading" className="text-sm font-semibold text-slate-100">
             {step.heading}
           </h2>
