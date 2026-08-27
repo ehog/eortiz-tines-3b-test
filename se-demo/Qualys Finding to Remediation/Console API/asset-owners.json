@@ -1,0 +1,68 @@
+{
+  "description": "Asset-owner lookup used to attribute findings to an application and owning team. Keyed by hostname (case-insensitive). Assets absent from this map fall into the unowned bucket and are routed to the fallback team.",
+  "fallback": {
+    "application": "Unattributed Assets",
+    "team": "Security Operations",
+    "assignment_group": "CAB-Security-Operations",
+    "owner_email": "secops@acme-demo.com",
+    "criticality": "medium",
+    "exposure": "internal",
+    "environment": "unknown"
+  },
+  "assets": {
+    "WEB-DMZ-01": {
+      "application": "Customer Portal",
+      "team": "Platform Engineering",
+      "assignment_group": "CAB-Platform-Engineering",
+      "owner_email": "platform-eng@acme-demo.com",
+      "criticality": "critical",
+      "exposure": "internet",
+      "environment": "prod"
+    },
+    "APP-LNX-04": {
+      "application": "Order Service",
+      "team": "Commerce Engineering",
+      "assignment_group": "CAB-Commerce-Engineering",
+      "owner_email": "commerce-eng@acme-demo.com",
+      "criticality": "high",
+      "exposure": "internal",
+      "environment": "prod"
+    },
+    "PAY-WEB-02": {
+      "application": "Payments Web",
+      "team": "Payments Engineering",
+      "assignment_group": "CAB-Payments-Engineering",
+      "owner_email": "payments-eng@acme-demo.com",
+      "criticality": "critical",
+      "exposure": "internet",
+      "environment": "prod"
+    },
+    "INT-API-07": {
+      "application": "Internal API Gateway",
+      "team": "Platform Engineering",
+      "assignment_group": "CAB-Platform-Engineering",
+      "owner_email": "platform-eng@acme-demo.com",
+      "criticality": "medium",
+      "exposure": "internal",
+      "environment": "prod"
+    },
+    "CORP-WKS-233": {
+      "application": "Corporate Endpoints",
+      "team": "IT Endpoint Services",
+      "assignment_group": "CAB-IT-Endpoint",
+      "owner_email": "endpoint-services@acme-demo.com",
+      "criticality": "low",
+      "exposure": "internal",
+      "environment": "corp"
+    },
+    "DB-CORE-01": {
+      "application": "Core Database Platform",
+      "team": "Data Platform",
+      "assignment_group": "CAB-Data-Platform",
+      "owner_email": "data-platform@acme-demo.com",
+      "criticality": "critical",
+      "exposure": "isolated",
+      "environment": "prod"
+    }
+  }
+}

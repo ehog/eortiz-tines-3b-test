@@ -1,0 +1,48 @@
+#!/bin/sh
+# Stable text view of a volume for step-test comparison. Wall-clock bookkeeping
+# columns are omitted because every replay writes fresh values for them; the
+# recorded stage payload is omitted because stdout already carries it.
+set -eu
+volume="$1"
+dir="/storage/$volume"
+
+case "$volume" in
+  pipeline_state)
+    db="$dir/pipeline.db"
+    if [ ! -f "$db" ]; then
+      echo "pipeline_state: no database"
+      exit 0
+    fi
+    printf 'config\n'
+    sqlite3 "$db" "SELECT key || '=' || value FROM config WHERE key NOT IN ('last_pull_at') ORDER BY key;"
+    printf 'seen\n'
+    sqlite3 "$db" "SELECT finding_id FROM seen ORDER BY finding_id;"
+    printf 'stage_runs\n'
+    sqlite3 "$db" "SELECT run_id || ' | ' || stage || ' | ' || trigger || ' | ' || status || ' | ' || record_count || ' | ' || summary FROM stage_runs ORDER BY id;"
+    ;;
+  servicenow_store)
+    db="$dir/snow.db"
+    if [ ! -f "$db" ]; then
+      echo "servicenow_store: no database"
+      exit 0
+    fi
+    printf 'tickets\n'
+    sqlite3 "$db" "SELECT number || ' | ' || team || ' | ' || application || ' | ' || assignment_group || ' | P' || priority || ' | ' || risk_band || ' ' || risk_score || ' | ' || state || ' | opened ' || opened_at || ' | due ' || due_date || ' | closed ' || COALESCE(closed_at, '-') || ' | esc ' || escalation_level || ' | findings ' || finding_ids FROM tickets ORDER BY number;"
+    printf 'work_notes\n'
+    sqlite3 "$db" "SELECT t.number || ' | ' || n.created_at || ' | ' || n.author || ' | ' || n.note FROM work_notes n JOIN tickets t ON t.sys_id = n.sys_id ORDER BY t.number, n.id;"
+    printf 'meta\n'
+    sqlite3 "$db" "SELECT key || '=' || value FROM meta ORDER BY key;"
+    ;;
+  qualys_state)
+    db="$dir/qualys.db"
+    if [ ! -f "$db" ]; then
+      echo "qualys_state: no database"
+      exit 0
+    fi
+    printf 'findings\n'
+    sqlite3 "$db" "SELECT id || ' | QID ' || qid || ' | sev ' || severity || ' | cvss ' || cvss_base || ' | kev ' || kev || ' | ' || status || ' | ' || hostname || ' | exposure ' || COALESCE(exposure_override, '-') FROM findings ORDER BY id;"
+    ;;
+  *)
+    echo "unknown volume $volume"
+    ;;
+esac

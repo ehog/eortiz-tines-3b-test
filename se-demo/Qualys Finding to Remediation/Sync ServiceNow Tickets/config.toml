@@ -1,0 +1,3 @@
+color = "green"
+route = "/qualys-remediation/run/sync"
+timeout = 90

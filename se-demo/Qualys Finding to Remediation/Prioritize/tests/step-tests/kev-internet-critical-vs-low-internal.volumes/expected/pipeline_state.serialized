@@ -1,0 +1,6 @@
+config
+clock_offset_days=0
+weights={"severity":30,"cvss":25,"threat":20,"criticality":15,"exposure":10}
+seen
+stage_runs
+run-test-prioritize | prioritize | manual | success | 2 | scored 2 findings, 1 high priority

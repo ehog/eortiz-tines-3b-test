@@ -1,0 +1,181 @@
+{
+  "get": {
+    "summary": "List mocked Qualys VMDR detections",
+    "description": "Returns detections in a simplified Qualys VMDR shape. Auto-seeds the canonical demo dataset on first call.",
+    "parameters": [
+      {
+        "name": "since",
+        "in": "query",
+        "required": false,
+        "description": "Only detections whose LAST_FOUND_DATETIME is at or after this ISO-8601 timestamp.",
+        "schema": { "type": "string", "format": "date-time" }
+      },
+      {
+        "name": "updated_since",
+        "in": "query",
+        "required": false,
+        "description": "Only detections whose LAST_UPDATE_DATETIME is at or after this ISO-8601 timestamp.",
+        "schema": { "type": "string", "format": "date-time" }
+      },
+      {
+        "name": "status",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "enum": ["Active", "Re-Opened", "Fixed"] }
+      },
+      {
+        "name": "ids",
+        "in": "query",
+        "required": false,
+        "description": "Comma-separated detection ids.",
+        "schema": { "type": "string" }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Detection list",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "responseCode": { "type": "string" },
+                "count": { "type": "integer" },
+                "seeded_on_this_request": { "type": "integer" },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ID": { "type": "string" },
+                      "QID": { "type": "integer" },
+                      "TYPE": { "type": "string" },
+                      "TITLE": { "type": "string" },
+                      "CATEGORY": { "type": "string" },
+                      "VULN_CLASS": { "type": "string" },
+                      "SEVERITY": { "type": "integer", "minimum": 1, "maximum": 5 },
+                      "CVSS": {
+                        "type": "object",
+                        "properties": {
+                          "BASE": { "type": "number" },
+                          "TEMPORAL": { "type": "number" },
+                          "VECTOR": { "type": "string" }
+                        }
+                      },
+                      "CVE_LIST": { "type": "array", "items": { "type": "string" } },
+                      "THREAT_INTEL": {
+                        "type": "object",
+                        "properties": {
+                          "KNOWN_EXPLOITED": { "type": "boolean" },
+                          "EXPLOIT_IN_THE_WILD": { "type": "boolean" },
+                          "CISA_KEV_DUE_DATE": { "type": ["string", "null"] }
+                        }
+                      },
+                      "PATCH_AVAILABLE": { "type": "boolean" },
+                      "STATUS": { "type": "string" },
+                      "FINDING_TYPE": {
+                        "type": "string",
+                        "enum": ["missing_patch", "third_party_library", "code", "config", "unknown"]
+                      },
+                      "ASSET": {
+                        "type": "object",
+                        "properties": {
+                          "ASSET_ID": { "type": "string" },
+                          "HOSTNAME": { "type": "string" },
+                          "IP": { "type": "string" },
+                          "OS": { "type": "string" },
+                          "TAGS": { "type": "array", "items": { "type": "string" } },
+                          "EXPOSURE_OVERRIDE": { "type": ["string", "null"] }
+                        }
+                      },
+                      "SOFTWARE": { "type": "object" },
+                      "RESULTS": { "type": "string" },
+                      "SOLUTION": { "type": "string" },
+                      "FIRST_FOUND_DATETIME": { "type": "string" },
+                      "LAST_FOUND_DATETIME": { "type": "string" },
+                      "LAST_UPDATE_DATETIME": { "type": "string" },
+                      "TIMES_DETECTED": { "type": "integer" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "summary": "Reset the demo dataset or inject a new detection",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["action"],
+            "properties": {
+              "action": { "type": "string", "enum": ["reset", "inject"] },
+              "preset": {
+                "type": "string",
+                "enum": ["windows_patch", "third_party_library", "code_sqli", "thin_evidence"],
+                "description": "Required for action=inject. Clones that preset as a fresh Active detection."
+              },
+              "overrides": {
+                "type": "object",
+                "description": "Optional field overrides applied to the cloned preset (e.g. severity, hostname, cvss_base)."
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Dataset reset" },
+      "201": { "description": "Detection injected" },
+      "400": { "description": "Unknown action or preset" }
+    }
+  },
+  "patch": {
+    "summary": "Edit a detection or mark it remediated",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": { "type": "string" },
+              "action": { "type": "string", "enum": ["remediate"] },
+              "severity": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "cvss_base": { "type": "number" },
+              "cvss_temporal": { "type": "number" },
+              "kev": { "type": "boolean" },
+              "exploit_in_wild": { "type": "boolean" },
+              "status": { "type": "string", "enum": ["Active", "Re-Opened", "Fixed"] },
+              "exposure_override": {
+                "type": ["string", "null"],
+                "enum": ["internet", "dmz", "internal", "isolated", null],
+                "description": "Overrides the exposure the asset-owner lookup would supply."
+              },
+              "title": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Updated detection" },
+      "400": { "description": "No editable fields supplied" },
+      "404": { "description": "Unknown detection id" }
+    }
+  },
+  "delete": {
+    "summary": "Delete a detection",
+    "parameters": [
+      { "name": "id", "in": "query", "required": true, "schema": { "type": "string" } }
+    ],
+    "responses": { "200": { "description": "Deleted" } }
+  }
+}

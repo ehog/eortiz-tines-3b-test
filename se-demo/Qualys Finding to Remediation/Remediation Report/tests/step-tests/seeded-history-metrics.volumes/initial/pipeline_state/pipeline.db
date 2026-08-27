@@ -1,0 +1,3 @@
+__3B_STEP_TEST_SQLITE_DUMP__
+CREATE TABLE IF NOT EXISTS config (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+INSERT INTO config (key, value) VALUES ('clock_offset_days', '0');

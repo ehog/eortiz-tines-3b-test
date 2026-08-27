@@ -1,0 +1,127 @@
+{
+  "get": {
+    "summary": "Read demo console state",
+    "description": "Default view returns branch, demo clock, scoring weights, per-stage status and recent stage runs. Other views return the owner map, a specific stage payload, the enriched findings from the latest run, or the stored report.",
+    "parameters": [
+      {
+        "name": "view",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "enum": ["state", "owners", "stage", "findings", "report"],
+          "default": "state"
+        }
+      },
+      {
+        "name": "stage",
+        "in": "query",
+        "required": false,
+        "description": "Used with view=stage.",
+        "schema": {
+          "type": "string",
+          "enum": ["pull", "normalize", "prioritize", "remediate", "sync", "chase", "report"]
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Console state for the requested view",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "as_of": { "type": "string", "format": "date-time" },
+                "branch": { "type": "string", "enum": ["draft", "live"] },
+                "clock_offset_days": { "type": "integer" },
+                "last_pull_at": { "type": ["string", "null"] },
+                "weights": { "type": "object", "additionalProperties": { "type": "number" } },
+                "default_weights": { "type": "object", "additionalProperties": { "type": "number" } },
+                "bands": { "type": "object", "additionalProperties": { "type": "number" } },
+                "sla_days": { "type": "object", "additionalProperties": { "type": "number" } },
+                "high_priority_score": { "type": "number" },
+                "stages": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "stage": { "type": "string" },
+                      "status": {
+                        "type": "string",
+                        "enum": ["success", "skipped", "error", "never_run"]
+                      },
+                      "run_id": { "type": ["string", "null"] },
+                      "trigger": { "type": ["string", "null"] },
+                      "started_at": { "type": ["string", "null"] },
+                      "finished_at": { "type": ["string", "null"] },
+                      "duration_ms": { "type": ["integer", "null"] },
+                      "record_count": { "type": ["integer", "null"] },
+                      "summary": { "type": "string" },
+                      "error": { "type": ["string", "null"] }
+                    }
+                  }
+                },
+                "history": { "type": "array", "items": { "type": "object" } },
+                "has_report": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "summary": "Change scoring weights, move the demo clock, clear state, or preview scores",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["action"],
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "set_weights",
+                  "reset_weights",
+                  "set_clock",
+                  "advance_clock",
+                  "clear_seen",
+                  "reset_pipeline_state",
+                  "score_preview"
+                ]
+              },
+              "weights": {
+                "type": "object",
+                "description": "Point weights for set_weights and score_preview.",
+                "properties": {
+                  "severity": { "type": "number", "minimum": 0 },
+                  "cvss": { "type": "number", "minimum": 0 },
+                  "threat": { "type": "number", "minimum": 0 },
+                  "criticality": { "type": "number", "minimum": 0 },
+                  "exposure": { "type": "number", "minimum": 0 }
+                }
+              },
+              "offset_days": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 365,
+                "description": "Absolute demo clock offset for set_clock."
+              },
+              "days": {
+                "type": "integer",
+                "description": "Relative days for advance_clock."
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Action applied" },
+      "400": { "description": "Unknown action or invalid argument" }
+    }
+  }
+}

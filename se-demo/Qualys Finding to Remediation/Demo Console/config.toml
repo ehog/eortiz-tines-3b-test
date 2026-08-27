@@ -1,0 +1,7 @@
+color = "pink"
+output = true
+route = "/qualys-remediation"
+route_type = "webpage"
+title = "Qualys Remediation Console"
+pinned = true
+timeout = 45

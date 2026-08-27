@@ -1,0 +1,4 @@
+color = "teal"
+route = "/qualys-remediation/run/report"
+cron = "0 8 * * *"
+timeout = 60
