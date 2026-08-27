@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { LAUNCHER_TOUR, REPORT_TOUR, TourButton, TourProvider, useTour } from "./tour";
 
 const BASE: string = (window as unknown as { __ROUTE_PATH__?: string }).__ROUTE_PATH__ ?? "";
 const api = (path: string) => `${BASE}${path}`;
@@ -36,6 +37,9 @@ const SAMPLES: { label: string; reason: string; indicators: string }[] = [
     indicators: ["91.203.145.16", "benefits-update.co", "d0e1f2a3b4c5d6e7f8091a2b3c4d5e6f70819a2b"].join("\n"),
   },
 ];
+
+// Deliberately unparseable line the guided tour injects to demonstrate validation.
+const TOUR_INVALID_LINE = "akira-c2-server (from the PDF)";
 
 function classify(value: string): string | null {
   const v = value.trim();
@@ -78,7 +82,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <div className="border-b border-slate-800 bg-slate-900/60 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-4">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/" data-tour="shell-brand" className="flex items-center gap-3">
             <span className="grid size-9 place-items-center rounded-lg bg-red-500/15 text-lg ring-1 ring-inset ring-red-500/30">◎</span>
             <span>
               <span className="block text-sm font-semibold tracking-tight">Enterprise IOC Hunt</span>
@@ -86,7 +90,9 @@ function Shell({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
           <div className="ml-auto flex items-center gap-3 text-xs text-slate-400">
-            <span className="hidden sm:inline">Mocked integrations — demo environment</span>
+            <span data-tour="mock-banner" className="hidden sm:inline">
+              Mocked integrations — demo environment
+            </span>
             <button
               onClick={reset}
               disabled={resetting}
@@ -119,12 +125,33 @@ type HuntSummary = {
 
 function Launcher() {
   const navigate = useNavigate();
+  const { register } = useTour();
   const [indicators, setIndicators] = useState(SAMPLES[0]!.indicators);
   const [reason, setReason] = useState(SAMPLES[0]!.reason);
   const [mode, setMode] = useState<DemoMode>("random");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hunts, setHunts] = useState<HuntSummary[]>([]);
+
+  useEffect(() => {
+    register({
+      applySample: () => {
+        setIndicators(SAMPLES[0]!.indicators);
+        setReason(SAMPLES[0]!.reason);
+        setMode("random");
+      },
+      addInvalidLine: () =>
+        setIndicators((v) => (v.includes(TOUR_INVALID_LINE) ? v : `${v.replace(/\s+$/, "")}\n${TOUR_INVALID_LINE}`)),
+      removeInvalidLine: () =>
+        setIndicators((v) =>
+          v
+            .split(/\r?\n/)
+            .filter((l) => l.trim() !== TOUR_INVALID_LINE)
+            .join("\n"),
+        ),
+      setForceHits: () => setMode("hits"),
+    });
+  }, [register]);
 
   const loadHunts = useCallback(async () => {
     const res = await fetch(api("/api/report"));
@@ -175,11 +202,14 @@ function Launcher() {
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Launch a hunt</h1>
-          <p className="mt-1 text-sm text-slate-400">
-            Submit indicators and a reference. Each indicator is searched across all four tools in parallel.
-          </p>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Launch a hunt</h1>
+            <p className="mt-1 text-sm text-slate-400">
+              Submit indicators and a reference. Each indicator is searched across all four tools in parallel.
+            </p>
+          </div>
+          <TourButton tour={LAUNCHER_TOUR} label="Take the tour" />
         </div>
 
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
@@ -204,6 +234,7 @@ function Launcher() {
           </label>
           <textarea
             id="iocs"
+            data-tour="indicator-input"
             value={indicators}
             onChange={(e) => setIndicators(e.target.value)}
             spellCheck={false}
@@ -211,36 +242,39 @@ function Launcher() {
             className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 p-3 font-mono text-sm text-slate-100 outline-none transition focus:border-sky-500"
           />
 
-          <div className="mt-3 flex flex-wrap gap-2">
-            {lines.map((l) => (
-              <span key={l.value} className="inline-flex items-center gap-2 rounded-md bg-slate-800/70 px-2 py-1 font-mono text-xs">
-                <span className="max-w-[18rem] truncate text-slate-200">{l.value}</span>
-                {l.type ? (
-                  <Badge className={TYPE_STYLES[l.type] ?? ""}>{l.type}</Badge>
-                ) : (
-                  <Badge className="bg-red-500/15 text-red-300 ring-red-500/30">unrecognized</Badge>
-                )}
-              </span>
-            ))}
+          <div data-tour="indicator-validation">
+            <div className="mt-3 flex flex-wrap gap-2">
+              {lines.map((l) => (
+                <span key={l.value} className="inline-flex items-center gap-2 rounded-md bg-slate-800/70 px-2 py-1 font-mono text-xs">
+                  <span className="max-w-[18rem] truncate text-slate-200">{l.value}</span>
+                  {l.type ? (
+                    <Badge className={TYPE_STYLES[l.type] ?? ""}>{l.type}</Badge>
+                  ) : (
+                    <Badge className="bg-red-500/15 text-red-300 ring-red-500/30">unrecognized</Badge>
+                  )}
+                </span>
+              ))}
+            </div>
+            {invalid.length > 0 && (
+              <p className="mt-3 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+                {invalid.length} line(s) are not a valid IP, domain, URL, SHA1 or SHA256 and will be rejected.
+              </p>
+            )}
           </div>
-          {invalid.length > 0 && (
-            <p className="mt-3 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
-              {invalid.length} line(s) are not a valid IP, domain, URL, SHA1 or SHA256 and will be rejected.
-            </p>
-          )}
 
           <label className="mt-5 block text-xs font-semibold uppercase tracking-wide text-slate-400" htmlFor="reason">
             Reason / reference
           </label>
           <input
             id="reason"
+            data-tour="reason-input"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             placeholder="FBI advisory #AA24-109A"
             className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none transition focus:border-sky-500"
           />
 
-          <fieldset className="mt-5">
+          <fieldset className="mt-5" data-tour="demo-modes">
             <legend className="text-xs font-semibold uppercase tracking-wide text-slate-400">Demo mode</legend>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
               {MODES.map((m) => (
@@ -262,7 +296,7 @@ function Launcher() {
 
           {error && <p className="mt-4 rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">{error}</p>}
 
-          <div className="mt-5 flex items-center gap-3">
+          <div className="mt-5 flex items-center gap-3" data-tour="submit-row">
             <button
               onClick={submit}
               disabled={submitting || valid.length === 0 || !reason.trim()}
@@ -275,7 +309,7 @@ function Launcher() {
         </div>
       </div>
 
-      <aside className="space-y-3">
+      <aside className="space-y-3" data-tour="recent-hunts">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">Recent hunts</h2>
         {hunts.length === 0 && <p className="text-sm text-slate-500">No hunts yet.</p>}
         {hunts.map((h) => {
@@ -557,6 +591,7 @@ function SourceTile({ s }: { s: SourceState }) {
 
 function Report() {
   const { huntId = "" } = useParams();
+  const { register } = useTour();
   const [data, setData] = useState<ReportPayload | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -585,6 +620,16 @@ function Report() {
     const t = setTimeout(() => void load(), delay);
     return () => clearTimeout(t);
   }, [data, settled, load]);
+
+  useEffect(() => {
+    register({
+      hasReport: !!data?.report,
+      hasIncompleteSources: (data?.report?.incompleteSources.length ?? 0) > 0,
+      hasServiceNow: !!data?.serviceNow,
+      hasBlockRequest: !!data?.blockRequest,
+      hasBlockResults: !!data?.blockRequest?.results,
+    });
+  }, [data, register]);
 
   if (!data) return <p className="text-sm text-slate-400">Loading hunt…</p>;
   if (!data.found)
@@ -632,7 +677,8 @@ function Report() {
             {hunt.huntId} · started {new Date(hunt.createdAt).toLocaleString()} · demo mode {hunt.demoMode}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" data-tour="report-controls">
+          <TourButton tour={REPORT_TOUR} label="Take the tour" />
           {!settled && (
             <span className="inline-flex items-center gap-1.5 rounded-md bg-sky-500/10 px-2.5 py-1.5 text-xs font-medium text-sky-300 ring-1 ring-inset ring-sky-500/30">
               <span className="size-1.5 animate-pulse rounded-full bg-sky-400" />
@@ -651,31 +697,34 @@ function Report() {
         </div>
       </div>
 
-      {running ? (
-        <div className="rounded-xl border border-sky-500/40 bg-sky-500/5 px-5 py-4">
-          <p className="animate-pulse text-sm font-semibold text-sky-200">
-            Hunting across four tools — {data.progress?.done ?? 0} of {data.progress?.expected ?? 0} searches complete
-          </p>
-          <p className="mt-1 text-xs text-slate-400">This page updates automatically.</p>
-        </div>
-      ) : report!.anyFound ? (
-        <div className="rounded-xl border-2 border-red-500 bg-red-500/10 px-5 py-4">
-          <p className="text-lg font-bold tracking-tight text-red-200">
-            FOUND — {report!.matchedCount} of {report!.indicatorCount} indicators matched in the environment
-          </p>
-          <p className="mt-1 text-sm text-red-200/80">
-            {report!.totalEvents} matching events. A block request has been {block?.decision === "approved" ? "approved and submitted" : block?.decision === "denied" ? "denied" : "sent for human approval"}.
-          </p>
-        </div>
-      ) : (
-        <div className="rounded-xl border-2 border-emerald-500 bg-emerald-500/10 px-5 py-4">
-          <p className="text-lg font-bold tracking-tight text-emerald-200">No matches — all {report!.indicatorCount} indicators clean</p>
-          <p className="mt-1 text-sm text-emerald-200/80">Every tool explicitly reported no matching activity.</p>
-        </div>
-      )}
+      <div data-tour="verdict-banner">
+        {running ? (
+          <div className="rounded-xl border border-sky-500/40 bg-sky-500/5 px-5 py-4">
+            <p className="animate-pulse text-sm font-semibold text-sky-200">
+              Hunting across four tools — {data.progress?.done ?? 0} of {data.progress?.expected ?? 0} searches complete
+            </p>
+            <p className="mt-1 text-xs text-slate-400">This page updates automatically.</p>
+          </div>
+        ) : report!.anyFound ? (
+          <div className="rounded-xl border-2 border-red-500 bg-red-500/10 px-5 py-4">
+            <p className="text-lg font-bold tracking-tight text-red-200">
+              FOUND — {report!.matchedCount} of {report!.indicatorCount} indicators matched in the environment
+            </p>
+            <p className="mt-1 text-sm text-red-200/80">
+              {report!.totalEvents} matching events. A block request has been{" "}
+              {block?.decision === "approved" ? "approved and submitted" : block?.decision === "denied" ? "denied" : "sent for human approval"}.
+            </p>
+          </div>
+        ) : (
+          <div className="rounded-xl border-2 border-emerald-500 bg-emerald-500/10 px-5 py-4">
+            <p className="text-lg font-bold tracking-tight text-emerald-200">No matches — all {report!.indicatorCount} indicators clean</p>
+            <p className="mt-1 text-sm text-emerald-200/80">Every tool explicitly reported no matching activity.</p>
+          </div>
+        )}
+      </div>
 
       {report && report.incompleteSources.length > 0 && (
-        <div className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-5 py-4">
+        <div data-tour="partial-banner" className="rounded-xl border border-amber-500/50 bg-amber-500/10 px-5 py-4">
           <p className="text-sm font-semibold text-amber-200">Results are partial</p>
           <ul className="mt-2 space-y-1 text-xs text-amber-100/90">
             {report.incompleteSources.map((s) => (
@@ -687,13 +736,13 @@ function Report() {
         </div>
       )}
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" data-tour="source-tiles">
         {sources.map((s) => (
           <SourceTile key={s.source} s={s} />
         ))}
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3" data-tour="indicator-cards">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">Per-indicator findings</h2>
         {report ? (
           report.indicators.map((ind) => <IndicatorCard key={ind.value} ind={ind} />)
@@ -711,7 +760,7 @@ function Report() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5" data-tour="servicenow-card">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">ServiceNow record</h2>
           {sn ? (
             <>
@@ -732,7 +781,7 @@ function Report() {
           )}
         </div>
 
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5" data-tour="block-card">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">Block request</h2>
           {!block ? (
             <p className="mt-3 text-sm text-slate-500">
@@ -802,12 +851,14 @@ function Report() {
 export default function App() {
   return (
     <BrowserRouter basename={BASE || "/"}>
-      <Shell>
-        <Routes>
-          <Route path="/" element={<Launcher />} />
-          <Route path="/h/:huntId" element={<Report />} />
-        </Routes>
-      </Shell>
+      <TourProvider>
+        <Shell>
+          <Routes>
+            <Route path="/" element={<Launcher />} />
+            <Route path="/h/:huntId" element={<Report />} />
+          </Routes>
+        </Shell>
+      </TourProvider>
     </BrowserRouter>
   );
 }

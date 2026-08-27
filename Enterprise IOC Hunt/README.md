@@ -14,6 +14,10 @@ All four search integrations, ServiceNow and the block enforcement calls are **m
 
 The report page polls [Report data](<Report data/README.md>) so searches, the ServiceNow record and the approval outcome all appear live. [Reset demo](<Reset demo/README.md>) clears hunt history between demos.
 
+#### Guided demo tour
+
+A **Take the tour** button on the launcher and on the report page runs a spotlight overlay that narrates the demo for an audience: the launcher tour loads the sample indicator set, shows validation, selects force-hits mode and hands off to the real Hunt button; the report tour walks the verdict, source health, correlated findings, the fan-in, the ServiceNow record and the human approval gate. Narrative content and mechanics are in [IOC Hunt Console/tour.tsx](<IOC Hunt Console/tour.tsx>) — edit `LAUNCHER_TOUR` and `REPORT_TOUR` to change the story.
+
 #### Routes
 
 | Route | Type | Auth | Purpose |
