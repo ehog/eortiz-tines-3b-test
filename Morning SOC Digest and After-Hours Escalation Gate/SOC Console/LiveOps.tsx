@@ -96,7 +96,7 @@ export function LiveOps({ state, now }: { state: ConsoleState; now: Date }) {
             )}
           </Card>
 
-          <Card title="Open pages" subtitle="Mock PagerDuty inbox">
+          <Card title="Open pages" subtitle="Simulated from PagerDuty">
             {state.pages.filter((p) => p.status === "triggered").length === 0 ? (
               <Empty>No unacknowledged pages.</Empty>
             ) : (

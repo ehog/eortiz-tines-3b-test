@@ -177,7 +177,7 @@ const STEPS: Step[] = [
     tab: "assets",
     anchor: "assets-editor",
     headline: "Asset criticality comes from your CMDB, not a hunch.",
-    seeing: "This is the mock ServiceNow record the score reads. Change a host's tier here and the same alert scores differently next time.",
+    seeing: "This is the CMDB record the score reads, simulated from ServiceNow. Change a host's tier here and the same alert scores differently next time.",
     why: "The gate inherits the business context you already maintain, so “critical” means what your CMDB says it means.",
   },
   {
@@ -221,7 +221,7 @@ const STEPS: Step[] = [
   {
     act: 6,
     headline: "The delta: hours of overnight triage and needless pages, removed every night.",
-    seeing: "Real Slack, Gmail and Claude connectors sit beside mocked security sources — swap the mocks for your tenants and the same flow is production.",
+    seeing: "Slack, Gmail and Claude are live connectors; the detection feeds are simulated from Sentinel, Defender, ServiceNow, Proofpoint, Zscaler and PagerDuty — point those at your own tenants and the same flow is production.",
     why: "And it was built conversationally, in this editor, by describing what should happen. That is the shortest path from “we should automate this” to something running tonight.",
   },
 ];

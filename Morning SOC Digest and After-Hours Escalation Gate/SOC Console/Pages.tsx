@@ -26,7 +26,7 @@ export function Pages({
     <Card
       dataTour="pages-inbox"
       title="On-call pages"
-      subtitle="Mock PagerDuty events created by the gate, alongside the real Slack notice that was posted"
+      subtitle="Pages created by the gate, simulated from PagerDuty, alongside the real Slack notice that was posted"
       right={
         <Button variant="danger" disabled={busy || state.pages.length === 0} onClick={onClear}>
           Clear inbox
@@ -77,7 +77,7 @@ export function Pages({
                 {p.ackedAt && <span className="text-[10px] text-slate-500">acked {relative(p.ackedAt, now)}</span>}
                 {p.resolvedAt && <span className="text-[10px] text-slate-500">resolved {relative(p.resolvedAt, now)}</span>}
                 <details className="ml-auto">
-                  <summary className="cursor-pointer text-[11px] text-slate-500 hover:text-slate-300">Mock PagerDuty payload</summary>
+                  <summary className="cursor-pointer text-[11px] text-slate-500 hover:text-slate-300">Payload simulated from PagerDuty</summary>
                   <pre className="mt-2 max-h-56 overflow-auto rounded-lg bg-slate-950 p-3 text-[10px] leading-relaxed text-slate-400">
                     {JSON.stringify(p.payload, null, 2)}
                   </pre>
