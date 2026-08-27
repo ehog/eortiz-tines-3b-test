@@ -156,13 +156,14 @@ export function buildStageViews(stages: StageState[], attempts: AttemptEntry[], 
 
 export function StageTimeline({ views }: { views: StageView[] }) {
   return (
-    <div className="grid gap-3 lg:grid-cols-5">
+    <div data-tour="timeline" className="grid gap-3 lg:grid-cols-5">
       {views.map((view, index) => {
         const style = stageStyle(view.status);
         const active = view.status === "in_flight" || view.status === "retrying";
         return (
           <div
             key={view.key}
+            data-tour-stage={view.key}
             className={`relative rounded-xl border bg-slate-900/60 p-4 transition-all duration-300 ${style.ring} ${
               active ? "shadow-lg shadow-sky-950/50 scale-[1.02]" : ""
             } ${view.followUp ? "lg:col-span-5 border-dashed" : ""}`}
@@ -236,6 +237,7 @@ export function GuardrailBanner({ run, views }: { run: RunSummary; views: StageV
   const isPartial = run.status === "partial";
   return (
     <div
+      data-tour="guardrail"
       className={`rounded-xl border px-4 py-3 text-sm ${
         isPartial ? "border-amber-500/50 bg-amber-500/10 text-amber-100" : "border-violet-500/50 bg-violet-500/10 text-violet-100"
       }`}
@@ -284,7 +286,7 @@ export function StateCards({ run, views }: { run: RunSummary; views: StageView[]
     slate: "text-slate-300",
   };
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div data-tour="state" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {cards.map((card) => (
         <div key={card.label} className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
           <div className="text-[11px] uppercase tracking-wider text-slate-500">{card.label}</div>
@@ -324,7 +326,7 @@ export function LogStream({ attempts, clock }: { attempts: AttemptEntry[]; clock
   const stageOptions = useMemo(() => Array.from(new Set(attempts.map((entry) => entry.stage))), [attempts]);
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-950/80">
+    <div data-tour="log" className="rounded-xl border border-slate-800 bg-slate-950/80">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 px-4 py-2.5">
         <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">Structured log — one line per attempt</div>
         <div className="flex items-center gap-2">
@@ -390,7 +392,7 @@ export function AuditTable({ audit, clock }: { audit: AuditEntry[]; clock: numbe
   const [expanded, setExpanded] = useState<number | null>(null);
   const rows = audit.filter((entry) => entry.relMs <= clock);
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/40">
+    <div data-tour="audit" className="rounded-xl border border-slate-800 bg-slate-900/40">
       <div className="border-b border-slate-800 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-slate-400">
         Audit trail — every action attempted, with outcome
       </div>
@@ -479,7 +481,7 @@ export function ChaosPanel({
     onChange({ ...chaos, [key]: { ...chaos[key], ...patch } });
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+    <div data-tour="chaos" className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-200">Chaos mode</h2>
         <span className="text-[11px] text-slate-500">force failures on demand</span>
