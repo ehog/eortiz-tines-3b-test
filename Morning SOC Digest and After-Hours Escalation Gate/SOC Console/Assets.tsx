@@ -76,7 +76,7 @@ export function Assets({
         </p>
       </Card>
 
-      <Card title={draft.hostname ? `Edit ${draft.hostname}` : "Add an asset"} subtitle="Saved straight to the workflow volume">
+      <Card dataTour="assets-editor" title={draft.hostname ? `Edit ${draft.hostname}` : "Add an asset"} subtitle="Saved straight to the workflow volume">
         <div className="space-y-3">
           <Field label="Hostname">
             <input className={inputClass} value={draft.hostname} onChange={set("hostname")} placeholder="pay-db-02" />

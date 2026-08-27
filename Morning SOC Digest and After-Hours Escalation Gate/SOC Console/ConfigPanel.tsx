@@ -52,6 +52,7 @@ export function ConfigPanel({
               Load defaults
             </Button>
             <Button
+              dataTour="config-save"
               variant="primary"
               disabled={busy || !dirty}
               onClick={() => {
@@ -65,7 +66,7 @@ export function ConfigPanel({
         }
       >
         <div className="space-y-5">
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div data-tour="threshold-sliders" className="grid gap-4 sm:grid-cols-2">
             <div>
               <div className="flex items-baseline justify-between">
                 <span className="text-[11px] font-medium uppercase tracking-wider text-slate-500">Page threshold</span>
@@ -196,7 +197,7 @@ export function ConfigPanel({
       </Card>
 
       <div className="space-y-4">
-        <Card title="Prove it is live" subtitle="Re-score the newest alert with the saved config">
+        <Card dataTour="config-replay" title="Prove it is live" subtitle="Re-score the newest alert with the saved config">
           {lastAlert ? (
             <div className="space-y-2 text-xs text-slate-400">
               <p className="text-slate-200">{lastAlert.alert.title}</p>

@@ -20,6 +20,7 @@ import { Audit } from "./Audit";
 import { Pages } from "./Pages";
 import { Assets } from "./Assets";
 import { Digest } from "./Digest";
+import { Tour } from "./Tour";
 
 type TabId = "live" | "inject" | "config" | "audit" | "pages" | "assets" | "digest";
 
@@ -47,6 +48,7 @@ export default function App() {
   const [digestRunning, setDigestRunning] = useState(false);
   const [tab, setTab] = useState<TabId>("live");
   const [now, setNow] = useState(() => new Date());
+  const [tourOpen, setTourOpen] = useState(() => sessionStorage.getItem("soc-tour-step") !== null);
   const digestBaseline = useRef<number | null>(null);
 
   const refresh = useCallback(async () => {
@@ -167,6 +169,7 @@ export default function App() {
 
           <div className="ml-auto flex flex-wrap items-center gap-3">
             <span
+              data-tour="clock-badge"
               className={`rounded-lg border px-3 py-1.5 text-[11px] font-medium ${
                 effectiveAfterHours ? "border-rose-500/50 bg-rose-500/10 text-rose-200" : "border-teal-500/40 bg-teal-500/10 text-teal-200"
               }`}
@@ -175,7 +178,7 @@ export default function App() {
               {state.clockMode !== "real" && <span className="ml-1 text-slate-400">(forced)</span>}
             </span>
 
-            <div className="flex rounded-lg border border-slate-700 bg-slate-800/60 p-0.5">
+            <div data-tour="clock-modes" className="flex rounded-lg border border-slate-700 bg-slate-800/60 p-0.5">
               {CLOCK_MODES.map((m) => (
                 <button
                   key={m.id}
@@ -190,6 +193,17 @@ export default function App() {
                 </button>
               ))}
             </div>
+
+            <Button
+              dataTour="tour-launch"
+              variant="primary"
+              onClick={() => {
+                sessionStorage.setItem("soc-tour-step", "0");
+                setTourOpen(true);
+              }}
+            >
+              {tourOpen ? "Tour running" : "Guided tour"}
+            </Button>
 
             <Button variant="danger" disabled={busy} onClick={() => void act({ action: "reset_demo", preloadBacklog: true })}>
               Reset demo
@@ -270,6 +284,16 @@ export default function App() {
         )}
         {tab === "digest" && <Digest state={state} now={now} busy={busy} digestRunning={digestRunning} onRun={() => void startDigest()} />}
       </main>
+
+      {tourOpen && (
+        <Tour
+          state={state}
+          tab={tab}
+          setTab={setTab}
+          onClose={() => setTourOpen(false)}
+          onResetDemo={() => void act({ action: "reset_demo", preloadBacklog: true })}
+        />
+      )}
 
       {toast && (
         <div className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 rounded-lg border border-slate-700 bg-slate-900/95 px-4 py-2 text-xs text-slate-100 shadow-xl shadow-black/40">
