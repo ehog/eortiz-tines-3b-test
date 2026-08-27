@@ -25,10 +25,11 @@ export function Digest({
       <div className="grid gap-4 lg:grid-cols-5">
         <Card
           className="lg:col-span-2"
+          dataTour="deferred-queue"
           title="Queued for the morning digest"
           subtitle="Alerts the gate deferred instead of paging"
           right={
-            <Button variant="primary" disabled={busy || digestRunning} onClick={onRun}>
+            <Button dataTour="run-digest" variant="primary" disabled={busy || digestRunning} onClick={onRun}>
               {digestRunning ? "Building digest…" : "Run digest now"}
             </Button>
           }
@@ -62,6 +63,7 @@ export function Digest({
 
         <Card
           className="lg:col-span-3"
+          dataTour="digest-view"
           title={digest ? `Digest #${digest.id}` : "Digest"}
           subtitle={
             digest

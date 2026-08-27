@@ -24,6 +24,7 @@ export function Pages({
 }) {
   return (
     <Card
+      dataTour="pages-inbox"
       title="On-call pages"
       subtitle="Mock PagerDuty events created by the gate, alongside the real Slack notice that was posted"
       right={
@@ -66,7 +67,7 @@ export function Pages({
                 </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-2">
+              <div data-tour="page-actions" className="mt-3 flex flex-wrap items-center gap-2">
                 <Button disabled={busy || p.status !== "triggered"} onClick={() => onAck(p.id)}>
                   Acknowledge
                 </Button>

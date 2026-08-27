@@ -4,7 +4,7 @@ Two related SOC automations in one project, sharing state and a live demo consol
 
 **B · After-Hours Escalation Gate** — receives alerts outside 07:00–19:00 ET, scores severity, detection confidence, asset criticality (mock ServiceNow CMDB lookup) and business impact against configurable weights, pages the on-call analyst only above the configurable threshold, auto-suppresses below the floor, and queues everything else for the morning digest. Every alert gets an audit row with its score breakdown and a plain-English reason.
 
-**Demo console** — [SOC Console](<./SOC Console/README.md>) at `/soc-console` drives the whole thing live: scenario injector, threshold editor, demo clock override, decision audit, mock PagerDuty inbox, CMDB editor and digest preview.
+**Demo console** — [SOC Console](<./SOC Console/README.md>) at `/soc-console` drives the whole thing live: scenario injector, threshold editor, demo clock override, decision audit, mock PagerDuty inbox, CMDB editor and digest preview. Its **Guided tour** button runs a narrated, click-along walkthrough of the whole demo, from the overnight problem to the 3B close.
 
 #### Flow
 
@@ -67,3 +67,4 @@ Draft branches get their own volume contents; Live shares the space volume.
 - Change scoring shape: `scoreAlert` / `decideAlert` in `soclib.ts` — copy the edit into every step's `soclib.ts`.
 - Change digest wording or layout: the prompt and builders in [Write Digest](<./Write Digest/script.ts>).
 - Add a demo scenario: `SCENARIOS` in [Test Alert Intake/scenarios.ts](<./Test Alert Intake/scenarios.ts>), mirrored into [Console API/scenarios.ts](<./Console API/scenarios.ts>) so the console lists it.
+- Change the guided tour narrative: `STEPS` in [SOC Console/Tour.tsx](<./SOC Console/Tour.tsx>). Each entry names the tab, the `data-tour` anchor, the headline, the two supporting lines, the action to prompt for and the state change that advances it.

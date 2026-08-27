@@ -26,10 +26,11 @@ export function Audit({ state, now, busy, onReplay }: { state: ConsoleState; now
 
   return (
     <Card
+      dataTour="audit-rows"
       title="Decision audit"
       subtitle="Every alert the gate has seen, with score breakdown and reason — this is the auditable record"
       right={
-        <div className="flex flex-wrap items-center gap-2">
+        <div data-tour="audit-filters" className="flex flex-wrap items-center gap-2">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}

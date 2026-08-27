@@ -1,15 +1,16 @@
 import type { ReactNode } from "react";
 import type { Decision, Severity } from "./api";
 
-export function Card({ title, subtitle, right, children, className = "" }: {
+export function Card({ title, subtitle, right, children, className = "", dataTour }: {
   title?: string;
   subtitle?: string;
   right?: ReactNode;
   children: ReactNode;
   className?: string;
+  dataTour?: string;
 }) {
   return (
-    <section className={`rounded-xl border border-slate-800 bg-slate-900/60 shadow-lg shadow-black/20 ${className}`}>
+    <section data-tour={dataTour} className={`rounded-xl border border-slate-800 bg-slate-900/60 shadow-lg shadow-black/20 ${className}`}>
       {(title || right) && (
         <header className="flex items-start justify-between gap-4 border-b border-slate-800 px-4 py-3">
           <div>
@@ -24,12 +25,13 @@ export function Card({ title, subtitle, right, children, className = "" }: {
   );
 }
 
-export function Button({ children, onClick, variant = "default", disabled, className = "" }: {
+export function Button({ children, onClick, variant = "default", disabled, className = "", dataTour }: {
   children: ReactNode;
   onClick?: () => void;
   variant?: "default" | "primary" | "danger" | "ghost";
   disabled?: boolean;
   className?: string;
+  dataTour?: string;
 }) {
   const styles: Record<string, string> = {
     default: "border-slate-700 bg-slate-800 text-slate-100 hover:bg-slate-700",
@@ -40,6 +42,7 @@ export function Button({ children, onClick, variant = "default", disabled, class
   return (
     <button
       type="button"
+      data-tour={dataTour}
       onClick={onClick}
       disabled={disabled}
       className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition disabled:cursor-not-allowed disabled:opacity-40 ${styles[variant]} ${className}`}

@@ -41,7 +41,7 @@ export function Injector({
         <Card title="Scenario packs" subtitle="One click sends vendor-shaped alerts through the real gate chain">
           <div className="grid gap-3 sm:grid-cols-2">
             {state.scenarios.map((s) => (
-              <div key={s.id} className="flex flex-col rounded-lg border border-slate-800 bg-slate-950/40 p-3">
+              <div key={s.id} data-tour={`scenario-${s.id}`} className="flex flex-col rounded-lg border border-slate-800 bg-slate-950/40 p-3">
                 <span className="text-xs font-semibold text-slate-100">{s.name}</span>
                 <p className="mt-1 flex-1 text-[11px] leading-relaxed text-slate-500">{s.description}</p>
                 <div className="mt-3 flex items-center justify-between">

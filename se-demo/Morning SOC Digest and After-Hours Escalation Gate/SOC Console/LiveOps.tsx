@@ -28,7 +28,7 @@ export function LiveOps({ state, now }: { state: ConsoleState; now: Date }) {
   const recent = state.decisions.slice(0, 6);
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div data-tour="stats" className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <Stat label="Alerts received" value={c.received} />
         <Stat label="Paged" value={c.paged} tone="rose" />
         <Stat label="Deferred" value={c.deferred} tone="amber" />
@@ -39,6 +39,7 @@ export function LiveOps({ state, now }: { state: ConsoleState; now: Date }) {
 
       <div className="grid gap-4 lg:grid-cols-5">
         <Card
+          dataTour="timeline"
           className="lg:col-span-3"
           title="Gate event timeline"
           subtitle="Every decision, page, config change and digest, newest first"
