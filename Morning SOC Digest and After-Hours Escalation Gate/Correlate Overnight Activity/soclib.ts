@@ -39,6 +39,7 @@ export type GateConfig = {
   assetTierScores: Record<AssetTier | "unknown", number>;
   delivery: { slackChannel: string; emailTo: string; onCallName: string; onCallEmail: string; onCallPhone: string };
   digest: { lookbackHours: number; model: string };
+  notifications: { digestEmail: boolean; digestSlack: boolean; pageSlack: boolean };
 };
 
 export const TIMEZONE = "America/New_York";
@@ -60,6 +61,7 @@ export const DEFAULT_CONFIG: GateConfig = {
     onCallPhone: "+1-602-555-0142",
   },
   digest: { lookbackHours: 14, model: "claude-sonnet-4-6" },
+  notifications: { digestEmail: true, digestSlack: true, pageSlack: true },
 };
 
 export type CriticalAsset = {
@@ -234,7 +236,19 @@ export function mergeConfig(partial: unknown): GateConfig {
       lookbackHours: Math.round(num(p.digest?.lookbackHours, d.digest.lookbackHours, 1, 48)),
       model: str(p.digest?.model, d.digest.model),
     },
+    notifications: {
+      digestEmail: bool(p.notifications?.digestEmail, d.notifications.digestEmail),
+      digestSlack: bool(p.notifications?.digestSlack, d.notifications.digestSlack),
+      pageSlack: bool(p.notifications?.pageSlack, d.notifications.pageSlack),
+    },
   };
+}
+
+function bool(v: unknown, fallback: boolean): boolean {
+  if (typeof v === "boolean") return v;
+  if (v === "true" || v === 1 || v === "1") return true;
+  if (v === "false" || v === 0 || v === "0") return false;
+  return fallback;
 }
 
 function num(v: unknown, fallback: number, min: number, max: number): number {
@@ -536,20 +550,24 @@ export async function postSlack(channel: string, text: string, blocks?: unknown)
   }
 }
 
-/** Creates the mock PagerDuty event and the real Slack page notice. */
+/** Creates the mock PagerDuty event and, unless page notifications are off, the real Slack page notice. */
 export async function pageOnCall(
   db: Database,
   alert: Alert,
   result: GateResult,
   config: GateConfig,
-): Promise<{ pageId: string; slack: { ok: boolean; ts?: string; error?: string } }> {
+  options: { forceSlack?: boolean } = {},
+): Promise<{ pageId: string; slack: { ok: boolean; ts?: string; error?: string; skipped?: boolean } }> {
   const pageId = `PD-${alert.id}`;
   const payload = pagePayload(alert, result, config);
-  const slack = await postSlack(
-    config.delivery.slackChannel,
-    `After-hours page (score ${result.score}): ${alert.title}`,
-    slackPageBlocks(alert, result, config),
-  );
+  const sendSlack = options.forceSlack === true || config.notifications.pageSlack;
+  const slack: { ok: boolean; ts?: string; error?: string; skipped?: boolean } = sendSlack
+    ? await postSlack(
+        config.delivery.slackChannel,
+        `After-hours page (score ${result.score}): ${alert.title}`,
+        slackPageBlocks(alert, result, config),
+      )
+    : { ok: true, skipped: true };
   db.query(
     `INSERT INTO paged_events (id, alert_id, created_at, status, on_call, score, payload, slack_channel, slack_ts, slack_error)
      VALUES (?, ?, ?, 'triggered', ?, ?, ?, ?, ?, ?)
@@ -566,12 +584,13 @@ export async function pageOnCall(
     JSON.stringify(payload),
     config.delivery.slackChannel,
     slack.ts ?? null,
-    slack.ok ? null : (slack.error ?? "unknown_error"),
+    slack.skipped ? "skipped: Slack page notices disabled" : slack.ok ? null : (slack.error ?? "unknown_error"),
   );
   logEvent(db, alert.receivedAt, "page", `Paged ${config.delivery.onCallName} for ${alert.title}`, {
     alertId: alert.id,
     pageId,
     slackOk: slack.ok,
+    slackSkipped: slack.skipped === true,
     slackError: slack.error ?? null,
   });
   return { pageId, slack };

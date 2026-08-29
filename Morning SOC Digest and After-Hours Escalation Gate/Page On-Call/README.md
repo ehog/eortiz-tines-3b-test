@@ -5,3 +5,4 @@ Pages the on-call analyst for alerts the gate decided to escalate.
 - **Output:** `{ "pages": [{ alertId, pageId, score, slackOk, slackError }] }`.
 - Exits nonzero if any Slack notice failed, after recording the failure on the page row so the console shows it.
 - **Connector:** Slack. **Volume:** `soc_state`, exclusive writer.
+- **Notifications:** when `notifications.pageSlack` is off, the mock PagerDuty event is still written but the Slack notice is skipped and the page row records `skipped: Slack page notices disabled`. An envelope with `forceSlack: true` posts regardless.

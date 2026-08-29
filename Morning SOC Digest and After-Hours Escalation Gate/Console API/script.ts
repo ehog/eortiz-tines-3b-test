@@ -189,7 +189,12 @@ function state() {
     deferredQueue,
     digests,
     timeline,
-    routes: { testAlert: `${branch}/api/test-alert`, runDigest: `${branch}/api/run-digest`, console: `${branch}/api/console` },
+    routes: {
+      testAlert: `${branch}/api/test-alert`,
+      runDigest: `${branch}/api/run-digest`,
+      sendDigest: `${branch}/api/send-digest`,
+      console: `${branch}/api/console`,
+    },
   };
 }
 
@@ -283,6 +288,24 @@ switch (action) {
     const config = saveConfig(db, req.config);
     logEvent(db, nowIso, "config", `Gate configuration updated (threshold ${config.pageThreshold})`, { actor });
     respond(200, "OK", { ok: true, message: `Configuration saved · page threshold ${config.pageThreshold}`, state: state() });
+    break;
+  }
+  case "set_notifications": {
+    const current = getConfig(db);
+    const patch = (req.notifications ?? {}) as Record<string, unknown>;
+    const config = saveConfig(db, { ...current, notifications: { ...current.notifications, ...patch } });
+    const on = Object.entries(config.notifications)
+      .filter(([, v]) => v)
+      .map(([k]) => k);
+    logEvent(db, nowIso, "config:notifications", `Notifications updated: ${on.length ? on.join(", ") : "all disabled"}`, {
+      actor,
+      notifications: config.notifications,
+    });
+    respond(200, "OK", {
+      ok: true,
+      message: on.length ? `Notifications enabled: ${on.join(", ")}` : "All notifications disabled",
+      state: state(),
+    });
     break;
   }
   case "set_clock": {

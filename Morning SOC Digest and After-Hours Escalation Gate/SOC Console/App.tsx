@@ -6,6 +6,7 @@ import {
   fetchState,
   postAction,
   runDigest,
+  sendDigestNotifications,
   sendTestAlert,
   type Asset,
   type ClockMode,
@@ -130,6 +131,24 @@ export default function App() {
     } catch (err) {
       setDigestRunning(false);
       setToast(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const sendNow = async (channels: string[], digestId?: number) => {
+    const label = channels.length === 1 ? (channels[0] === "email" ? "Email" : "Slack post") : "Email and Slack post";
+    setBusy(true);
+    setToast(`${label} sending…`);
+    try {
+      await sendDigestNotifications(channels, digestId);
+      for (const delay of [1200, 2500, 4000]) {
+        await new Promise((r) => setTimeout(r, delay));
+        await refresh();
+      }
+      setToast(`${label} sent — see delivery status under “Run details”`);
+    } catch (err) {
+      setToast(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -282,7 +301,17 @@ export default function App() {
             onDelete={(hostname) => void act({ action: "delete_asset", hostname })}
           />
         )}
-        {tab === "digest" && <Digest state={state} now={now} busy={busy} digestRunning={digestRunning} onRun={() => void startDigest()} />}
+        {tab === "digest" && (
+          <Digest
+            state={state}
+            now={now}
+            busy={busy}
+            digestRunning={digestRunning}
+            onRun={() => void startDigest()}
+            onToggleNotifications={(notifications) => void act({ action: "set_notifications", notifications })}
+            onSend={(channels, digestId) => void sendNow(channels, digestId)}
+          />
+        )}
       </main>
 
       {tourOpen && (

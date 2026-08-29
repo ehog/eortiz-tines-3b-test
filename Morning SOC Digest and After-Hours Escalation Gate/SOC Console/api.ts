@@ -31,6 +31,7 @@ export type GateConfig = {
   assetTierScores: Record<string, number>;
   delivery: { slackChannel: string; emailTo: string; onCallName: string; onCallEmail: string; onCallPhone: string };
   digest: { lookbackHours: number; model: string };
+  notifications: { digestEmail: boolean; digestSlack: boolean; pageSlack: boolean };
 };
 
 export type Asset = {
@@ -118,7 +119,7 @@ export type ConsoleState = {
   deferredQueue: DeferredRow[];
   digests: DigestRow[];
   timeline: TimelineRow[];
-  routes: { testAlert: string; runDigest: string; console: string };
+  routes: { testAlert: string; runDigest: string; sendDigest: string; console: string };
 };
 
 const routePath: string = (window as unknown as { __ROUTE_PATH__?: string }).__ROUTE_PATH__ ?? "";
@@ -153,6 +154,15 @@ export async function sendTestAlert(payload: Record<string, unknown>): Promise<v
 export async function runDigest(): Promise<void> {
   const res = await fetch(`${BASE}/api/run-digest`, { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
   if (!res.ok && res.status !== 202) throw new Error(`Digest trigger returned ${res.status}`);
+}
+
+export async function sendDigestNotifications(channels: string[], digestId?: number): Promise<void> {
+  const res = await fetch(`${BASE}/api/send-digest`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ channels, digestId, force: true }),
+  });
+  if (!res.ok && res.status !== 202) throw new Error(`Digest send returned ${res.status}`);
 }
 
 export const ET = "America/New_York";

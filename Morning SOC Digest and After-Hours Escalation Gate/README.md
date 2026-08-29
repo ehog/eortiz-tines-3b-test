@@ -20,7 +20,14 @@ Collect Overnight Activity (cron 06:00 ET, or POST /api/run-digest)
    └─→ Correlate Overnight Activity
           └─→ Write Digest (Claude) ─┬─→ Email Digest (Gmail)
                                      └─→ Post Digest to Slack
+
+Send Digest Notifications (POST /api/send-digest, console) ─┬─→ Email Digest
+                                                            └─→ Post Digest to Slack
 ```
+
+#### Notifications
+
+Three switches in `config.notifications` — `digestEmail`, `digestSlack` and `pageSlack` — control outbound delivery. When a channel is off, the step still runs but skips the send and records a `skipped: …` delivery status plus a timeline entry, so the demo can run silently without breaking the audit trail. The console's **Notifications** card on the Morning digest tab flips them (`set_notifications` on [Console API](<./Console API/README.md>)) and can send the current digest on demand through [Send Digest Notifications](<./Send Digest Notifications/README.md>), which passes `force` so a manual send ignores the toggles.
 
 #### Steps
 
@@ -36,6 +43,7 @@ Collect Overnight Activity (cron 06:00 ET, or POST /api/run-digest)
 | [Email Digest](<./Email Digest/README.md>) | Sends the digest via Gmail |
 | [Post Digest to Slack](<./Post Digest to Slack/README.md>) | Posts the digest to Slack |
 | [Run Digest Now](<./Run Digest Now/README.md>) | Manual digest trigger for the console |
+| [Send Digest Notifications](<./Send Digest Notifications/README.md>) | Manual email / Slack send of an existing digest |
 | [Console API](<./Console API/README.md>) | Console state and control actions |
 | [SOC Console](<./SOC Console/README.md>) | The demo web app |
 
@@ -52,14 +60,14 @@ Draft branches get their own volume contents; Live shares the space volume.
 
 #### Access
 
-- `/soc-console`, `/api/console`, `/api/test-alert` and `/api/run-digest` — space members only.
+- `/soc-console`, `/api/console`, `/api/test-alert`, `/api/run-digest` and `/api/send-digest` — space members only.
 - `/alerts` — `external_id`; call it with the route's generated `external_id` query parameter. Draft access is still floored to space membership until published.
 
 #### Operational notes
 
 - The cron is `0 10,11 * * 1-5` (UTC) and the collector exits with no output unless it is 06:00 in America/New_York, so it fires exactly once a day across DST changes. Manual runs bypass that check.
 - Scoring uses the alert's own `receivedAt` as the decision time, so decisions are deterministic and replaying an alert is idempotent — one audit row and one page per alert id.
-- Nothing about the gate is hardcoded: thresholds, weights, factor score tables, coverage window, on-call details, Slack channel, email recipient, digest lookback and model all live in `config` and are editable in the console.
+- Nothing about the gate is hardcoded: thresholds, weights, factor score tables, coverage window, on-call details, Slack channel, email recipient, digest lookback, model and the notification switches all live in `config` and are editable in the console.
 
 #### Common changes
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button, Card, Empty, ScoreBar, SeverityTag } from "./ui";
-import { etTime, relative, type ConsoleState } from "./api";
+import { Button, Card, Empty, ScoreBar, SeverityTag, Toggle } from "./ui";
+import { etTime, relative, type ConsoleState, type GateConfig } from "./api";
 
 export function Digest({
   state,
@@ -8,12 +8,16 @@ export function Digest({
   busy,
   digestRunning,
   onRun,
+  onToggleNotifications,
+  onSend,
 }: {
   state: ConsoleState;
   now: Date;
   busy: boolean;
   digestRunning: boolean;
   onRun: () => void;
+  onToggleNotifications: (patch: Partial<GateConfig["notifications"]>) => void;
+  onSend: (channels: string[], digestId?: number) => void;
 }) {
   const [view, setView] = useState<"email" | "markdown" | "slack" | "meta">("email");
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -132,6 +136,53 @@ export function Digest({
           )}
         </Card>
       </div>
+
+      <Card
+        dataTour="notifications"
+        title="Notifications"
+        subtitle="Turn outbound delivery off for a quiet demo, or send the current digest on demand"
+        right={
+          <div className="flex flex-wrap gap-2">
+            <Button variant="primary" disabled={busy || !digest} onClick={() => onSend(["email"], digest?.id)}>
+              Send email now
+            </Button>
+            <Button variant="primary" disabled={busy || !digest} onClick={() => onSend(["slack"], digest?.id)}>
+              Send to Slack now
+            </Button>
+            <Button disabled={busy || !digest} onClick={() => onSend(["email", "slack"], digest?.id)}>
+              Send both
+            </Button>
+          </div>
+        }
+      >
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Toggle
+            label="Digest email"
+            hint="Gmail send after every digest run"
+            checked={state.config.notifications.digestEmail}
+            disabled={busy}
+            onChange={(next) => onToggleNotifications({ digestEmail: next })}
+          />
+          <Toggle
+            label="Digest Slack post"
+            hint={`Posts to ${state.config.delivery.slackChannel}`}
+            checked={state.config.notifications.digestSlack}
+            disabled={busy}
+            onChange={(next) => onToggleNotifications({ digestSlack: next })}
+          />
+          <Toggle
+            label="Slack page notices"
+            hint="Slack message when the gate pages on-call"
+            checked={state.config.notifications.pageSlack}
+            disabled={busy}
+            onChange={(next) => onToggleNotifications({ pageSlack: next })}
+          />
+        </div>
+        <p className="mt-3 text-[11px] text-slate-500">
+          Disabled channels still record a skipped delivery status on the digest and in the timeline. The send buttons override the toggles
+          and deliver {digest ? `digest #${digest.id}` : "the selected digest"} immediately.
+        </p>
+      </Card>
 
       {state.digests.length > 1 && (
         <Card title="Recent digests">
