@@ -3,7 +3,7 @@ import { getConfig, openWritable, pageOnCall, type Alert, type GateConfig, type 
 const raw = await Bun.stdin.text();
 const lines = raw.split("\n").map((l) => l.trim()).filter(Boolean);
 
-type Envelope = { alert: Alert; result: GateResult; config?: GateConfig };
+type Envelope = { alert: Alert; result: GateResult; config?: GateConfig; forceSlack?: boolean };
 
 const envelopes: Envelope[] = [];
 for (const line of lines) {
@@ -25,13 +25,22 @@ const stored = getConfig(db);
 const results: Array<Record<string, unknown>> = [];
 let failures = 0;
 
-for (const { alert, result, config } of envelopes) {
+for (const { alert, result, config, forceSlack } of envelopes) {
   const effective = config ?? stored;
-  const { pageId, slack } = await pageOnCall(db, alert, result, effective);
+  const { pageId, slack } = await pageOnCall(db, alert, result, effective, { forceSlack: forceSlack === true });
   if (!slack.ok) failures += 1;
-  results.push({ alertId: alert.id, pageId, score: result.score, slackOk: slack.ok, slackError: slack.error ?? null });
+  results.push({
+    alertId: alert.id,
+    pageId,
+    score: result.score,
+    slackOk: slack.ok,
+    slackSkipped: slack.skipped === true,
+    slackError: slack.error ?? null,
+  });
   console.error(
-    `Page ${pageId} for ${alert.id} (score ${result.score}) → Slack ${slack.ok ? `ok ts=${slack.ts}` : `failed: ${slack.error}`}`,
+    `Page ${pageId} for ${alert.id} (score ${result.score}) → Slack ${
+      slack.skipped ? "skipped (notifications disabled)" : slack.ok ? `ok ts=${slack.ts}` : `failed: ${slack.error}`
+    }`,
   );
 }
 

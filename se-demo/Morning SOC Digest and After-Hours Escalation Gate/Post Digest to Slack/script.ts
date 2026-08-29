@@ -1,4 +1,4 @@
-import { logEvent, openWritable, postSlack, truncate } from "./soclib";
+import { getConfig, logEvent, openWritable, postSlack, truncate } from "./soclib";
 
 type DigestPayload = {
   digestId: number;
@@ -6,6 +6,10 @@ type DigestPayload = {
   slackText: string;
   delivery: { slackChannel: string };
   stats: Record<string, number>;
+  /** Set by a manual resend to post even when digest Slack notifications are off. */
+  force?: boolean;
+  /** Set by a manual resend to pick channels; absent means every enabled channel. */
+  channels?: string[];
 };
 
 const raw = await Bun.stdin.text();
@@ -15,6 +19,29 @@ if (!raw.trim()) {
 }
 const digest = JSON.parse(raw) as DigestPayload;
 const channel = digest.delivery.slackChannel;
+
+if (Array.isArray(digest.channels) && !digest.channels.includes("slack")) {
+  console.error(`Digest #${digest.digestId}: Slack post not requested by this run.`);
+  process.exit(0);
+}
+
+{
+  const db = openWritable();
+  const enabled = getConfig(db).notifications.digestSlack;
+  if (!enabled && digest.force !== true) {
+    const status = "skipped: digest Slack notifications disabled";
+    db.query("UPDATE digests SET slack_status = ? WHERE id = ?").run(status, digest.digestId);
+    logEvent(db, new Date().toISOString(), "digest:slack", `Digest #${digest.digestId} Slack post skipped: notifications disabled`, {
+      digestId: digest.digestId,
+      status,
+    });
+    db.close();
+    console.error(`Digest #${digest.digestId}: Slack post skipped, digest Slack notifications are disabled.`);
+    console.log(JSON.stringify({ digestId: digest.digestId, channel, skipped: true, reason: "notifications_disabled" }));
+    process.exit(0);
+  }
+  db.close();
+}
 
 // Slack section blocks cap at 3000 characters, so the digest is chunked on blank lines,
 // then on single newlines, then hard-sliced so no chunk can exceed the limit.

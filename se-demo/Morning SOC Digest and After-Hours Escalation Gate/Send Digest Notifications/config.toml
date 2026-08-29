@@ -1,0 +1,5 @@
+color = "teal"
+route = "/api/send-digest"
+route_auth = "space"
+timeout = 30
+links = ["Email Digest", "Post Digest to Slack"]

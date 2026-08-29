@@ -1,4 +1,4 @@
-import { openWritable, logEvent, truncate } from "./soclib";
+import { getConfig, openWritable, logEvent, truncate } from "./soclib";
 
 type DigestPayload = {
   digestId: number;
@@ -6,6 +6,10 @@ type DigestPayload = {
   html: string;
   markdown: string;
   delivery: { emailTo: string };
+  /** Set by a manual resend to send even when digest email notifications are off. */
+  force?: boolean;
+  /** Set by a manual resend to pick channels; absent means every enabled channel. */
+  channels?: string[];
 };
 
 const raw = await Bun.stdin.text();
@@ -15,6 +19,29 @@ if (!raw.trim()) {
 }
 const digest = JSON.parse(raw) as DigestPayload;
 const to = digest.delivery.emailTo;
+
+if (Array.isArray(digest.channels) && !digest.channels.includes("email")) {
+  console.error(`Digest #${digest.digestId}: email not requested by this run.`);
+  process.exit(0);
+}
+
+{
+  const db = openWritable();
+  const enabled = getConfig(db).notifications.digestEmail;
+  if (!enabled && digest.force !== true) {
+    const status = "skipped: digest email notifications disabled";
+    db.query("UPDATE digests SET email_status = ? WHERE id = ?").run(status, digest.digestId);
+    logEvent(db, new Date().toISOString(), "digest:email", `Digest #${digest.digestId} email skipped: notifications disabled`, {
+      digestId: digest.digestId,
+      status,
+    });
+    db.close();
+    console.error(`Digest #${digest.digestId}: email skipped, digest email notifications are disabled.`);
+    console.log(JSON.stringify({ digestId: digest.digestId, emailTo: to, skipped: true, reason: "notifications_disabled" }));
+    process.exit(0);
+  }
+  db.close();
+}
 
 function encodeHeader(value: string): string {
   return /^[\x20-\x7e]*$/.test(value) ? value : `=?UTF-8?B?${Buffer.from(value, "utf8").toString("base64")}?=`;
