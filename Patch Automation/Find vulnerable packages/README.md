@@ -1,6 +1,6 @@
 Scheduled scan (weekdays 13:00 UTC) that correlates Automox CVE-bearing packages against device inventories.
 
-Calls `GET /api/orgs/{org}/packages`, `GET /api/servers`, and `GET /api/servers/{id}/packages` on `console.automox.com` (Automox connector; org ID is the `ORG_ID` constant). Packages whose `severity` is `no_known_cves` are ignored.
+Calls `GET /api/orgs/{org}/packages`, `GET /api/servers`, and `GET /api/servers/{id}/packages` on `console.automox.com` (Automox connector; org ID is the `ORG_ID` constant). Packages whose `severity` is `no_known_cves` are ignored. Each GET has a 10-second timeout and up to three attempts for network errors or HTTP 408, 429, 500, 502, 503, and 504, with exponential backoff and jitter. Retry-After is honored within a 10-second wait budget; longer waits fail the scan for a later rerun. Permanent errors fail immediately. Persistent 502 tunnel errors require checking connector connectivity and tunnel health. Failed scans do not reach the state update or emit alerts.
 
 Output: `{ organization_id, total_matches, items: [{ device_id, device_name, package_id, package_name, severity }] }`, capped at `MAX_ALERTS` (5) — the equivalent of the story's Implode/Explode top-5 limiter. Emits nothing when there are no matches, which stops the run.
 
