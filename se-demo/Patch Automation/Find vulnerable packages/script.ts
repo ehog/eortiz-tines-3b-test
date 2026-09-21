@@ -6,9 +6,35 @@ const MAX_ALERTS = 5;
 
 async function get(path: string): Promise<any> {
   const url = `${BASE}${path}${path.includes("?") ? "&" : "?"}o=${ORG_ID}`;
-  const res = await fetch(url, { headers: { Accept: "application/json" } });
-  if (!res.ok) throw new Error(`GET ${path} failed: ${res.status} ${await res.text()}`);
-  return res.json();
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(10_000),
+      });
+    } catch (error) {
+      if (attempt === 3) {
+        throw new Error(`Automox GET ${path} failed after ${attempt} attempts: network or timeout error. Check connector connectivity and tunnel health.`, { cause: error });
+      }
+      console.error(`Automox GET ${path}: network or timeout error; retry ${attempt}/2`);
+      await Bun.sleep(1000 * 2 ** (attempt - 1) + Math.random() * 250);
+      continue;
+    }
+    if (res.ok) return res.json();
+    const retryable = [408, 429, 500, 502, 503, 504].includes(res.status);
+    await res.body?.cancel();
+    if (!retryable || attempt === 3) {
+      throw new Error(`Automox GET ${path} failed: HTTP ${res.status} after ${attempt} attempt(s). ${res.status === 502 ? "Check connector connectivity and tunnel health." : "Check Automox availability, permissions, and request parameters."}`);
+    }
+    const retryAfter = res.headers.get("Retry-After");
+    const seconds = retryAfter === null ? NaN : Number(retryAfter);
+    const delay = retryAfter === null ? 0 : Number.isFinite(seconds) ? seconds * 1000 : Date.parse(retryAfter) - Date.now();
+    if (delay > 10_000) throw new Error(`Automox GET ${path}: HTTP ${res.status}; Retry-After exceeds the retry budget. Retry the scan later.`);
+    console.error(`Automox GET ${path}: HTTP ${res.status}; retry ${attempt}/2`);
+    await Bun.sleep(Math.max(Number.isFinite(delay) ? delay : 0, 1000 * 2 ** (attempt - 1)) + Math.random() * 250);
+  }
+  throw new Error(`Automox GET ${path}: retry budget exhausted`);
 }
 
 const orgPackages: any[] = await get(`/orgs/${ORG_ID}/packages`);
