@@ -167,6 +167,8 @@ export default function App() {
     );
   }
 
+  const notificationsEnabled = Object.values(state.config.notifications).some(Boolean);
+  const allNotificationsEnabled = Object.values(state.config.notifications).every(Boolean);
   const hour = etHour(now);
   const weekend = etWeekday(now) === 0 || etWeekday(now) === 6;
   const realAfterHours =
@@ -211,6 +213,27 @@ export default function App() {
                   {m.label}
                 </button>
               ))}
+            </div>
+
+            <div className="flex flex-col items-start gap-1">
+              <Button
+                dataTour="notifications-toggle"
+                variant={notificationsEnabled ? "danger" : "primary"}
+                disabled={busy || !!error}
+                onClick={() => void act({
+                  action: "set_notifications",
+                  notifications: {
+                    digestEmail: !notificationsEnabled,
+                    digestSlack: !notificationsEnabled,
+                    pageSlack: !notificationsEnabled,
+                  },
+                })}
+              >
+                {notificationsEnabled ? "Disable notifications" : "Enable all notifications"}
+              </Button>
+              <span role="status" className="text-[11px] text-slate-400">
+                Automatic notifications: {allNotificationsEnabled ? "on" : notificationsEnabled ? "partially on" : "off"}
+              </span>
             </div>
 
             <Button
@@ -261,6 +284,13 @@ export default function App() {
         {error && (
           <p className="mb-4 rounded-lg border border-rose-500/40 bg-rose-500/10 px-4 py-2 text-xs text-rose-200">
             Console API error: {error} — showing the last known state.
+          </p>
+        )}
+
+        {!notificationsEnabled && (
+          <p role="status" className="mb-4 rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-xs text-slate-300">
+            Automatic notifications are off: digest email, digest Slack posts, and Slack page notices will not be sent.
+            Alert processing and digest generation continue. Explicit manual sends still send notifications; messages already in flight may still arrive.
           </p>
         )}
 
