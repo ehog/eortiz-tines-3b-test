@@ -20,5 +20,6 @@ RUN \
 
 VOLUME ["servicenow_store:concurrency=exclusive"]
 VOLUME ["pipeline_state:concurrency=exclusive"]
+VOLUME ["audit:concurrency=exclusive"]
 
 CMD ./bun ./script.ts
