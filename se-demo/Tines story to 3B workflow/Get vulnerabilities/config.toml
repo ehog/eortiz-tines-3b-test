@@ -1,0 +1,2 @@
+color = "sky"
+connectors = [{ name = "crowdstrike", type = "crowdStrike" }]
