@@ -1,0 +1,3 @@
+color = "orange"
+timeout = 60
+links = ["Notify operations"]

@@ -1,0 +1,4 @@
+color = "sky"
+cron = "0 13 * * 1-5"
+timeout = 60
+links = ["Calculate reorder points"]
