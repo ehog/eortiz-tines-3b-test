@@ -1,5 +1,4 @@
 import { Database } from "bun:sqlite";
-import { accessSync, constants, copyFileSync, existsSync, renameSync } from "node:fs";
 
 export const DB_PATH = "/storage/patching/state.db";
 
@@ -7,21 +6,7 @@ export function findingId(deviceId: string | number, packageId: string | number)
   return `${deviceId}|${packageId}`;
 }
 
-// Older runs left the file owned by another uid with mode 644; the directory is
-// writable, so replace the file with a copy this process owns.
-function ensureWritable(path: string) {
-  if (!existsSync(path)) return;
-  try {
-    accessSync(path, constants.W_OK);
-  } catch {
-    const tmp = `${path}.tmp-${process.pid}`;
-    copyFileSync(path, tmp);
-    renameSync(tmp, path);
-  }
-}
-
 export function openState(): Database {
-  ensureWritable(DB_PATH);
   const db = new Database(DB_PATH, { create: true });
   db.exec(`
     CREATE TABLE IF NOT EXISTS findings (
