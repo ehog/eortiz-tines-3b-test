@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@source "./*.tsx";
+
+body {
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-color: #f5f7f9;
+  color: #4a5a67;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,6 @@
+color = "sky"
+route = "/ds-console"
+route_type = "webpage"
+title = "DS AI Governance Console"
+output = true
+timeout = 45

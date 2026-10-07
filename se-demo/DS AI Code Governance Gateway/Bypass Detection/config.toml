@@ -1,0 +1,3 @@
+color = "red"
+timeout = 30
+links = ["Credential Handling Demo"]

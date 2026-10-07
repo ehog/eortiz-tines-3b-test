@@ -1,0 +1,26 @@
+{
+  "get": {
+    "summary": "Read the full governance ledger",
+    "description": "Returns every submission with its policy findings, the audit ledger, raised security events, and the model-policy configuration. Backs the DS AI Governance Console.",
+    "responses": {
+      "200": {
+        "description": "Governance ledger snapshot",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "generated_at": { "type": "string", "format": "date-time" },
+                "seeded": { "type": "boolean" },
+                "submissions": { "type": "array", "items": { "type": "object" } },
+                "audit": { "type": "array", "items": { "type": "object" } },
+                "security_events": { "type": "array", "items": { "type": "object" } },
+                "policy": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
