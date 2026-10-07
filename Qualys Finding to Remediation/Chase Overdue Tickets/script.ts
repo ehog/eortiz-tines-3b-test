@@ -2,6 +2,9 @@
 // bump, and a digest of who is late. Chases a given change at most once per day
 // so repeated runs do not spam the record.
 import { runStage } from "./stage";
+import { log, audit } from "./logging";
+
+log("info", "chase_started", "Starting overdue ticket chase.");
 import { referenceNow } from "./pipeline-db";
 import { openWrite as openSnow, listTickets, updateTicket, addWorkNote } from "./snow-db";
 
@@ -46,6 +49,9 @@ await runStage<{ as_of?: string }, ChaseResult>({
     const escalated: Escalation[] = [];
     const skipped: string[] = [];
 
+    log("info", "tickets_loaded", "Loaded open changes.", { run_id: runId, count: open.length, overdue_count: overdue.length });
+    try {
+    snow.transaction(() => {
     for (const ticket of overdue) {
       const daysOverdue = Math.max(
         1,
@@ -96,6 +102,17 @@ await runStage<{ as_of?: string }, ChaseResult>({
       });
     }
 
+    }).immediate();
+    } finally {
+      snow.close();
+    }
+    for (const ticket of escalated) {
+      audit(runId, "ticket_escalated", ticket.sys_id, "success", { priority: ticket.priority, escalation_level: ticket.escalation_level });
+    }
+    for (const number of skipped) {
+      log("warn", "ticket_skipped", "Change was already chased today.", { run_id: runId, number });
+    }
+    if (open.length > overdue.length) log("warn", "tickets_filtered", "Changes within SLA were excluded.", { count: open.length - overdue.length, run_id: runId });
     escalated.sort((a, b) => b.days_overdue - a.days_overdue);
 
     const payload: ChaseResult = {
@@ -127,4 +144,10 @@ await runStage<{ as_of?: string }, ChaseResult>({
       emit: escalated.length > 0,
     };
   },
+}).then(() => {
+  log("info", "chase_completed", "Completed overdue ticket chase.");
+}).catch((error) => {
+  log("error", "chase_failed", "Overdue ticket chase failed.", { error: error instanceof Error ? error.message : String(error) });
+  audit("unknown", "chase_failed", "chase", "failure");
+  throw error;
 });
