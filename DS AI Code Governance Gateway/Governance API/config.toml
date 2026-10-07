@@ -1,0 +1,6 @@
+color = "sky"
+route = "/ds-governance-api"
+route_type = "api"
+title = "Governance data API"
+output = true
+timeout = 45

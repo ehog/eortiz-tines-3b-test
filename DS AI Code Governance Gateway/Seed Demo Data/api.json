@@ -1,0 +1,12 @@
+{
+  "post": {
+    "summary": "Reset and reseed the demo ledger",
+    "description": "Clears the governance volume and writes a deterministic demo dataset: 42 historical submissions (including two blocked bypass attempts) and 5 pending reviews (including a HIPAA model-policy violation).",
+    "responses": {
+      "200": {
+        "description": "Seed summary",
+        "content": { "application/json": { "schema": { "type": "object", "properties": { "seeded": { "type": "boolean" }, "submissions": { "type": "integer" }, "audit_records": { "type": "integer" }, "security_events": { "type": "integer" }, "breakdown": { "type": "object" } } } } }
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "post": {
+    "summary": "Record a human review decision on a pending submission",
+    "description": "Approve, reject, or request changes on a pending deployment submission. Approval promotes the artifact through the mocked deploy step; every decision is appended to the audit ledger.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["submission_id", "decision", "reviewer", "comment"],
+            "properties": {
+              "submission_id": { "type": "string", "description": "Submission to decide on. Must currently be pending." },
+              "decision": { "type": "string", "enum": ["approve", "reject", "request-changes"] },
+              "reviewer": { "type": "string", "description": "Name and role of the reviewer, recorded in the audit ledger." },
+              "comment": { "type": "string", "minLength": 1, "description": "Required rationale, recorded in the audit ledger." }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Decision recorded; body describes the resulting disposition and any deployment.",
+        "content": { "application/json": { "schema": { "type": "object", "properties": { "submission_id": { "type": "string" }, "status": { "type": "string" }, "deployment": { "type": ["object", "null"] } } } } }
+      },
+      "409": { "description": "Submission has already been decided." },
+      "422": { "description": "Missing or invalid fields." }
+    }
+  }
+}

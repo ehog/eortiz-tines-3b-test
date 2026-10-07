@@ -1,0 +1,3 @@
+color = "green"
+timeout = 45
+links = ["Deploy to Production"]
