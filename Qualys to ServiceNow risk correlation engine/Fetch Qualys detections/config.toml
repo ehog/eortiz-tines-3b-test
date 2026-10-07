@@ -1,0 +1,4 @@
+color = "orange"
+cron = "0 */4 * * *"
+timeout = 300
+links = ["Enrich with Defender"]
