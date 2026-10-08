@@ -1,4 +1,5 @@
 import { Database } from "bun:sqlite";
+import { statSync } from "node:fs";
 
 export const DB_PATH = "/storage/mock_state/mock.db";
 
@@ -55,7 +56,12 @@ export function openWritable(): Database {
 }
 
 export function openReadOnly(): Database | null {
-  if (!Bun.file(DB_PATH).size) return null;
+  try {
+    if (statSync(DB_PATH).size === 0) return null;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
   return new Database(DB_PATH, { readonly: true });
 }
 
