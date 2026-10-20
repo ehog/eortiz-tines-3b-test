@@ -1,0 +1,5 @@
+color = "purple"
+output = true
+route = "/ai-visibility-scorecard"
+route_type = "webpage"
+title = "Tines AI Visibility Scorecard"

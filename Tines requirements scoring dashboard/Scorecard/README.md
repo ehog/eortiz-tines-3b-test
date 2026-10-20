@@ -1,0 +1,1 @@
+Interactive dashboard served at `/ai-visibility-scorecard`. It scores Tines against requirements AIV-01 to AIV-32 from the AI Visibility requirements document. For each requirement it shows importance, maturity, fit type, a 1–10 score and the reasoning behind it, plus importance-weighted totals (H=3, M=2, L=1). The data lives in the `R` array in [App.tsx](App.tsx); edit it there.
