@@ -3,4 +3,4 @@ output = true
 route = "/atlas/data"
 route_type = "api"
 title = "Console data feed"
-timeout = 45
+timeout = 120
