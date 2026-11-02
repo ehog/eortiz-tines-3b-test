@@ -1,0 +1,22 @@
+import {strict as assert} from 'node:assert';
+import {createHmac,timingSafeEqual} from 'node:crypto';
+import {scan,analyze} from './rules';import {fixture,fixtureEvidence,scenarios} from './fixtures';import {identity,isWorkflow,log,validatePush,safePath} from './common';
+log('tests_started','Running deterministic security regression tests.');const passed:string[]=[];
+function test(name:string,fn:()=>void){fn();passed.push(name);}
+for(const s of scenarios)test(`fixture-${s.id}`,()=>{const r=analyze(fixtureEvidence(fixture(s.id)));if(s.id==='unrelated')assert.equal(r.status,'skipped');if(s.id==='safe')assert.equal(r.findings.length,0);if(s.id==='unsafe-pr'){assert(r.findings.some((x:any)=>x.rule==='permissions/write-all'));assert(r.findings.some((x:any)=>x.rule==='pr-target/untrusted-checkout'&&x.severity==='critical'));}if(s.id==='exfiltration')assert(r.findings.some((x:any)=>x.rule==='exfiltration/secret-transfer'&&x.kind==='suspicious_behavior'));});
+test('path-filter',()=>{assert(isWorkflow('.github/workflows/a.yaml'));assert(!isWorkflow('.github/workflows/nested/a.yml'));assert(!isWorkflow('src/a.yml'));assert(!safePath('../secret'));});
+test('identity-independent-of-delivery',()=>{const e=fixture('safe');assert.equal(identity(e),identity({...e,delivery:'another'}));assert.notEqual(identity(e),identity({...e,ref:'refs/heads/other'}));});
+test('unchanged-risk-is-pre-existing',()=>{const r=fixtureEvidence(fixture('unsafe-pr'));r.files[0].before=r.files[0].after;assert(analyze(r).findings.every((x:any)=>x.introduced==='pre_existing'));});
+test('deletion-resolves-known-risk',()=>{const r=fixtureEvidence(fixture('unsafe-pr'));r.files[0].before=r.files[0].after;r.files[0].after='';r.files[0].status='removed';assert(analyze(r).findings.every((x:any)=>x.introduced==='resolved'));});
+test('missing-before-is-unknown',()=>{const r:any=fixtureEvidence(fixture('unsafe-pr'));r.files[0].before=null;assert(analyze(r).findings.every((x:any)=>x.introduced==='unknown'));});
+test('incomplete-never-skipped',()=>{const r=fixtureEvidence(fixture('unrelated'));r.coverage.changeDetection='incomplete';assert.equal(analyze(r).status,'incomplete');});
+test('invalid-yaml',()=>assert(scan('jobs:\n  a: [\n','x.yml').parseError));
+test('null-job-does-not-crash',()=>assert(scan('jobs:\n  invalid:\n','x.yml').questions.length));
+test('injection-detected',()=>assert(scan('on: pull_request\njobs:\n  x:\n    steps:\n      - run: echo "${{ github.event.pull_request.title }}"\n','x.yml').findings.some(x=>x.rule==='injection/untrusted-expression')));
+test('self-hosted-exposure',()=>assert(scan('on: pull_request\njobs:\n  x:\n    runs-on: self-hosted\n','x.yml').findings.some(x=>x.rule==='runners/untrusted-self-hosted')));
+test('mutable-action',()=>assert(scan('jobs:\n  x:\n    steps:\n      - uses: vendor/action@main\n','x.yml').findings.some(x=>x.rule==='supply-chain/unpinned-action')));
+test('environment-binding-change',()=>{const r:any=fixtureEvidence(fixture('safe'));r.files[0].before='jobs:\n  deploy:\n    environment: production\n';r.files[0].after='jobs:\n  deploy:\n    runs-on: ubuntu-latest\n';assert(analyze(r).findings.some((x:any)=>x.rule==='protections/environment-changed'));});
+test('signature-byte-integrity',()=>{const key='synthetic-test-key-not-a-credential';const body=Buffer.from('{"text":"é"}');const sig=createHmac('sha256',key).update(body).digest();assert(timingSafeEqual(sig,createHmac('sha256',key).update(body).digest()));assert(!timingSafeEqual(sig,createHmac('sha256',key).update(Buffer.concat([body,Buffer.from(' ')])).digest()));});
+test('webhook-schema',()=>{assert.throws(()=>validatePush({repository:{full_name:'../../x'},ref:'refs/heads/main',before:'a'.repeat(40),after:'b'.repeat(40)},'event'));});
+test('branch-aware-routes',()=>{for(const base of ['https://one.invalid','https://one.invalid/__3b/branch/demo','https://two.invalid']){const url=new URL(base+'/ghawa/reports');assert.equal(url.pathname,new URL(base).pathname.replace(/\/$/,'')+'/ghawa/reports');}});
+log('tests_completed','All regression tests passed.',{count:passed.length});console.log(JSON.stringify({passed:passed.length,tests:passed}));

@@ -1,0 +1,6 @@
+color = "teal"
+route = "/ghawa"
+route_auth = "space"
+route_type = "webpage"
+title = "GHAWA · Workflow security"
+output = true

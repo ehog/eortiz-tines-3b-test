@@ -1,0 +1,3 @@
+Part of GHAWA, a read-only GitHub Actions security analyzer. See the [workflow setup and runbook](../README.md).
+
+Triggered by a newly reserved normalized event. Fixture mode returns synthetic content. Live mode uses the attached GitHub read connector against `/repos/{owner}/{repo}/compare/{before}...{after}`, Git commit/tree APIs and blob APIs. Filters exact-SHA workflow directory inventories before fetching workflow contents. Caps pages, files, bytes, calls and wall time. Returns coverage, exact snapshots and change metadata; unavailable evidence produces explicit incomplete coverage. This step never executes repository content or writes external resources. `policy.json`, `common.ts` and `fixtures.ts` are canonical shared sources.

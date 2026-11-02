@@ -1,0 +1,3 @@
+color = "purple"
+timeout = 300
+links = ["Inspect context (AI Agent)", "Finalize report"]

@@ -1,0 +1,23 @@
+import {Database} from 'bun:sqlite';
+import {input,log,audit} from './common';
+import {renderReport} from './report';
+log('finalize_started','Validating the terminal review.');const a=await input();if(a.status==='running'){log('finalize_skipped','Agent is still inspecting.',{},'warn');process.exit(0);}
+const id=a.conversationId;if(!/^[a-f0-9]{64}$/.test(id||''))throw Error('Invalid review ID');
+const db=new Database('/storage/ghawa-state/reviews.sqlite');const row=db.query('SELECT status FROM reviews WHERE id=?').get(id) as any;if(!row)throw Error('Review reservation missing');if(row.status!=='pending'){log('finalize_completed','Previously finalized review suppressed.');process.exit(0);}
+const r=await Bun.file(`/storage/ghawa-evidence/${id}.json`).json();r.coverage.agent=a.agentMode|| (a.status==='done'?'completed':'failed');
+const f=Bun.file(`/storage/ghawa-agent/${id}/reads.json`);const reads=await f.exists()?await f.json():{reads:[],limitations:[]};r.contextInventory=reads.reads.map(({content,...rest}:any)=>rest);r.coverage.limitations.push(...reads.limitations);
+try{if(a.status==='error')throw Error(a.error||'Agent failed');const agent=JSON.parse(a.text);if(!Array.isArray(agent.findings)||!Array.isArray(agent.questions)||!Array.isArray(agent.limitations))throw Error('Invalid agent result schema');r.questions.push(...agent.questions.filter((x:any)=>typeof x==='string').map((x:string)=>x.slice(0,600)).slice(0,30));r.coverage.limitations.push(...agent.limitations.filter((x:any)=>typeof x==='string').map((x:string)=>x.slice(0,600)).slice(0,30));r.agentSummary=String(agent.summary||'').slice(0,1600);
+for(const finding of agent.findings.slice(0,30)){
+ const source=reads.reads.find((x:any)=>x.path===finding.file&&x.sha===finding.sha);const workflow=r.files.find((x:any)=>x.path===finding.file);const content=source?.content||(finding.sha===r.after?workflow?.after:finding.sha===r.before?workflow?.before:null);
+ const required=['rule','category','title','rationale','preconditions','confidence','saferAlternative','kind','introduced','evidence'];
+ const valid=required.every(k=>typeof finding[k]==='string'&&finding[k].length>0&&finding[k].length<=4000)&&['high','critical','medium','low'].includes(finding.severity)&&['high','medium','low'].includes(finding.confidence)&&['new','pre_existing','unknown'].includes(finding.introduced)&&['suspicious_behavior','risky_configuration'].includes(finding.kind)&&typeof content==='string'&&finding.evidence.length>=8&&content.includes(finding.evidence);
+ if(!valid){r.coverage.limitations.push('An agent finding was excluded because its schema or evidence could not be verified.');r.coverage.agent='incomplete';continue;}
+ const index=content.indexOf(finding.evidence);const line=content.slice(0,index).split('\n').length;
+ r.findings.push({...finding,line,endLine:line+finding.evidence.split('\n').length-1,introduced:'unknown',source:'agent',introductionNote:'Agent-only context finding; baseline equivalence has not been deterministically established.'});
+}
+}catch(e){r.coverage.agent='failed';r.coverage.limitations.push(`Agent result unavailable: ${(e as Error).message}`);}
+for(const workflow of r.files){for(const m of (workflow.after||'').matchAll(/\buses:\s*['"]?([^\s'"\r\n]+)/g)){const use=m[1];let inspected=false;if(use.startsWith('./')){const path=use.slice(2);inspected=reads.reads.some((x:any)=>x.repository===r.repository&&x.sha===r.after&&(x.path===path||x.path===path+'/action.yml'||x.path===path+'/action.yaml'));}else{const ref=/^([\w.-]+\/[\w.-]+)(\/[^@]+)?@([a-f0-9]{40})$/.exec(use);if(ref)inspected=reads.reads.some((x:any)=>x.repository===ref[1]&&x.sha===ref[3]&&(x.path===(ref[2]||'').slice(1)||x.path===((ref[2]||'').slice(1)?(ref[2]||'').slice(1)+'/':'')+'action.yml'||x.path===((ref[2]||'').slice(1)?(ref[2]||'').slice(1)+'/':'')+'action.yaml'));}if(!inspected)r.coverage.limitations.push(`Referenced implementation was not inspected: ${use}`);}}
+if(r.coverage.limitations.length&&r.coverage.agent==='completed')r.coverage.agent='completed_with_limits';
+r.questions=[...new Set(r.questions)];r.coverage.limitations=[...new Set(r.coverage.limitations)];renderReport(r);r.completedAt=new Date().toISOString();
+const report=JSON.stringify(r);if(Buffer.byteLength(report)>2_000_000)throw Error('Report exceeds storage budget');
+db.run('UPDATE reviews SET status=?,report=? WHERE id=?',[r.status,report,id]);audit('review_finalized',id,'success',{findings:r.counts.total,coverage:r.coverage.overall});log('finalize_completed','Review report saved.',{reviewId:id,findings:r.counts.total});console.log(JSON.stringify({reviewId:id}));

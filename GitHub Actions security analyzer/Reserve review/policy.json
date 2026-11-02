@@ -1,0 +1,15 @@
+{
+  "mode": "fixture",
+  "allowedRepositories": [],
+  "webhookSecretUrl": null,
+  "enableAgent": false,
+  "publishChecks": false,
+  "notifySlack": false,
+  "slackChannel": null,
+  "maxComparePages": 5,
+  "maxWorkflowFiles": 12,
+  "maxFileBytes": 16384,
+  "maxContextFiles": 16,
+  "maxApiCalls": 100,
+  "maxReviews": 200
+}

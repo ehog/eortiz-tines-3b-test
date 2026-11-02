@@ -1,0 +1,3 @@
+Part of GHAWA, a read-only GitHub Actions security analyzer. See the [workflow setup and runbook](../README.md).
+
+Space-private React page at `/ghawa`. Loads report data from sibling branch-aware routes immediately after rendering. Four synthetic scenarios, findings, highlighted before/after content, coverage, GitHub/Slack previews, Markdown export and persisted review history. The run button submits only a synthetic fixture ID. Polling is serial and bounded, with cancellation on unmount. Repository text is rendered via React text nodes, never as HTML. No external connectors. Title and inline shield favicon are set by `render.ts`.

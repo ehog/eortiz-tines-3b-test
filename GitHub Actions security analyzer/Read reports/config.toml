@@ -1,0 +1,6 @@
+color = "teal"
+route = "/ghawa/reports"
+route_auth = "space"
+route_type = "api"
+title = "GHAWA review reports"
+output = true

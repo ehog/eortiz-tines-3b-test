@@ -1,0 +1,3 @@
+Part of GHAWA, a read-only GitHub Actions security analyzer. See the [workflow setup and runbook](../README.md).
+
+Triggered on every agent iteration; emits nothing while running. On terminal status, loads exact evidence and context-read records, validates structured agent findings and quoted evidence, preserves deterministic findings, and saves a bounded report with output previews. The exclusive review ledger and audit are updated once per review; duplicates are no-ops. Agent failures remain coverage limitations. Emits only `reviewId` to the output reservation step. `report.ts` is the canonical report renderer.

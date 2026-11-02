@@ -1,0 +1,2 @@
+color = "sky"
+retry_seconds = [2, 5]

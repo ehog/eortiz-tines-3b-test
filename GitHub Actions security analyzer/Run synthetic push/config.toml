@@ -1,0 +1,7 @@
+color = "teal"
+route = "/ghawa/demo"
+route_auth = "space"
+route_type = "api"
+title = "Run GHAWA synthetic push"
+output = true
+links = ["Reserve review"]

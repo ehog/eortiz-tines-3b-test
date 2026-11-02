@@ -1,0 +1,8 @@
+color = "teal"
+output = true
+route = "/ghawa/push"
+route_auth = "external_id:xA08SfAk4PinXZhvMG0ep"
+route_type = "webhook"
+title = "GHAWA signed GitHub push"
+links = ["Reserve review"]
+timeout = 60

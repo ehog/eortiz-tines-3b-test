@@ -1,0 +1,3 @@
+Part of GHAWA, a read-only GitHub Actions security analyzer. See the [workflow setup and runbook](../README.md).
+
+Triggered by committed output reservations. Reads report data read-only. Fixture mode produces receipts without requests. Explicit live mode can POST `/repos/{owner}/{repo}/check-runs` using a GitHub connector and `https://slack.com/api/chat.postMessage` using a Slack connector. API permissions are enforced by the service; GitHub authorization errors fall back to report-only. Every write has one attempt with a timeout. Uncertain outcomes are parked for manual reconciliation, never automatically resent. Emits receipts to Record outputs. Do not manually rerun a potentially successful live send.
