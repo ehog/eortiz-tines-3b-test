@@ -1,0 +1,1 @@
+**Trigger:** `GET /azure-rg` (space members). Renders a server-side HTML page from the `rglc` volume (read-only): summary cards, recent provisioning events, compliance pass/fail history, IPAM allocations (active and released), cleanup plans linked to their approval pages, and the deletion audit log.

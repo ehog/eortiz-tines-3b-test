@@ -1,0 +1,1 @@
+Posts `{ kind, text, blocks }` to `slack.channel` with `chat.postMessage`. While `slack.enabled` is false, it records a `skipped` audit entry and posts nothing. To start posting, attach a Slack connector and set `slack.enabled: true`.

@@ -1,0 +1,4 @@
+color = "orange"
+cron = "0 2 * * *"
+timeout = 300
+links = ["Notify Slack"]

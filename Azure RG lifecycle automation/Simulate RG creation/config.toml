@@ -1,0 +1,7 @@
+color = "purple"
+output = true
+route = "/azure-rg/simulate"
+route_auth = "space"
+route_type = "api"
+title = "Simulate RG creation"
+links = ["Allocate CIDR"]

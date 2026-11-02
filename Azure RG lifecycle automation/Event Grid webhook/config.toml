@@ -1,0 +1,7 @@
+color = "sky"
+output = true
+route = "/azure-rg/events"
+route_auth = "external_id:ABKUaQR6tJ93OfGwwgo29"
+route_type = "webhook"
+title = "Azure Event Grid webhook"
+links = ["Allocate CIDR"]

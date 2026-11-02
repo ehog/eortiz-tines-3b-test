@@ -1,0 +1,4 @@
+color = "teal"
+timeout = 120
+retry_seconds = [5, 20]
+links = ["Provision network"]

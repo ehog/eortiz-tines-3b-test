@@ -1,0 +1,7 @@
+color = "sky"
+output = true
+route = "/azure-rg"
+route_auth = "space"
+route_type = "webpage"
+title = "Azure RG lifecycle dashboard"
+pinned = true

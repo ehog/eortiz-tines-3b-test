@@ -1,0 +1,5 @@
+color = "orange"
+output = true
+route = "/azure-rg/cleanup"
+route_auth = "space"
+links = ["Execute cleanup"]

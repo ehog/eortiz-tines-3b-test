@@ -1,0 +1,31 @@
+{
+  "post": {
+    "summary": "Create a simulated resource group and run provisioning",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string", "example": "rg-payments-prod" },
+              "location": { "type": "string", "example": "eastus" },
+              "subscriptionId": { "type": "string" },
+              "tags": {
+                "type": "object",
+                "additionalProperties": { "type": "string" },
+                "example": { "env": "prod", "owner": "alice@contoso.com", "cost-center": "CC-1001" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Simulated Event Grid event accepted" },
+      "400": { "description": "Invalid name" },
+      "409": { "description": "Simulation mode disabled" }
+    }
+  }
+}

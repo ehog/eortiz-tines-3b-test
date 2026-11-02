@@ -1,0 +1,4 @@
+color = "teal"
+timeout = 300
+retry_seconds = [15, 60]
+links = ["Compliance checks"]
