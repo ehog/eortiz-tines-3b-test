@@ -1,0 +1,1 @@
+Runs every 4 hours (`0 */4 * * *`, Live only) and starts the ingestion pipeline. Downloads `known_exploited_vulnerabilities.json` from cisa.gov and normalizes each entry (e.g. ransomware `Known` → `Yes`, `source = "CISA KEV"`). Outputs the full catalog JSON to [Fetch recent NVD CVEs](<../Fetch recent NVD CVEs/README.md>). Retries after 30s and 2m if the feed is unavailable.

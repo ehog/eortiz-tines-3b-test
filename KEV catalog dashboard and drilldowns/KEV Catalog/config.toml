@@ -1,0 +1,5 @@
+color = "sky"
+output = true
+route = "/kev"
+route_type = "webpage"
+title = "KEV Catalog"

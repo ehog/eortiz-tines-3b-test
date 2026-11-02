@@ -1,0 +1,5 @@
+color = "teal"
+route = "/kev/api/metrics"
+route_type = "api"
+title = "KEV rollup metrics API"
+links = ["Query catalog snapshot"]

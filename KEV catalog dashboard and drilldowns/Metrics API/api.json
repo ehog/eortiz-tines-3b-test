@@ -1,0 +1,132 @@
+{
+  "get": {
+    "summary": "KEV rollup metrics",
+    "description": "Dashboard rollups computed from CISA KEV entries in the snapshot. totals.watchlist counts NVD watchlist CVEs, which are excluded from the other totals.",
+    "parameters": [
+      {
+        "name": "top",
+        "in": "query",
+        "description": "Number of top vendors and products to return (1-50, default 10)",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Rollup metrics",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "meta": {
+                  "type": "object",
+                  "properties": {
+                    "catalogVersion": {
+                      "type": "string"
+                    },
+                    "dateReleased": {
+                      "type": "string"
+                    },
+                    "syncedAt": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "today": {
+                      "type": "string"
+                    },
+                    "dueSoonDays": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "totals": {
+                  "type": "object",
+                  "properties": {
+                    "vulnerabilities": {
+                      "type": "integer"
+                    },
+                    "addedLast30Days": {
+                      "type": "integer"
+                    },
+                    "ransomwareLinked": {
+                      "type": "integer"
+                    },
+                    "overdue": {
+                      "type": "integer"
+                    },
+                    "dueSoon": {
+                      "type": "integer"
+                    },
+                    "onTrack": {
+                      "type": "integer"
+                    },
+                    "vendors": {
+                      "type": "integer"
+                    },
+                    "products": {
+                      "type": "integer"
+                    },
+                    "watchlist": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "topVendors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "vendor": {
+                        "type": "string"
+                      },
+                      "count": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "topProducts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "vendor": {
+                        "type": "string"
+                      },
+                      "product": {
+                        "type": "string"
+                      },
+                      "count": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "addedByMonth": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "month": {
+                        "type": "string"
+                      },
+                      "count": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

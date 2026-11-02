@@ -1,0 +1,1 @@
+Only writer of `/storage/kev/catalog.json` (`kev` volume). Merges the fresh KEV catalog with this run's watchlist and earlier watchlist entries that are under 14 days old and not yet in KEV. Outputs a summary of new KEV CVEs, new watchlist CVEs, and watchlist CVEs that CISA has since added to KEV. Link a notification step here to alert on changes.

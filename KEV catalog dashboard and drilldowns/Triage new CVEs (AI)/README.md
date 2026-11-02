@@ -1,0 +1,3 @@
+Single Claude request (`claude-sonnet-5`, Anthropic connector). The prompt in [system.md](system.md) tells it to pick 8–20 of the candidates that matter most to enterprise defenders: widely deployed or internet-facing products, remote or unauthenticated exploitation, and high CVSS, with near-duplicates collapsed. For each pick it writes a KEV-style vendor, product, name, required action, and a one-line rationale.
+
+Outputs `{ catalog, watchlist }`. Watchlist entries use the NVD publish date as `dateAdded`, a 21-day suggested `dueDate`, `ransomware = "No"`, and `source = "NVD"`. Skips the model call when there are no candidates.

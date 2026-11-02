@@ -1,0 +1,5 @@
+color = "teal"
+route = "/kev/api/catalog"
+route_type = "api"
+title = "KEV catalog API"
+links = ["Query catalog snapshot"]

@@ -1,0 +1,5 @@
+color = "purple"
+cron = "0 */4 * * *"
+timeout = 90
+retry_seconds = [30, 120]
+links = ["Fetch recent NVD CVEs"]

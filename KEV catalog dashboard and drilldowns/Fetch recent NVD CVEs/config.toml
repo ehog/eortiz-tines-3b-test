@@ -1,0 +1,3 @@
+color = "purple"
+timeout = 90
+links = ["Triage new CVEs (AI)"]

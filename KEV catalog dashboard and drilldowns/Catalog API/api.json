@@ -1,0 +1,194 @@
+{
+  "get": {
+    "summary": "List known exploited vulnerabilities",
+    "description": "Returns entries from the CISA KEV catalog snapshot, optionally filtered. All filters combine with AND.",
+    "parameters": [
+      {
+        "name": "q",
+        "in": "query",
+        "description": "Case-insensitive text search across CVE ID, vendor, product, name, and description",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "cve",
+        "in": "query",
+        "description": "Exact CVE ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "vendor",
+        "in": "query",
+        "description": "Exact vendor/project (case-insensitive)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "product",
+        "in": "query",
+        "description": "Exact product (case-insensitive)",
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "ransomware",
+        "in": "query",
+        "description": "Filter by known ransomware use",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "true",
+            "false"
+          ]
+        }
+      },
+      {
+        "name": "status",
+        "in": "query",
+        "description": "Remediation status relative to today (UTC); due_soon is within 14 days",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "overdue",
+            "due_soon",
+            "on_track"
+          ]
+        }
+      },
+      {
+        "name": "source",
+        "in": "query",
+        "description": "kev = CISA KEV entries only; watchlist = recently published NVD CVEs not yet in KEV",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "kev",
+            "watchlist"
+          ]
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Matching vulnerabilities",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "meta": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "catalogVersion": {
+                      "type": "string"
+                    },
+                    "dateReleased": {
+                      "type": "string"
+                    },
+                    "syncedAt": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": [
+                        "volume",
+                        "live"
+                      ]
+                    },
+                    "today": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "count": {
+                  "type": "integer"
+                },
+                "vulnerabilities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "cveId": {
+                        "type": "string"
+                      },
+                      "vendor": {
+                        "type": "string"
+                      },
+                      "product": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "dateAdded": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "requiredAction": {
+                        "type": "string"
+                      },
+                      "dueDate": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "ransomware": {
+                        "type": "string",
+                        "enum": [
+                          "Yes",
+                          "No"
+                        ]
+                      },
+                      "notes": {
+                        "type": "string"
+                      },
+                      "cwes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "source": {
+                        "type": "string",
+                        "enum": [
+                          "CISA KEV",
+                          "NVD"
+                        ]
+                      },
+                      "cvss": {
+                        "type": "number"
+                      },
+                      "severity": {
+                        "type": "string"
+                      },
+                      "aiRationale": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Invalid filter value"
+      }
+    }
+  }
+}

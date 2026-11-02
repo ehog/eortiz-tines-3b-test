@@ -1,0 +1,1 @@
+`GET /kev/api/metrics?top=10`: entry point for dashboard rollups. Forwards `{ kind: "metrics", method, params }` to [Query catalog snapshot](<../Query catalog snapshot/README.md>). Schema in [api.json](api.json).

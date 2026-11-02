@@ -1,0 +1,5 @@
+color = "orange"
+links = ["Save catalog snapshot"]
+connectors = [{ name = "anthropic-se-demos-please-only-use-this-one", type = "anthropic" }]
+timeout = 180
+retry_seconds = [30]
