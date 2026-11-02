@@ -1,0 +1,6 @@
+color = "purple"
+output = true
+route = "/atlas/action"
+route_type = "api"
+title = "Operator decisions"
+timeout = 45

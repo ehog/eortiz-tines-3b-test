@@ -1,0 +1,6 @@
+HTTP/1.1 404 Not Found
+Content-Type: application/json; charset=utf-8
+Content-Length: 1096
+Cache-Control: no-store
+
+{"error":"not_found","details":["run run-20260827-eb1995f7 does not exist"],"runs":[{"runId":"run-20260827-a0b1ec71","createdAt":"2026-08-27T01:44:25.899Z","updatedAt":"2026-08-27T01:44:33.639Z","startedAt":"2026-08-27T01:44:29.785Z","finishedAt":"2026-08-27T01:44:33.639Z","alertId":"PP-48299","endpoint":"WS-HR-0117","userEmail":"j.kim@corp.example","severity":"critical","status":"blocked","chaos":{"proofpoint_500":{"enabled":true,"mode":"fail_n","failures":2},"zscaler_timeout":{"enabled":false,"mode":"fail_n","failures":2},"defender_429":{"enabled":false,"mode":"fail_n","failures":2},"servicenow_400":{"enabled":true,"mode":"always","failures":2},"isolate_fail":{"enabled":false,"mode":"fail_n","failures":2}},"ticketNumber":null,"ticketSysId":null,"ticketState":null,"isolationState":"Not isolated","failedStage":"servicenow_create","failureReason":"HTTP 400: rejected","failureClass":"permanent","guardrail":"Isolation was NOT attempted because ServiceNow incident creation failed — no containment action was taken, so there is no partial state.","safeToRetry":true,"resumeCount":0}]}

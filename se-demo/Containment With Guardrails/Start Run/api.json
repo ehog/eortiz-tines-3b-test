@@ -1,0 +1,54 @@
+{
+  "post": {
+    "summary": "Start a containment run",
+    "description": "Creates a containment run and hands it to the orchestrator. Chaos settings force specific failures for the run.",
+    "operationId": "startContainmentRun",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["alertId", "endpoint", "userEmail"],
+            "properties": {
+              "alertId": { "type": "string", "example": "PP-48213" },
+              "endpoint": { "type": "string", "example": "WS-FIN-0421" },
+              "userEmail": { "type": "string", "format": "email" },
+              "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"], "default": "high" },
+              "chaos": {
+                "type": "object",
+                "description": "Forced failures, keyed by proofpoint_500, zscaler_timeout, defender_429, servicenow_400 or isolate_fail. All keys are optional.",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": { "type": "boolean" },
+                    "mode": { "type": "string", "enum": ["fail_n", "always"] },
+                    "failures": { "type": "integer", "minimum": 1, "maximum": 6 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Run accepted",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "runId": { "type": "string" },
+                "status": { "type": "string" },
+                "chaos": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        }
+      },
+      "400": { "description": "Validation failed" }
+    }
+  }
+}

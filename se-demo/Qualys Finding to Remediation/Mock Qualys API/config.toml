@@ -1,0 +1,6 @@
+color = "orange"
+output = true
+route = "/qualys-remediation/mock/qualys/findings"
+route_type = "api"
+title = "Mock Qualys VMDR detections"
+timeout = 30

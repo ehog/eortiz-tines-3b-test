@@ -1,0 +1,7 @@
+color = "teal"
+output = true
+route = "/atlas/run"
+route_type = "api"
+title = "Trigger a pipeline run"
+timeout = 45
+links = ["Ingest"]

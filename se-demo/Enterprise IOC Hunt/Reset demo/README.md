@@ -1,0 +1,1 @@
+`POST /ioc/api/reset` (space auth). Deletes every row from `block_requests`, `source_results`, `indicators` and `hunts`, and removes `/storage/iochunt/findings/`. Used by the `Reset demo` button in the console between demo runs. Returns `{ "cleared": <number of hunts removed> }`.

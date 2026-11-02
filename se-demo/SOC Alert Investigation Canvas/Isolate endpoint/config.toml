@@ -1,0 +1,6 @@
+color = "red"
+output = true
+route = "/api/isolate"
+route_auth = "space"
+timeout = 60
+retry_seconds = [2, 5]
