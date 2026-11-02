@@ -1,0 +1,64 @@
+{
+  "post": {
+    "summary": "Record a patch decision",
+    "description": "Records a Patch now (YES) or Postpone (NO) decision for one device/package finding and triggers the matching downstream action in Automox or Tines Cases.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["decision", "device_id", "device_name", "package_id", "package_name"],
+            "properties": {
+              "decision": { "type": "string", "enum": ["YES", "NO"] },
+              "device_id": { "type": "string" },
+              "device_name": { "type": "string" },
+              "package_id": { "type": "string" },
+              "package_name": { "type": "string" },
+              "severity": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Decision recorded",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": { "type": "string", "enum": ["patching", "postponed"] },
+                "decision": { "type": "string", "enum": ["YES", "NO"] },
+                "device_id": { "type": "string" },
+                "device_name": { "type": "string" },
+                "package_id": { "type": "string" },
+                "package_name": { "type": "string" },
+                "severity": { "type": "string" },
+                "decided_by": { "type": "string" },
+                "decided_at": { "type": "string", "format": "date-time" }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Invalid body",
+        "content": {
+          "application/json": {
+            "schema": { "type": "object", "properties": { "error": { "type": "string" } } }
+          }
+        }
+      },
+      "405": {
+        "description": "Wrong method",
+        "content": {
+          "application/json": {
+            "schema": { "type": "object", "properties": { "error": { "type": "string" } } }
+          }
+        }
+      }
+    }
+  }
+}

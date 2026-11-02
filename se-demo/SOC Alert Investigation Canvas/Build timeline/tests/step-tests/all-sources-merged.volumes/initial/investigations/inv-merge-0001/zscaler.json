@@ -1,0 +1,14 @@
+{
+  "investigationId": "inv-merge-0001",
+  "source": "zscaler",
+  "label": "Zscaler Internet Access",
+  "status": "ok",
+  "mocked": true,
+  "startedAt": "2026-02-10T09:01:00.000Z",
+  "finishedAt": "2026-02-10T09:01:01.000Z",
+  "durationMs": 1000,
+  "recordCount": 1,
+  "data": { "note": "fixture" },
+  "events": [{ "id": "zscaler-0", "ts": "2026-02-10T09:10:00.000Z", "source": "zscaler", "title": "Proxy allowed download", "detail": "Zscaler Internet Access fixture event", "entity": "fixture", "severity": "high" }],
+  "logs": []
+}

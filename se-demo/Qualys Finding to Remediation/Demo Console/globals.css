@@ -1,0 +1,99 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@source "./*.tsx";
+
+:root {
+  --page-bg: #fcf9f5;
+  --card-bg: rgba(248, 244, 240, 0.82);
+  --card-solid: #f8f4f0;
+  --border: #ede9e3;
+  --divider: #ede9e3;
+  --text-primary: #362a51;
+  --text-secondary: rgba(54, 42, 81, 0.55);
+  --text-muted: rgba(54, 42, 81, 0.35);
+  --table-header-bg: #f8f4f0;
+  --table-hover-bg: #f3efea;
+  --input-bg: #f6f2ee;
+  --accent: #8d75e6;
+  --accent-hover: #7f69ce;
+  --accent-deep: #4d3e78;
+  --accent-soft: #eadff8;
+  --teal: #04b9ad;
+  --green: #25a871;
+  --orange: #f47e3f;
+  --pink: #e269a4;
+  --blue: #4e8fd0;
+  --red: #e14f4c;
+  --yellow: #e49307;
+}
+
+html {
+  background: var(--page-bg);
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: "Roobert", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+code,
+pre {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Guided tour: highlight without dimming the app, and never block clicks. */
+.tour-ring {
+  position: fixed;
+  z-index: 55;
+  pointer-events: none;
+  border-radius: 14px;
+  border: 3px solid var(--accent);
+  box-shadow:
+    0 0 0 4px rgba(141, 117, 230, 0.18),
+    0 0 26px 6px rgba(141, 117, 230, 0.26);
+  animation: tour-pulse 900ms ease-out 1;
+  transition:
+    top 180ms ease,
+    left 180ms ease,
+    width 180ms ease,
+    height 180ms ease;
+}
+
+@keyframes tour-pulse {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(141, 117, 230, 0.45),
+      0 0 26px 6px rgba(141, 117, 230, 0.26);
+  }
+  100% {
+    box-shadow:
+      0 0 0 4px rgba(141, 117, 230, 0.18),
+      0 0 26px 6px rgba(141, 117, 230, 0.26);
+  }
+}
+
+.tour-callout {
+  box-shadow:
+    0 18px 44px -12px rgba(54, 42, 81, 0.38),
+    0 2px 8px rgba(54, 42, 81, 0.12);
+  transition:
+    top 180ms ease,
+    left 180ms ease,
+    opacity 140ms ease;
+}
+
+.scroll-thin::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: rgba(54, 42, 81, 0.18);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}

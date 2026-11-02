@@ -1,0 +1,4 @@
+color = "red"
+route = "/qualys-remediation/run/chase"
+cron = "0 * * * *"
+timeout = 60

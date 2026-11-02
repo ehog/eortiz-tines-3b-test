@@ -1,0 +1,1 @@
+{"intake":"webhook","alert":{"id":"sentinel-test-defer","source":"sentinel","receivedAt":"2026-01-15T04:35:00.000Z","title":"Multiple failed MFA challenges followed by success","severity":"medium","confidence":"medium","user":"tom.becker","host":"build-agent-11","indicator":"198.51.100.77","businessImpact":"internal_only","tags":["mfa-fatigue"]}}

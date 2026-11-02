@@ -1,0 +1,9 @@
+tickets
+CHG0031001 | Data Platform | Core Database Platform | CAB-Data-Platform | P1 | critical 95 | implement | opened 2026-08-12T09:00:00.000Z | due 2026-08-15T09:00:00.000Z | closed - | esc 2 | findings ["FIX-1-1","FIX-1-2","FIX-1-3"]
+CHG0031002 | Payments Engineering | Payments Web | CAB-Payments-Engineering | P2 | high 78 | assess | opened 2026-08-11T09:00:00.000Z | due 2026-08-18T09:00:00.000Z | closed - | esc 1 | findings ["FIX-2-1"]
+CHG0031003 | IT Endpoint Services | Corporate Endpoints | CAB-IT-Endpoint | P4 | low 22 | new | opened 2026-08-18T09:00:00.000Z | due 2026-11-16T09:00:00.000Z | closed - | esc 0 | findings ["FIX-3-1"]
+work_notes
+CHG0031001 | 2026-08-15T09:00:00.000Z | vuln-automation | Escalation: change is past its SLA date and still open.
+CHG0031001 | 2026-08-20T09:00:00.000Z | vuln-automation | SLA breach: this change was due 2026-08-15 and is 5 days overdue with 3 findings still open. Escalation level 2. Priority raised from P2 to P1. CAB-Data-Platform to confirm a remediation date or request a documented exception.
+meta
+last_number=31003
