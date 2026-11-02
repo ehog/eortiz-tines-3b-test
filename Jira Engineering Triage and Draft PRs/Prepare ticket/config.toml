@@ -1,0 +1,4 @@
+color = "teal"
+links = ["Prepare ticket", "Triage", "Report outcome"]
+connectors = [{ name = "jira", type = "jira" }]
+timeout = 300
