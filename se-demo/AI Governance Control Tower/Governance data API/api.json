@@ -1,0 +1,49 @@
+{
+  "get": {
+    "summary": "Full Control Tower snapshot",
+    "description": "Returns the current governance snapshot assembled from the ai_governance volume: KPIs, build inventory, spillage findings, security fix suggestions, shadow AI state, the governance pipeline, ROI history and the audit trail. Read-only.",
+    "responses": {
+      "200": {
+        "description": "Snapshot",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["served_at", "kpis", "builds"],
+              "properties": {
+                "served_at": { "type": "string", "format": "date-time" },
+                "freshness": { "type": "object", "additionalProperties": { "type": ["string", "null"] } },
+                "models": { "type": "object", "additionalProperties": { "type": ["string", "null"] } },
+                "kpis": {
+                  "type": "object",
+                  "properties": {
+                    "builds_in_flight": { "type": "integer" },
+                    "unowned_builds": { "type": "integer" },
+                    "open_spillage_alerts": { "type": "integer" },
+                    "critical_spillage_alerts": { "type": "integer" },
+                    "shadow_tools_this_week": { "type": "integer" },
+                    "shadow_tools_pending_review": { "type": "integer" },
+                    "hours_saved_mtd": { "type": ["number", "null"] },
+                    "dollars_saved_mtd": { "type": ["number", "null"] }
+                  }
+                },
+                "sources": { "type": "array", "items": { "type": "object" } },
+                "builds": { "type": "array", "items": { "type": "object" } },
+                "spillage": { "type": "object" },
+                "suggestions": { "type": "array", "items": { "type": "object" } },
+                "shadow": { "type": "object" },
+                "pipeline": { "type": "object" },
+                "roi": { "type": "object" },
+                "audit": { "type": "array", "items": { "type": "object" } }
+              }
+            }
+          }
+        }
+      },
+      "503": {
+        "description": "Inventory collector has not run yet",
+        "content": { "application/json": { "schema": { "type": "object", "properties": { "error": { "type": "string" }, "message": { "type": "string" } } } } }
+      }
+    }
+  }
+}

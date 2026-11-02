@@ -1,0 +1,7 @@
+color = "orange"
+route = "/alerts"
+route_auth = "external_id:wX1c_sLTXUDqdW-TxljZM"
+route_type = "webhook"
+title = "After-hours alert intake"
+links = ["Score Alert"]
+timeout = 30

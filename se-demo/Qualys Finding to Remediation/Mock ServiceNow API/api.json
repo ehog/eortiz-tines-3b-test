@@ -1,0 +1,152 @@
+{
+  "get": {
+    "summary": "List mocked ServiceNow change requests",
+    "description": "Returns change records shaped like ServiceNow change requests, with SLA position evaluated against the demo clock.",
+    "parameters": [
+      {
+        "name": "state",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "enum": ["open", "closed", "all"], "default": "all" }
+      },
+      { "name": "team", "in": "query", "required": false, "schema": { "type": "string" } },
+      { "name": "sys_id", "in": "query", "required": false, "schema": { "type": "string" } }
+    ],
+    "responses": {
+      "200": {
+        "description": "Change list",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "count": { "type": "integer" },
+                "open_count": { "type": "integer" },
+                "overdue_count": { "type": "integer" },
+                "as_of": { "type": "string", "format": "date-time" },
+                "result": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "sys_id": { "type": "string" },
+                      "number": { "type": "string" },
+                      "short_description": { "type": "string" },
+                      "description": { "type": "string" },
+                      "assignment_group": { "type": "string" },
+                      "team": { "type": "string" },
+                      "application": { "type": "string" },
+                      "priority": { "type": "integer", "minimum": 1, "maximum": 4 },
+                      "risk_score": { "type": "integer" },
+                      "risk_band": { "type": "string" },
+                      "state": {
+                        "type": "string",
+                        "enum": ["new", "assess", "implement", "closed"]
+                      },
+                      "opened_at": { "type": "string" },
+                      "updated_at": { "type": "string" },
+                      "due_date": { "type": "string" },
+                      "closed_at": { "type": ["string", "null"] },
+                      "escalation_level": { "type": "integer" },
+                      "finding_count": { "type": "integer" },
+                      "finding_ids": { "type": "array", "items": { "type": "string" } },
+                      "days_to_due": { "type": ["number", "null"] },
+                      "overdue": { "type": "boolean" },
+                      "findings": { "type": "object" },
+                      "work_notes": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "created_at": { "type": "string" },
+                            "author": { "type": "string" },
+                            "note": { "type": "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "summary": "Create a change, add a work note, seed history, or clear the table",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": ["create", "comment", "seed_history", "reset"],
+                "default": "create"
+              },
+              "sys_id": { "type": "string", "description": "Required for action=comment." },
+              "note": { "type": "string", "description": "Work note text for action=comment." },
+              "author": { "type": "string" },
+              "count": {
+                "type": "integer",
+                "description": "Number of historical changes for action=seed_history.",
+                "default": 18
+              },
+              "short_description": { "type": "string" },
+              "description": { "type": "string" },
+              "assignment_group": { "type": "string" },
+              "team": { "type": "string" },
+              "application": { "type": "string" },
+              "priority": { "type": "integer" },
+              "risk_score": { "type": "integer" },
+              "risk_band": { "type": "string" },
+              "due_date": { "type": "string", "format": "date-time" },
+              "finding_ids": { "type": "array", "items": { "type": "string" } },
+              "payload": { "type": "object" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Table reset" },
+      "201": { "description": "Change created, work note added, or history seeded" },
+      "400": { "description": "Unknown action" },
+      "404": { "description": "Unknown sys_id" }
+    }
+  },
+  "patch": {
+    "summary": "Update or close a change",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["sys_id"],
+            "properties": {
+              "sys_id": { "type": "string" },
+              "action": { "type": "string", "enum": ["close"] },
+              "note": { "type": "string", "description": "Closing work note for action=close." },
+              "author": { "type": "string" },
+              "state": { "type": "string", "enum": ["new", "assess", "implement", "closed"] },
+              "priority": { "type": "integer", "minimum": 1, "maximum": 4 },
+              "due_date": { "type": "string", "format": "date-time" },
+              "short_description": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": { "description": "Updated change record" },
+      "400": { "description": "No updatable fields supplied" },
+      "404": { "description": "Unknown sys_id" }
+    }
+  }
+}

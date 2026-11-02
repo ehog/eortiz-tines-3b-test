@@ -1,0 +1,6 @@
+color = "sky"
+route = "/jira/webhook"
+route_auth = "external_id:uII95K9v9R6wp5aFWQTLq"
+route_type = "webhook"
+title = "Jira issue updated webhook"
+links = ["Sync asset status to Onyx"]

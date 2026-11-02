@@ -1,0 +1,5 @@
+color = "pink"
+output = true
+route = "/asset-portal"
+route_type = "webpage"
+title = "AI asset portal"

@@ -1,0 +1,8 @@
+color = "sky"
+output = true
+route = "/containment"
+route_type = "webpage"
+route_auth = "space"
+title = "Containment console"
+pinned = true
+timeout = 60
