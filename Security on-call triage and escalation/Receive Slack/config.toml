@@ -1,0 +1,8 @@
+color = "purple"
+output = true
+route = "/security-oncall/slack"
+route_auth = "external_id:rSVCi1cfCdb0uIthx4pRO"
+route_type = "webhook"
+title = "Signed Slack reviews"
+links = ["Claim notifications"]
+timeout = 10

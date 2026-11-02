@@ -1,0 +1,1 @@
+Runs after routing, reviews or the deadline checker. Atomically claims up to three due outbox jobs and records attempts/claim IDs before any external send. Supersedes obsolete review messages. Empty stdout means no work. Claims prevent concurrent sends; no automatic replay of ambiguous side effects. Output contains job/item snapshots for Deliver Slack. No external services.

@@ -1,0 +1,3 @@
+color = "purple"
+links = ["Investigate (AI Agent)", "Route assessment"]
+timeout = 300

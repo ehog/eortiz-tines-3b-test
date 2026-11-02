@@ -1,0 +1,1 @@
+{"get":{"summary":"Read persistent incidents, review state, notifications and recent audit history","responses":{"200":{"description":"Queue snapshot"},"403":{"description":"Authenticated space membership required"}}}}

@@ -1,0 +1,15 @@
+import {cfg,log,db,get,save,validateAssessment,failAssessment,routing,history,enqueue,now,fixtures} from './common';
+import {readdirSync} from 'node:fs';
+log('routing_started');const p=JSON.parse(await Bun.stdin.text()||'{}');if(p.type!=='agent-run'||p.status==='running'){log('routing_skipped',{},'warn');process.exit(0);}const d=db(true);const item=get(d,p.conversationId);if(!item||item.status!=='investigating')process.exit(0);
+let a:any;try{if(p.status!=='done')throw new Error('Agent did not finish');a=validateAssessment(JSON.parse(p.text));if(item.mode==='live'){
+ const contextFile=Bun.file(`/storage/security_oncall_transcripts/context/${item.id}.json`);if(!await contextFile.exists())throw new Error('Source context missing');const context=await contextFile.json();if(context.failure)throw new Error('Source context incomplete');const incident=context.pagerDuty?.incident;const service=context.pagerDuty?.service;item.owner=service?.teams?.map((t:any)=>t.summary).join(', ')||service?.name||'Ownership unavailable';if(incident?.urgency==='high')item.severity=Math.max(item.severity,4);
+ const path=`/storage/security_oncall_transcripts/evidence/${item.id}`;let known:any[]=[];let records:any[]=[];try{for(const f of readdirSync(path)){const r=await Bun.file(`${path}/${f}`).json();records.push(r);known.push(...(r.evidence||[]));}}catch{a.missingContext.push('Evidence store unavailable');}
+ if(a.evidence.some((e:any)=>!known.some(k=>k.id===e.id&&k.source===e.source)))throw new Error('Evidence lacks verified source references');
+ a.evidence=a.evidence.map((e:any)=>known.find(k=>k.id===e.id&&k.source===e.source));
+ const risks=known.filter(k=>['compromise','risk','gap'].includes(k.kind));for(const k of risks){if(!a.evidence.some((e:any)=>e.id===k.id))a.evidence.push(k);}
+ for(const r of records){if(r.unavailable||r.truncated||r.missingContext)a.missingContext.push(`${r.source||'Context source'}: missing or truncated evidence`);}
+ for(const s of cfg.enrichmentSources.filter((s:any)=>s.enabled&&s.required)){if(!records.some(r=>r.source===s.name&&!r.unavailable))a.missingContext.push(`Required source not checked: ${s.name}`);}
+ if(!cfg.enrichmentSources.some((s:any)=>s.enabled))a.missingContext.push('No connected enrichment sources');
+ }}catch(e){a=failAssessment('Assessment failed validation or investigation failed');log('assessment_degraded',{itemId:item.id},'warn');}
+item.assessment=a;item.routing=routing(item,a);item.status=item.routing.route==='urgent'?'escalated':'pending_review';item.assessedAt=now();item.reviewDueAt=new Date(Date.now()+cfg.reviewMinutes*60000).toISOString();item.version++;
+d.transaction(()=>{save(d,item);enqueue(d,item,item.routing.route);history(d,'assessment_routed',item.id,{mode:item.mode,route:item.routing.route,reasons:item.routing.reasons,model:item.mode==='simulation'?'fixture':'claude-opus-5-5'});})();d.close();console.log(JSON.stringify({itemId:item.id,route:item.routing.route}));log('routing_completed',{itemId:item.id,route:item.routing.route});

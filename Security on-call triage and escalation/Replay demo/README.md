@@ -1,0 +1,1 @@
+Manual editor trigger only. Accepts JSON with scenario (scanner, privileged or ambiguous) and an 8–64 character requestId. Empty input starts a stable scanner replay. Persists a synthetic item and emits itemId to Fetch context. Repeated IDs create no new work. No human decision is fabricated. No connectors or external actions.

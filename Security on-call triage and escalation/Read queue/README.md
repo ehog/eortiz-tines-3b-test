@@ -1,0 +1,1 @@
+Space-authenticated GET API returning persistent incidents, assessments, outbox states, recent audit history and simulation/live mode. Uses a read-only SQLite mount. Requires the verified caller email and never mutates queue state. No external services. The console uses this endpoint for a single non-overlapping refresh loop.

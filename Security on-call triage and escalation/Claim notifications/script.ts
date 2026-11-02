@@ -1,0 +1,4 @@
+import {log,db,all,get,putJob,history,now,ROOT} from './common';
+log('notification_claim_started');if(!await Bun.file(`${ROOT}/queue.sqlite`).exists())process.exit(0);const d=db(true);const batch=[];
+for(const j of all(d,'outbox')){if(j.status!=='pending'||Date.parse(j.nextAt)>Date.now())continue;const item=get(d,j.itemId);if(!item)continue;if(j.kind==='review'&&item.status!=='pending_review'){j.status='superseded';putJob(d,j);log('notification_superseded',{itemId:item.id},'warn');continue;}j.status='inflight';j.attempts++;j.claimId=crypto.randomUUID();j.claimedAt=now();putJob(d,j);history(d,'notification_claimed',item.id,{jobId:j.id,mode:j.mode,attempt:j.attempts});batch.push({job:j,item});if(batch.length>=3)break;}
+d.close();if(batch.length)console.log(JSON.stringify({batch}));log('notification_claim_completed',{count:batch.length});

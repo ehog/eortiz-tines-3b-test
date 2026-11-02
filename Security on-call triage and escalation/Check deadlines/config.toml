@@ -1,0 +1,4 @@
+color = "orange"
+cron = "* * * * *"
+links = ["Claim notifications"]
+timeout = 30

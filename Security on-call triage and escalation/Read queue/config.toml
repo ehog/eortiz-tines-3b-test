@@ -1,0 +1,7 @@
+color = "sky"
+route = "/security-oncall/queue"
+route_auth = "space"
+route_type = "api"
+title = "Security on-call queue"
+output = true
+timeout = 15

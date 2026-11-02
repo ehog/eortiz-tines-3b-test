@@ -1,0 +1,8 @@
+color = "orange"
+output = true
+route = "/security-oncall/pagerduty"
+route_auth = "external_id:SYYyysaF3INpYDs6tAF04"
+route_type = "webhook"
+title = "PagerDuty security intake"
+links = ["Fetch context"]
+timeout = 15

@@ -1,0 +1,7 @@
+color = "teal"
+route = "/security-oncall"
+route_auth = "space"
+route_type = "webpage"
+title = "Security on-call · Review desk"
+output = true
+timeout = 30

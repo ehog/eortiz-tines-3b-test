@@ -1,0 +1,8 @@
+color = "teal"
+route = "/security-oncall/actions"
+route_auth = "space"
+route_type = "api"
+title = "Security review and demo replay"
+output = true
+links = ["Fetch context", "Check deadlines"]
+timeout = 15

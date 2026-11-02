@@ -1,0 +1,1 @@
+Runs every minute in Live, or manually/after a console action in drafts. Escalates expired pending reviews and stuck investigations with unique outbox keys. Marks notification claims older than five minutes uncertain for reconciliation. Emits a signal to Claim notifications. Exclusive short queue/audit writer, no external calls. Does not alter PagerDuty.
