@@ -1,0 +1,14 @@
+{
+  "investigationId": "inv-merge-0001",
+  "source": "defender",
+  "vendorId": "1001",
+  "correlationId": "MDE-1001",
+  "title": "Test alert for timeline merge",
+  "description": "Fixture incident used by the timeline step test.",
+  "severity": "medium",
+  "status": "active",
+  "alertTime": "2026-02-10T09:00:00.000Z",
+  "receivedAt": "2026-02-10T09:01:00.000Z",
+  "vendorEntities": [],
+  "raw": {}
+}

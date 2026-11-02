@@ -1,0 +1,32 @@
+{
+  "get": {
+    "summary": "Read containment run state",
+    "description": "Returns recent runs. With runId, also returns stage state, the structured attempt log and the audit trail for that run.",
+    "operationId": "getContainmentRuns",
+    "parameters": [
+      { "name": "runId", "in": "query", "required": false, "schema": { "type": "string" } },
+      { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1, "maximum": 50, "default": 20 } }
+    ],
+    "responses": {
+      "200": {
+        "description": "Run state",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "runs": { "type": "array", "items": { "type": "object" } },
+                "run": { "type": "object", "nullable": true },
+                "stages": { "type": "array", "items": { "type": "object" } },
+                "attempts": { "type": "array", "items": { "type": "object" } },
+                "audit": { "type": "array", "items": { "type": "object" } },
+                "resume": { "type": "object" }
+              }
+            }
+          }
+        }
+      },
+      "404": { "description": "Unknown run" }
+    }
+  }
+}

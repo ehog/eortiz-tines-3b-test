@@ -1,0 +1,76 @@
+{
+  "post": {
+    "summary": "Start an IOC hunt",
+    "description": "Validates and classifies indicators, records the hunt, and fans out searches to Defender, Sentinel, Proofpoint and Zscaler.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["indicators", "reason"],
+            "properties": {
+              "indicators": {
+                "description": "Indicator list, or a newline separated string.",
+                "oneOf": [
+                  { "type": "array", "items": { "type": "string" } },
+                  { "type": "string" }
+                ]
+              },
+              "reason": { "type": "string", "description": "Reason or reference, e.g. FBI advisory #AA24-109A." },
+              "demoMode": {
+                "type": "string",
+                "enum": ["random", "hits", "clean", "error"],
+                "default": "random",
+                "description": "Controls the mocked integrations: realistic random, force hits, force clean, or force one source error."
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Hunt accepted",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "huntId": { "type": "string" },
+                "reportPath": { "type": "string" },
+                "reason": { "type": "string" },
+                "demoMode": { "type": "string" },
+                "createdAt": { "type": "string", "format": "date-time" },
+                "indicators": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": { "type": "string" },
+                      "type": { "type": "string", "enum": ["ipv4", "ipv6", "domain", "url", "sha1", "sha256"] }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Validation failed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": { "type": "string" },
+                "rejected": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

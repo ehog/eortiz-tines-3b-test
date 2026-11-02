@@ -1,0 +1,6 @@
+color = "teal"
+route = "/api/enrich/defender"
+route_auth = "space"
+timeout = 120
+retry_seconds = [2, 5, 15]
+links = ["Build timeline"]
