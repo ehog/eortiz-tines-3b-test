@@ -1,0 +1,2 @@
+import {tool} from 'ai';import {z} from 'zod';import {action,propose} from '../context';
+export default tool({description:'Stage full replacement contents for independent validation; does not write to GitHub or execute code.',inputSchema:z.object({summary:z.string().min(10).max(500),rationale:z.string().min(20).max(3000),limitations:z.array(z.string().max(500)).max(10),changes:z.array(z.object({path:z.string().max(200),content:z.string().max(16000)})).min(1).max(3)}),execute:async(p)=>action('submit_patch',()=>propose(p))});

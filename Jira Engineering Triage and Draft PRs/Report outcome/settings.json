@@ -1,0 +1,20 @@
+{
+  "sourceMode": "fixture",
+  "liveWrites": false,
+  "jiraProject": "DEMO",
+  "jql": "project = DEMO AND labels = agent-ready ORDER BY updated ASC",
+  "optInLabel": "agent-ready",
+  "acceptanceCriteriaField": null,
+  "repositoryMappings": {},
+  "authorizedDemoRepositories": [],
+  "maxTicketsPerPoll": 10,
+  "maxComments": 30,
+  "maxLinkedIssues": 10,
+  "maxFilesChanged": 3,
+  "maxPatchBytes": 16000,
+  "maxToolCalls": 16,
+  "maxAgentSeconds": 600,
+  "maxStoredJobs": 1000,
+  "fixtureAllowedPaths": ["src/flight-date.js", "tests/flight-date.test.js"],
+  "workflowEditorUrl": "https://priceline.se-demo.3b.run/workflows/rnUG1W1c7QhT"
+}

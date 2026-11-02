@@ -1,0 +1,1 @@
+{"provider":"anthropic","model":"claude-fable-5","effort":"medium","thinking":{"type":"adaptive","display":"summarized"},"limits":{"maxSteps":8,"tokenBudget":60000,"maxOutputTokens":5000}}
