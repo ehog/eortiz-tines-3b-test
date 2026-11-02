@@ -1,0 +1,1 @@
+Webpage (`/ddi/request`, space auth) where users can submit a DDI request directly, as an alternative to the ServiceNow catalog form. The form changes its fields to match the request type. Submissions go to [Submit DDI request](<../Submit DDI request/script.ts>), and the page shows the RITM number that was assigned.

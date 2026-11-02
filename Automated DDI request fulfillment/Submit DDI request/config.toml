@@ -1,0 +1,5 @@
+color = "purple"
+output = true
+route = "/ddi/request/submit"
+route_auth = "space"
+links = ["Provision in Infoblox"]

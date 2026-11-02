@@ -1,0 +1,6 @@
+color = "pink"
+output = true
+route = "/ddi/request"
+route_auth = "space"
+route_type = "webpage"
+title = "DDI request form"

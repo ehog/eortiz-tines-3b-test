@@ -1,0 +1,6 @@
+color = "purple"
+route = "/ddi/servicenow-approved"
+route_auth = "external_id:RZKuFbxP08bJfH7IFlEmr"
+route_type = "webhook"
+title = "ServiceNow approved DDI request"
+links = ["Provision in Infoblox"]

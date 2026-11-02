@@ -1,0 +1,1 @@
+Creates the Infoblox NIOS object via WAPI v2.12 (fixedaddress, record:host, record:a, record:cname). Simulates responses when INFOBLOX_URL is unset. Outputs {status, simulated, created, request, record|error}.

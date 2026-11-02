@@ -1,0 +1,1 @@
+Internal API (POST, space auth) used by the DDI request form. Validates the submitted fields, generates a synthetic RITM number, responds `202` with the normalized request, and hands it to *Provision in Infoblox*.
