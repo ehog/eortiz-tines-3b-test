@@ -1,0 +1,7 @@
+color = "sky"
+route = "/ds-deploy"
+route_auth = "external_id:gmP-rQy9G8bslhWvN6-fl"
+route_type = "webhook"
+title = "Deployment Request (webhook)"
+links = ["Policy Scan"]
+timeout = 30

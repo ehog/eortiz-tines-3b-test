@@ -1,0 +1,5 @@
+color = "purple"
+route = "/qualys-remediation/run/remediate"
+timeout = 300
+links = ["Sync ServiceNow Tickets"]
+connectors = [{ name = "anthropic-se-demos-please-only-use-this-one", type = "anthropic" }]

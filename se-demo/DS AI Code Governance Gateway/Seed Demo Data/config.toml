@@ -1,0 +1,6 @@
+color = "pink"
+route = "/ds-seed"
+route_type = "api"
+title = "Reseed demo data"
+output = true
+timeout = 60

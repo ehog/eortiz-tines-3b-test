@@ -1,0 +1,14 @@
+{
+  "investigationId": "inv-merge-0001",
+  "source": "threatintel",
+  "label": "Threat intelligence",
+  "status": "ok",
+  "mocked": true,
+  "startedAt": "2026-02-10T09:01:00.000Z",
+  "finishedAt": "2026-02-10T09:01:01.000Z",
+  "durationMs": 1000,
+  "recordCount": 1,
+  "data": { "note": "fixture" },
+  "events": [{ "id": "threatintel-0", "ts": "2026-02-10T09:15:00.000Z", "source": "threatintel", "title": "Malicious domain verdict", "detail": "Threat intelligence fixture event", "entity": "fixture", "severity": "high" }],
+  "logs": []
+}

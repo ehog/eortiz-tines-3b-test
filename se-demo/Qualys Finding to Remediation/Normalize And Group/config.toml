@@ -1,0 +1,4 @@
+color = "sky"
+route = "/qualys-remediation/run/normalize"
+timeout = 60
+links = ["Prioritize"]

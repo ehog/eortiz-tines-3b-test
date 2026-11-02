@@ -1,0 +1,6 @@
+color = "green"
+route = "/ds-decision"
+route_type = "api"
+title = "Review decision (approve / reject / request changes)"
+timeout = 45
+links = ["Deploy to Production"]

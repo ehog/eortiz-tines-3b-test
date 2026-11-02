@@ -1,0 +1,14 @@
+{
+  "investigationId": "inv-merge-0001",
+  "source": "sentinel",
+  "label": "Microsoft Sentinel",
+  "status": "ok",
+  "mocked": true,
+  "startedAt": "2026-02-10T09:01:00.000Z",
+  "finishedAt": "2026-02-10T09:01:01.000Z",
+  "durationMs": 1000,
+  "recordCount": 1,
+  "data": { "note": "fixture" },
+  "events": [{ "id": "sentinel-0", "ts": "2026-02-10T08:40:00.000Z", "source": "sentinel", "title": "Sign-in from new country", "detail": "Microsoft Sentinel fixture event", "entity": "fixture", "severity": "medium" }],
+  "logs": []
+}

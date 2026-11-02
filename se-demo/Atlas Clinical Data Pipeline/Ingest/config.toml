@@ -1,0 +1,5 @@
+color = "sky"
+timeout = 90
+cron = "0 * * * *"
+retry_seconds = [2, 5, 10]
+links = ["Normalize"]

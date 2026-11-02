@@ -1,0 +1,197 @@
+== ./inv-merge-0001/defender.json
+{
+  "investigationId": "inv-merge-0001",
+  "source": "defender",
+  "label": "Microsoft Defender",
+  "status": "ok",
+  "mocked": true,
+  "startedAt": "2026-02-10T09:01:00.000Z",
+  "finishedAt": "2026-02-10T09:01:01.000Z",
+  "durationMs": 1000,
+  "recordCount": 1,
+  "data": { "note": "fixture" },
+  "events": [{ "id": "defender-0", "ts": "2026-02-10T09:05:00.000Z", "source": "defender", "title": "Process launched", "detail": "Microsoft Defender fixture event", "entity": "fixture", "severity": "high" }],
+  "logs": []
+}
+== ./inv-merge-0001/incident.json
+{
+  "investigationId": "inv-merge-0001",
+  "source": "defender",
+  "vendorId": "1001",
+  "correlationId": "MDE-1001",
+  "title": "Test alert for timeline merge",
+  "description": "Fixture incident used by the timeline step test.",
+  "severity": "medium",
+  "status": "active",
+  "alertTime": "2026-02-10T09:00:00.000Z",
+  "receivedAt": "2026-02-10T09:01:00.000Z",
+  "vendorEntities": [],
+  "raw": {}
+}
+== ./inv-merge-0001/proofpoint.json
+{
+  "investigationId": "inv-merge-0001",
+  "source": "proofpoint",
+  "label": "Proofpoint TAP",
+  "status": "ok",
+  "mocked": true,
+  "startedAt": "2026-02-10T09:01:00.000Z",
+  "finishedAt": "2026-02-10T09:01:01.000Z",
+  "durationMs": 1000,
+  "recordCount": 1,
+  "data": { "note": "fixture" },
+  "events": [{ "id": "proofpoint-0", "ts": "2026-02-10T07:30:00.000Z", "source": "proofpoint", "title": "Phishing message delivered", "detail": "Proofpoint TAP fixture event", "entity": "fixture", "severity": "medium" }],
+  "logs": []
+}
+== ./inv-merge-0001/sentinel.json
+{
+  "investigationId": "inv-merge-0001",
+  "source": "sentinel",
+  "label": "Microsoft Sentinel",
+  "status": "ok",
+  "mocked": true,
+  "startedAt": "2026-02-10T09:01:00.000Z",
+  "finishedAt": "2026-02-10T09:01:01.000Z",
+  "durationMs": 1000,
+  "recordCount": 1,
+  "data": { "note": "fixture" },
+  "events": [{ "id": "sentinel-0", "ts": "2026-02-10T08:40:00.000Z", "source": "sentinel", "title": "Sign-in from new country", "detail": "Microsoft Sentinel fixture event", "entity": "fixture", "severity": "medium" }],
+  "logs": []
+}
+== ./inv-merge-0001/threatintel.json
+{
+  "investigationId": "inv-merge-0001",
+  "source": "threatintel",
+  "label": "Threat intelligence",
+  "status": "ok",
+  "mocked": true,
+  "startedAt": "2026-02-10T09:01:00.000Z",
+  "finishedAt": "2026-02-10T09:01:01.000Z",
+  "durationMs": 1000,
+  "recordCount": 1,
+  "data": { "note": "fixture" },
+  "events": [{ "id": "threatintel-0", "ts": "2026-02-10T09:15:00.000Z", "source": "threatintel", "title": "Malicious domain verdict", "detail": "Threat intelligence fixture event", "entity": "fixture", "severity": "high" }],
+  "logs": []
+}
+== ./inv-merge-0001/timeline.json
+{
+  "investigationId": "inv-merge-0001",
+  "builtAt": "<masked>",
+  "alertTime": "2026-02-10T09:00:00.000Z",
+  "sources": [
+    {
+      "source": "defender",
+      "label": "Microsoft Defender",
+      "status": "ok",
+      "recordCount": 1,
+      "durationMs": 1000,
+      "eventCount": 1
+    },
+    {
+      "source": "sentinel",
+      "label": "Microsoft Sentinel",
+      "status": "ok",
+      "recordCount": 1,
+      "durationMs": 1000,
+      "eventCount": 1
+    },
+    {
+      "source": "zscaler",
+      "label": "Zscaler Internet Access",
+      "status": "ok",
+      "recordCount": 1,
+      "durationMs": 1000,
+      "eventCount": 1
+    },
+    {
+      "source": "proofpoint",
+      "label": "Proofpoint TAP",
+      "status": "ok",
+      "recordCount": 1,
+      "durationMs": 1000,
+      "eventCount": 1
+    },
+    {
+      "source": "threatintel",
+      "label": "Threat intelligence",
+      "status": "ok",
+      "recordCount": 1,
+      "durationMs": 1000,
+      "eventCount": 1
+    }
+  ],
+  "missingSources": [],
+  "forced": false,
+  "eventCount": 6,
+  "events": [
+    {
+      "id": "proofpoint-0",
+      "ts": "2026-02-10T07:30:00.000Z",
+      "source": "proofpoint",
+      "title": "Phishing message delivered",
+      "detail": "Proofpoint TAP fixture event",
+      "entity": "fixture",
+      "severity": "medium"
+    },
+    {
+      "id": "sentinel-0",
+      "ts": "2026-02-10T08:40:00.000Z",
+      "source": "sentinel",
+      "title": "Sign-in from new country",
+      "detail": "Microsoft Sentinel fixture event",
+      "entity": "fixture",
+      "severity": "medium"
+    },
+    {
+      "id": "incident-0",
+      "ts": "2026-02-10T09:00:00.000Z",
+      "source": "defender",
+      "title": "Alert raised: Test alert for timeline merge",
+      "detail": "Fixture incident used by the timeline step test.",
+      "entity": "1001",
+      "severity": "medium"
+    },
+    {
+      "id": "defender-0",
+      "ts": "2026-02-10T09:05:00.000Z",
+      "source": "defender",
+      "title": "Process launched",
+      "detail": "Microsoft Defender fixture event",
+      "entity": "fixture",
+      "severity": "high"
+    },
+    {
+      "id": "zscaler-0",
+      "ts": "2026-02-10T09:10:00.000Z",
+      "source": "zscaler",
+      "title": "Proxy allowed download",
+      "detail": "Zscaler Internet Access fixture event",
+      "entity": "fixture",
+      "severity": "high"
+    },
+    {
+      "id": "threatintel-0",
+      "ts": "2026-02-10T09:15:00.000Z",
+      "source": "threatintel",
+      "title": "Malicious domain verdict",
+      "detail": "Threat intelligence fixture event",
+      "entity": "fixture",
+      "severity": "high"
+    }
+  ]
+}
+== ./inv-merge-0001/zscaler.json
+{
+  "investigationId": "inv-merge-0001",
+  "source": "zscaler",
+  "label": "Zscaler Internet Access",
+  "status": "ok",
+  "mocked": true,
+  "startedAt": "2026-02-10T09:01:00.000Z",
+  "finishedAt": "2026-02-10T09:01:01.000Z",
+  "durationMs": 1000,
+  "recordCount": 1,
+  "data": { "note": "fixture" },
+  "events": [{ "id": "zscaler-0", "ts": "2026-02-10T09:10:00.000Z", "source": "zscaler", "title": "Proxy allowed download", "detail": "Zscaler Internet Access fixture event", "entity": "fixture", "severity": "high" }],
+  "logs": []
+}

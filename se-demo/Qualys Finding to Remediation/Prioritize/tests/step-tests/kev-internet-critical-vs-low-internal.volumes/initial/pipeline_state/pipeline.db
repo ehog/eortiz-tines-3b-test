@@ -1,0 +1,4 @@
+__3B_STEP_TEST_SQLITE_DUMP__
+CREATE TABLE IF NOT EXISTS config (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+INSERT INTO config (key, value) VALUES ('weights', '{"severity":30,"cvss":25,"threat":20,"criticality":15,"exposure":10}');
+INSERT INTO config (key, value) VALUES ('clock_offset_days', '0');

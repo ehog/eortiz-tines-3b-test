@@ -1,0 +1,3 @@
+color = "sky"
+timeout = 60
+links = ["Validate"]

@@ -1,0 +1,4 @@
+color = "purple"
+route = "/qualys-remediation/run/prioritize"
+timeout = 60
+links = ["Remediation Package (AI)"]
