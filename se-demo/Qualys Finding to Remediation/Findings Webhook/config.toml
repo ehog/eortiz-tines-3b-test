@@ -1,0 +1,7 @@
+color = "sky"
+route = "/qualys-remediation/webhook/qualys"
+route_auth = "external_id:SShs75TveRL2Vx7sJ7AYZ"
+route_type = "webhook"
+title = "Qualys detection push"
+links = ["Normalize And Group"]
+timeout = 30

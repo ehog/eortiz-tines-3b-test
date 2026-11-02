@@ -1,0 +1,8 @@
+color = "red"
+output = true
+route = "/ioc/api/block-decision"
+route_auth = "space"
+route_type = "other"
+title = "Block request decision"
+timeout = 30
+links = ["Submit block request"]

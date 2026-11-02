@@ -1,0 +1,6 @@
+color = "sky"
+route = "/ai-governance/action"
+route_type = "api"
+title = "Control Tower actions API"
+output = true
+timeout = 60

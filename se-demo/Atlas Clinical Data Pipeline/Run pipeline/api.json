@@ -1,0 +1,64 @@
+{
+  "post": {
+    "summary": "Trigger a pipeline run, optionally injecting a simulated fault",
+    "description": "Mints a run id and batch id and hands them to Ingest. Returns immediately; the pipeline continues asynchronously. Runs are idempotent on batch id.",
+    "requestBody": {
+      "required": false,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "simulate_failure": {
+                "type": "string",
+                "enum": ["none", "schema_drift", "source_timeout", "encoding_error"],
+                "default": "none",
+                "description": "Chaos toggle: deliberately break one aspect of the run."
+              },
+              "batchId": {
+                "type": "string",
+                "description": "Override the generated batch id. Reusing a completed batch id suppresses the run."
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "202": {
+        "description": "Run accepted",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["runId", "batchId", "simulate_failure", "accepted"],
+              "properties": {
+                "runId": { "type": "string" },
+                "batchId": { "type": "string" },
+                "simulate_failure": { "type": "string" },
+                "triggeredBy": { "type": "string" },
+                "accepted": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Unknown chaos mode",
+        "content": {
+          "application/json": {
+            "schema": { "type": "object", "properties": { "error": { "type": "string" } } }
+          }
+        }
+      },
+      "405": {
+        "description": "Method not allowed",
+        "content": {
+          "application/json": {
+            "schema": { "type": "object", "properties": { "error": { "type": "string" } } }
+          }
+        }
+      }
+    }
+  }
+}

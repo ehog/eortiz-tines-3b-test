@@ -1,0 +1,7 @@
+color = "sky"
+output = true
+route = "/ioc/api/report"
+route_auth = "space"
+route_type = "api"
+title = "IOC hunt report data"
+timeout = 30
