@@ -1,0 +1,15 @@
+{
+  "mode": "fixtures",
+  "environment": "production",
+  "owner": null,
+  "defaultScenario": "all",
+  "agentEnabled": false,
+  "windows": {"deploymentLookbackMinutes": 120, "baselineMinutes": 30, "currentMinutes": 10, "lagMinutes": 2, "minCurrentMinutes": 5},
+  "thresholds": {"minRequests": 100, "minSaturationSamples": 5, "maxTelemetryAgeMinutes": 5, "latencyWatchRatio": 1.3, "latencyInvestigateRatio": 1.75, "latencyUrgentRatio": 3, "latencyUrgentMs": 2000, "errorWatchDeltaPp": 0.5, "errorInvestigateDeltaPp": 1, "errorUrgentPercent": 5, "throughputDropPercent": 30, "saturationWatchPercent": 75, "saturationUrgentPercent": 90, "newSignatureMinCount": 10, "logRateRatio": 2, "logRateMinDeltaPerMinute": 2, "materialMetricChangePercent": 20},
+  "limits": {"maxDeployments": 12, "maxPortPages": 3, "portPageSize": 50, "maxSignatures": 20, "maxResponseBytes": 1000000, "requestTimeoutMs": 8000, "requestAttempts": 3, "collectionDeadlineMs": 210000, "retentionDays": 14, "maxReadReports": 30},
+  "notifications": {"mode": "preview", "channel": null, "postingAuthorized": false, "minSeverity": "watch"},
+  "port": {"baseUrl": "https://api.getport.io/v1", "deploymentBlueprint": null, "serviceBlueprint": null, "deploymentFields": {}, "serviceFields": {}},
+  "newRelic": {"endpoint": "https://api.newrelic.com/graphql", "accountId": null},
+  "splunk": {"baseUrl": null, "webUrl": null},
+  "services": []
+}

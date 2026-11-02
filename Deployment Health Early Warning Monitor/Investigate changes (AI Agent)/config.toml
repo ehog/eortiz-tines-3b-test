@@ -1,0 +1,3 @@
+color = "purple"
+timeout = 300
+links = ["Investigate changes (AI Agent)", "Publish warnings"]

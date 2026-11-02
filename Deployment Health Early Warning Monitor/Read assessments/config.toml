@@ -1,0 +1,7 @@
+color = "sky"
+route = "/deployment-watch/data"
+route_auth = "space"
+route_type = "api"
+title = "Deployment assessments"
+output = true
+timeout = 30

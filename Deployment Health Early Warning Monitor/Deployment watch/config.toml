@@ -1,0 +1,6 @@
+color = "teal"
+route = "/deployment-watch"
+route_auth = "space"
+route_type = "webpage"
+title = "Deployment watch"
+output = true

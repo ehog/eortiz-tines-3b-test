@@ -1,0 +1,9 @@
+color = "sky"
+cron = "*/10 * * * *"
+route = "/deployment-watch/replay"
+route_auth = "space"
+route_type = "api"
+title = "Replay synthetic deployment assessment"
+output = true
+timeout = 30
+links = ["Collect evidence"]
