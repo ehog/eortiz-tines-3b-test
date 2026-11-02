@@ -1,0 +1,8 @@
+color = "orange"
+output = true
+route = "/incidents"
+route_auth = "space"
+route_type = "api"
+title = "CrowdStrike incident events"
+connectors = [{ name = "crowdstrike", type = "crowdStrike" }]
+timeout = 60
