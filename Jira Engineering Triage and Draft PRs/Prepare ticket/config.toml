@@ -1,0 +1,3 @@
+color = "teal"
+timeout = 300
+links = ["Prepare ticket", "Triage", "Report outcome"]

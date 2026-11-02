@@ -1,0 +1,7 @@
+color = "sky"
+route = "/engineering/replay"
+route_auth = "space"
+route_type = "api"
+title = "Replay synthetic engineering ticket"
+output = true
+links = ["Prepare ticket"]

@@ -1,0 +1,5 @@
+color = "purple"
+connectors = [{ name = "anthropic-se-demos-please-only-use-this-one", type = "anthropic" }]
+timeout = 300
+
+links = ["Engineering (AI Agent)", "Validate patch"]

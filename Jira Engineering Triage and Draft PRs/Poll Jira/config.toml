@@ -1,0 +1,3 @@
+color = "sky"
+cron = "*/15 * * * *"
+links = ["Prepare ticket"]
