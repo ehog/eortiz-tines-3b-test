@@ -1,0 +1,7 @@
+color = "sky"
+output = true
+route = "/engineering/jira-webhook"
+route_auth = "external_id:QRo6k40cL2YFwABqtUXHP"
+route_type = "webhook"
+title = "Jira engineering intake"
+links = ["Prepare ticket"]
