@@ -1,0 +1,8 @@
+color = "purple"
+output = true
+route = "/ioc/api/hunt"
+route_auth = "space"
+route_type = "api"
+title = "Submit IOC hunt"
+timeout = 30
+links = ["Search Defender", "Search Sentinel", "Search Proofpoint", "Search Zscaler"]

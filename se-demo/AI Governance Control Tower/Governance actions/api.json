@@ -1,0 +1,46 @@
+{
+  "post": {
+    "summary": "Record a governance decision",
+    "description": "Approves or rejects a proposed security fix, allows or blocks a shadow AI tool, or advances a governance item to the next stage. Every call appends an immutable audit record attributed to the authenticated caller.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["action", "id"],
+            "properties": {
+              "action": { "type": "string", "enum": ["fix_decision", "tool_decision", "advance_stage"] },
+              "id": { "type": "string", "description": "Suggestion id, tool domain, or pipeline item id." },
+              "decision": { "type": "string", "enum": ["approved", "rejected", "allow", "block"] },
+              "outcome": { "type": "string", "enum": ["implemented", "killed"], "description": "Only for advance_stage at the final stage." },
+              "note": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Decision recorded",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": { "type": "boolean" },
+                "id": { "type": "string" },
+                "decision": { "type": "string" },
+                "stage": { "type": "string" },
+                "outcome": { "type": "string" },
+                "audit_seq": { "type": "integer" }
+              }
+            }
+          }
+        }
+      },
+      "400": { "description": "Unknown action or invalid JSON", "content": { "application/json": { "schema": { "type": "object" } } } },
+      "404": { "description": "Target not found", "content": { "application/json": { "schema": { "type": "object" } } } }
+    }
+  }
+}

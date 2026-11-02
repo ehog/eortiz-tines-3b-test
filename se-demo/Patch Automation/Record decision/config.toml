@@ -1,0 +1,8 @@
+color = "purple"
+output = true
+route = "/api/decide"
+route_auth = "space"
+route_type = "api"
+title = "Record patch decision"
+links = ["Install patch", "Postpone and create case"]
+timeout = 30

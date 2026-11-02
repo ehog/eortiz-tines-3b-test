@@ -1,0 +1,31 @@
+{
+  "post": {
+    "summary": "Reset the containment demo",
+    "description": "Clears simulated ServiceNow tickets, isolation state and chaos counters. Scope 'all' also clears run history, logs and the audit trail.",
+    "operationId": "resetContainmentDemo",
+    "requestBody": {
+      "required": false,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": { "scope": { "type": "string", "enum": ["all", "mocks"], "default": "all" } }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Demo state cleared",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": { "ok": { "type": "boolean" }, "scope": { "type": "string" }, "cleared": { "type": "object" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

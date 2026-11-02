@@ -1,0 +1,5 @@
+Fan-in step: it runs once per completed search, so the first thing it does is count `source_results` rows for the hunt and exit with zero-byte stdout (suppressing downstream steps) until all four sources have reported. The final report is claimed with a conditional `UPDATE ... WHERE combined_at IS NULL`, so only one of the four parallel invocations produces output.
+
+Builds one entry per indicator: the per-tool verdict (`hit` with a human summary, `No matches`, or `Incomplete` with the failure reason), the union of devices, users, email messages, network connections, proxy activity and alerts/incidents, earliest first seen, latest last seen, and total frequency. It also emits a `sourceHealth` array and a top-level `incompleteSources` list so partial results are always labelled.
+
+Stores the report on the hunt row (status `found` or `clean`) and passes it to [Create ServiceNow record](<../Create ServiceNow record/script.ts>) and [Request block approval](<../Request block approval/script.ts>).
