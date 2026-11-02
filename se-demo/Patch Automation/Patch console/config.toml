@@ -1,0 +1,7 @@
+color = "green"
+output = true
+route = "/console"
+route_auth = "space"
+route_type = "webpage"
+title = "Patch console"
+pinned = true

@@ -1,0 +1,6 @@
+color = "purple"
+output = true
+route = "/onyx/api"
+route_type = "api"
+title = "Onyx mock API"
+links = ["Onyx asset created"]

@@ -1,0 +1,6 @@
+color = "sky"
+output = true
+route = "/atlas"
+route_type = "webpage"
+title = "Atlas Data Operations Console"
+timeout = 60

@@ -1,0 +1,6 @@
+color = "orange"
+output = true
+route = "/qualys-remediation/mock/servicenow"
+route_type = "api"
+title = "Mock ServiceNow changes"
+timeout = 30

@@ -1,0 +1,6 @@
+color = "teal"
+output = true
+route = "/qualys-remediation/api/console"
+route_type = "api"
+title = "Demo console API"
+timeout = 30

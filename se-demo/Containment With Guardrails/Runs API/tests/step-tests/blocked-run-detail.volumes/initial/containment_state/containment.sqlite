@@ -1,0 +1,92 @@
+__3B_STEP_TEST_SQLITE_DUMP__
+CREATE TABLE runs (
+  id TEXT PRIMARY KEY,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  alert_id TEXT NOT NULL,
+  endpoint TEXT NOT NULL,
+  user_email TEXT NOT NULL,
+  severity TEXT NOT NULL,
+  status TEXT NOT NULL,
+  chaos TEXT NOT NULL,
+  ticket_number TEXT,
+  ticket_sys_id TEXT,
+  ticket_state TEXT,
+  isolation_state TEXT,
+  failed_stage TEXT,
+  failure_reason TEXT,
+  failure_class TEXT,
+  guardrail TEXT,
+  safe_to_retry INTEGER NOT NULL DEFAULT 0,
+  resume_count INTEGER NOT NULL DEFAULT 0,
+  started_at TEXT,
+  finished_at TEXT
+);
+CREATE TABLE run_stages (
+  run_id TEXT NOT NULL,
+  stage TEXT NOT NULL,
+  position INTEGER NOT NULL,
+  status TEXT NOT NULL,
+  attempts INTEGER NOT NULL DEFAULT 0,
+  started_rel_ms INTEGER,
+  duration_ms INTEGER,
+  timeout_ms INTEGER,
+  max_retries INTEGER,
+  status_code INTEGER,
+  classification TEXT,
+  request_key TEXT,
+  detail TEXT,
+  result TEXT,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (run_id, stage)
+);
+CREATE TABLE attempt_log (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id TEXT NOT NULL,
+  ts TEXT NOT NULL,
+  rel_ms INTEGER NOT NULL,
+  stage TEXT NOT NULL,
+  attempt INTEGER NOT NULL,
+  event TEXT NOT NULL,
+  level TEXT NOT NULL,
+  outcome TEXT NOT NULL,
+  status_code INTEGER,
+  classification TEXT,
+  latency_ms INTEGER,
+  message TEXT NOT NULL,
+  payload TEXT NOT NULL
+);
+CREATE TABLE audit_log (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  run_id TEXT NOT NULL,
+  ts TEXT NOT NULL,
+  rel_ms INTEGER NOT NULL,
+  actor TEXT NOT NULL,
+  stage TEXT NOT NULL,
+  action TEXT NOT NULL,
+  target TEXT NOT NULL,
+  request_key TEXT,
+  attempt INTEGER,
+  outcome TEXT NOT NULL,
+  status_code INTEGER,
+  classification TEXT,
+  latency_ms INTEGER,
+  detail TEXT NOT NULL
+);
+CREATE TABLE mock_state (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
+INSERT INTO runs VALUES ('run-20260827-a0b1ec71','2026-08-27T01:44:25.899Z','2026-08-27T01:44:33.639Z','PP-48299','WS-HR-0117','j.kim@corp.example','critical','blocked','{"proofpoint_500":{"enabled":true,"mode":"fail_n","failures":2},"zscaler_timeout":{"enabled":false,"mode":"fail_n","failures":2},"defender_429":{"enabled":false,"mode":"fail_n","failures":2},"servicenow_400":{"enabled":true,"mode":"always","failures":2},"isolate_fail":{"enabled":false,"mode":"fail_n","failures":2}}',NULL,NULL,NULL,'Not isolated','servicenow_create','HTTP 400: rejected','permanent','Isolation was NOT attempted because ServiceNow incident creation failed — no containment action was taken, so there is no partial state.',1,0,'2026-08-27T01:44:29.785Z','2026-08-27T01:44:33.639Z');
+INSERT INTO run_stages VALUES ('run-20260827-a0b1ec71','proofpoint_enrich',1,'succeeded',3,7,3517,5000,3,200,'success',NULL,'Proofpoint enrichment succeeded after 3 attempt(s)','{"clickedUrl":"https://secure-invoice-portal.top/login"}','2026-08-27T01:44:33.328Z');
+INSERT INTO run_stages VALUES ('run-20260827-a0b1ec71','zscaler_enrich',2,'succeeded',1,3527,132,4000,3,200,'success',NULL,'Zscaler URL lookup succeeded after 1 attempt(s)','[]','2026-08-27T01:44:33.463Z');
+INSERT INTO run_stages VALUES ('run-20260827-a0b1ec71','defender_query',3,'succeeded',1,3663,135,6000,4,200,'success',NULL,'Defender device query succeeded after 1 attempt(s)','{"machineId":"mde-024a4af5e913"}','2026-08-27T01:44:33.600Z');
+INSERT INTO run_stages VALUES ('run-20260827-a0b1ec71','servicenow_create',4,'failed_permanent',1,3800,33,8000,2,400,'permanent','snow-create:run-20260827-a0b1ec71','ServiceNow incident gave up after 1 attempt(s): HTTP 400: rejected',NULL,'2026-08-27T01:44:33.637Z');
+INSERT INTO run_stages VALUES ('run-20260827-a0b1ec71','endpoint_isolate',5,'skipped_guardrail',0,NULL,NULL,8000,2,NULL,NULL,NULL,'Isolation was NOT attempted because ServiceNow incident creation failed — no containment action was taken, so there is no partial state.',NULL,'2026-08-27T01:44:33.638Z');
+INSERT INTO attempt_log VALUES (1,'run-20260827-a0b1ec71','2026-08-27T01:44:29.984Z',703,'proofpoint_enrich',1,'attempt','warn','transient',500,'transient',173,'HTTP 500: TAP backend unavailable','{"run_id":"run-20260827-a0b1ec71","stage":"proofpoint_enrich","attempt":1,"event":"attempt","retries_left":3,"retry_in_ms":1042}');
+INSERT INTO attempt_log VALUES (2,'run-20260827-a0b1ec71','2026-08-27T01:44:33.326Z',4045,'proofpoint_enrich',3,'attempt','info','succeeded',200,'success',135,'HTTP 200','{"run_id":"run-20260827-a0b1ec71","stage":"proofpoint_enrich","attempt":3,"event":"attempt","retries_left":1,"retry_in_ms":null}');
+INSERT INTO attempt_log VALUES (3,'run-20260827-a0b1ec71','2026-08-27T01:44:33.635Z',4354,'servicenow_create',1,'attempt','error','permanent',400,'permanent',31,'HTTP 400: rejected','{"run_id":"run-20260827-a0b1ec71","stage":"servicenow_create","attempt":1,"event":"attempt","retries_left":2,"retry_in_ms":null}');
+INSERT INTO attempt_log VALUES (4,'run-20260827-a0b1ec71','2026-08-27T01:44:33.638Z',4357,'endpoint_isolate',0,'guardrail_block','error','skipped_guardrail',NULL,NULL,NULL,'Isolation was NOT attempted because ServiceNow incident creation failed — no containment action was taken, so there is no partial state.','{"run_id":"run-20260827-a0b1ec71","stage":"endpoint_isolate","event":"guardrail_block"}');
+INSERT INTO audit_log VALUES (1,'run-20260827-a0b1ec71','2026-08-27T01:44:25.901Z',0,'Start Run','run','run.queue','WS-HR-0117','run-20260827-a0b1ec71',NULL,'queued',NULL,NULL,NULL,'queued containment for alert PP-48299');
+INSERT INTO audit_log VALUES (2,'run-20260827-a0b1ec71','2026-08-27T01:44:33.635Z',4354,'Containment Orchestrator','servicenow_create','servicenow: POST /api/now/table/incident','servicenow:incident','snow-create:run-20260827-a0b1ec71',1,'failed_permanent',400,'permanent',31,'HTTP 400: rejected');
+INSERT INTO audit_log VALUES (3,'run-20260827-a0b1ec71','2026-08-27T01:44:33.638Z',4357,'Containment Orchestrator','endpoint_isolate','defender: POST /api/machines/{id}/isolate','WS-HR-0117',NULL,NULL,'not_attempted_guardrail',NULL,NULL,NULL,'Isolation was NOT attempted because ServiceNow incident creation failed — no containment action was taken, so there is no partial state.');

@@ -1,0 +1,66 @@
+# Vulnerability remediation progress
+
+Window: 2026-08-13 to 2026-08-20 (7 days)
+
+## Headline
+
+| Metric | Value |
+| --- | --- |
+| Changes opened | 3 (4 findings) |
+| Changes closed | 3 (4 findings) |
+| Open now | 2 |
+| Overdue now | 1 |
+| Mean time to remediate | 5.3 days (n=3) |
+| SLA attainment | 66.7% (2 within SLA, 1 late) |
+| Oldest overdue change | 5 days |
+
+## Open changes by risk band
+
+| Band | Open | Closed in window |
+| --- | --- | --- |
+| critical | 1 | 1 |
+| high | 0 | 2 |
+| medium | 0 | 0 |
+| low | 1 | 0 |
+
+## By owning team
+
+| Team | Open | Overdue | Closed in window | Worst days overdue |
+| --- | --- | --- | --- | --- |
+| Data Platform | 1 | 1 | 0 | 5 |
+| IT Endpoint Services | 1 | 0 | 0 | - |
+| Commerce Engineering | 0 | 0 | 1 | - |
+| Payments Engineering | 0 | 0 | 1 | - |
+| Platform Engineering | 0 | 0 | 1 | - |
+
+## Top recurring vulnerability classes (open changes)
+
+| Class | Findings | Changes affected |
+| --- | --- | --- |
+| Configuration | 2 | 2 |
+| Third-Party Library | 2 | 1 |
+
+## Overdue changes
+
+| Change | Team | Application | Days overdue | Priority | Findings | Escalations |
+| --- | --- | --- | --- | --- | --- | --- |
+| CHG0031004 | Data Platform | Core Database Platform | 5 | P1 | 3 | 1 |
+
+## Opened vs closed by day
+
+| Date | Opened | Closed |
+| --- | --- | --- |
+| 2026-08-07 | 0 | 0 |
+| 2026-08-08 | 0 | 0 |
+| 2026-08-09 | 0 | 0 |
+| 2026-08-10 | 1 | 0 |
+| 2026-08-11 | 1 | 0 |
+| 2026-08-12 | 1 | 0 |
+| 2026-08-13 | 1 | 0 |
+| 2026-08-14 | 1 | 0 |
+| 2026-08-15 | 2 | 0 |
+| 2026-08-16 | 1 | 0 |
+| 2026-08-17 | 0 | 1 |
+| 2026-08-18 | 1 | 1 |
+| 2026-08-19 | 1 | 2 |
+| 2026-08-20 | 0 | 2 |

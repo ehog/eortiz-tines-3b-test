@@ -1,0 +1,4 @@
+color = "pink"
+cron = "0 7 * * *"
+timeout = 120
+links = ["Data spillage scanner", "Shadow AI detector"]

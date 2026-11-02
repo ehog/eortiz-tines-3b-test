@@ -1,0 +1,43 @@
+{
+  "post": {
+    "summary": "Raise a Jira approval request for a blocked Onyx asset",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "required": ["assetId", "businessJustification"],
+            "properties": {
+              "assetId": { "type": "string", "description": "Onyx asset id, e.g. AST-1004" },
+              "requester": { "type": "string", "description": "Ignored when the caller is an authenticated browser session." },
+              "businessJustification": { "type": "string", "minLength": 10 }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Approval issue created and the asset moved to pending_review",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "asset_id": { "type": "string" },
+                "asset_name": { "type": "string" },
+                "status": { "type": "string", "enum": ["pending_review"] },
+                "issue": { "type": "object", "properties": { "key": { "type": "string" } } }
+              }
+            }
+          }
+        }
+      },
+      "200": { "description": "A review request is already open for this asset" },
+      "400": { "description": "Missing asset id or justification shorter than 10 characters" },
+      "404": { "description": "Asset not found" },
+      "409": { "description": "Asset is already allowed" }
+    }
+  }
+}

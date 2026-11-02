@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@source "./*.tsx";
+
+/* Atlas Data Operations Console — Norstella-inspired design tokens.
+   Deep navy surface, crisp white panels, a single teal-to-blue accent family.
+   Red is reserved for genuine failures, amber for degraded runs. */
+@theme {
+  --color-navy-950: #05090f;
+  --color-navy-900: #0a1420;
+  --color-navy-800: #101d2c;
+  --color-navy-700: #1b2b3d;
+  --color-navy-600: #2b3f55;
+  --color-slate-fog: #6b7c8f;
+
+  --color-accent-500: #00c2a8;
+  --color-accent-400: #34d8c0;
+  --color-accent-600: #009a8c;
+  --color-accent-blue: #1d6ff2;
+  --color-accent-deep: #0f3fa8;
+
+  --color-degraded: #d98a1f;
+  --color-failure: #d3352b;
+
+  /* Self-contained stacks — the console loads no remote fonts, so it renders
+     identically on a locked-down network or a projector laptop. */
+  --font-display: "Archivo", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-sans: "Archivo", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, ui-monospace, monospace;
+}
+
+html {
+  background: var(--color-navy-950);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+/* Understated label treatment used throughout: thin, wide, uppercase. */
+.label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* A single faint grid, for atmosphere on the navy surfaces — no gradients. */
+.grid-veil {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
