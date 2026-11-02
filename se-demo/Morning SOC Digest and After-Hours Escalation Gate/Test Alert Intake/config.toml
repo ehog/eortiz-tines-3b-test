@@ -1,0 +1,5 @@
+color = "orange"
+route = "/api/test-alert"
+route_auth = "space"
+timeout = 30
+links = ["Score Alert"]

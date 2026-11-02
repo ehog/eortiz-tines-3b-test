@@ -1,0 +1,8 @@
+tickets
+CHG0031201 | Platform Engineering | Customer Portal | CAB-Platform-Engineering | P1 | critical 100 | new | opened 2026-08-20T09:00:00.000Z | due 2026-08-23T09:00:00.000Z | closed - | esc 0 | findings ["DET-1001"]
+CHG0031202 | IT Endpoint Services | Corporate Endpoints | CAB-IT-Endpoint | P4 | low 19 | new | opened 2026-08-20T09:00:00.000Z | due 2026-11-18T09:00:00.000Z | closed - | esc 0 | findings ["DET-1006"]
+work_notes
+CHG0031201 | 2026-08-20T09:00:00.000Z | vuln-automation | Opened by vulnerability automation from Qualys run run-test-sync. 1 finding batched; highest risk score 100 (critical); SLA date 2026-08-23. Remediation packages attached to the change description.
+CHG0031202 | 2026-08-20T09:00:00.000Z | vuln-automation | Opened by vulnerability automation from Qualys run run-test-sync. 1 finding batched; highest risk score 19 (low); SLA date 2026-11-18. Remediation packages attached to the change description.
+meta
+last_number=31202

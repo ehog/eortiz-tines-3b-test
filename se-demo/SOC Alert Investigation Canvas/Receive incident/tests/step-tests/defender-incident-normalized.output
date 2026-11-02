@@ -1,0 +1,6 @@
+HTTP/1.1 202 Accepted
+Content-Type: application/json; charset=utf-8
+Content-Length: 203
+Cache-Control: no-store
+
+{"investigationId":"inv-test-000001","source":"defender","title":"Multi-stage incident involving Execution & Command and control on one endpoint","severity":"high","alertTime":"2026-02-10T09:18:00.000Z"}

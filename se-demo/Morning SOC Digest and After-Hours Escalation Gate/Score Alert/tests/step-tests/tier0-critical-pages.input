@@ -1,0 +1,1 @@
+{"intake":"webhook","alert":{"id":"defender-test-page","source":"defender","receivedAt":"2026-01-15T04:30:00.000Z","title":"Ransomware pre-encryption behaviour detected","severity":"critical","confidence":"confirmed","user":"svc_backup","host":"pay-db-01","indicator":"vssadmin.exe delete shadows","businessImpact":"revenue_impacting","tags":["ransomware"]}}
