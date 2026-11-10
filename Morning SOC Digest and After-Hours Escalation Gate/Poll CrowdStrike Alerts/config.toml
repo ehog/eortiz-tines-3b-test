@@ -1,0 +1,5 @@
+color = "orange"
+cron = "*/5 * * * *"
+links = ["Score Alert"]
+connectors = [{ name = "crowdstrike", type = "crowdStrike" }]
+timeout = 120
