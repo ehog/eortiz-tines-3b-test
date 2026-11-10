@@ -1,0 +1,6 @@
+color = "sky"
+route = "/defender-alert"
+route_auth = "space"
+route_type = "webhook"
+title = "Microsoft Defender alert intake"
+links = ["Create Tines case"]

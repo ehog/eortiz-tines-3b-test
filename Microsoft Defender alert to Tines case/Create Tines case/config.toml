@@ -1,0 +1,4 @@
+color = "purple"
+output = true
+connectors = [{ name = "tines-cases", type = "tines" }]
+timeout = 60
