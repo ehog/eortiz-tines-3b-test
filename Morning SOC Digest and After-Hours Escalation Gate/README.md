@@ -10,6 +10,7 @@ Two related SOC automations in one project, sharing state and a live demo consol
 
 ```
                        ┌─ Alert Webhook (POST /alerts, external_id)
+                       ├─ Poll CrowdStrike Alerts (cron */5, Falcon Alerts API)
                        ├─ Test Alert Intake (POST /api/test-alert, console)
                        │
                        └─→ Score Alert ──(page only)──→ Page On-Call ──→ Slack + mock PagerDuty inbox
@@ -34,6 +35,7 @@ Three switches in `config.notifications` — `digestEmail`, `digestSlack` and `p
 | Step | Role |
 | --- | --- |
 | [Alert Webhook](<./Alert Webhook/README.md>) | External intake at `POST /alerts`, `external_id` auth |
+| [Poll CrowdStrike Alerts](<./Poll CrowdStrike Alerts/README.md>) | Polls Falcon alerts every 5 min into the gate |
 | [Test Alert Intake](<./Test Alert Intake/README.md>) | Console intake and scenario packs at `POST /api/test-alert` |
 | [Score Alert](<./Score Alert/README.md>) | Scoring, decision, audit record |
 | [Page On-Call](<./Page On-Call/README.md>) | Mock PagerDuty event plus real Slack page notice |
